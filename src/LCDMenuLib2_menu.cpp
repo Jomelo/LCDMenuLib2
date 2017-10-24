@@ -64,9 +64,11 @@ void LCDMenuLib2_menu::setParent(LCDMenuLib2_menu &p)
 void LCDMenuLib2_menu::addSibling(LCDMenuLib2_menu &s,LCDMenuLib2_menu &p)
 /* ******************************************************************** */
 {
-    if (sibling) { // add sibling if sibing exists 
+    if (sibling) 
+    { // add sibling if sibing exists 
         sibling->addSibling(s,p);
-    } else
+    } 
+    else
     { // add sibling and parent 
         sibling =& s;
         sibling->setParent(p);
@@ -77,9 +79,11 @@ void LCDMenuLib2_menu::addSibling(LCDMenuLib2_menu &s,LCDMenuLib2_menu &p)
 void LCDMenuLib2_menu::addChild(LCDMenuLib2_menu &c)
 /* ******************************************************************** */
 {
-    if (child) { // add sibling if child exists
+    if (child) 
+    { // add sibling if child exists
         child->addSibling(c,*this);
-    } else
+    } 
+    else
     { // add child  and parent
         child=&c;
         child->setParent(*this);
@@ -90,10 +94,12 @@ void LCDMenuLib2_menu::addChild(LCDMenuLib2_menu &c)
 LCDMenuLib2_menu * LCDMenuLib2_menu::getChild(uint8_t which)
 /* ******************************************************************** */
 {
-    if (child) { // return child if exists        
+    if (child) 
+    { // return child if exists        
         return child->getSibling(which);        
     }
-    else { // this menu item has no children
+    else 
+    { // this menu item has no children
         return NULL;
     }
 }
@@ -102,13 +108,16 @@ LCDMenuLib2_menu * LCDMenuLib2_menu::getChild(uint8_t which)
 LCDMenuLib2_menu * LCDMenuLib2_menu::getSibling(uint8_t howfar)
 /* ******************************************************************** */
 {
-    if (howfar == 0) { // this sibling                    
+    if (howfar == 0) 
+    { // this sibling                    
         return this;                
     }
-    else if (sibling) {    // get next sibling    
+    else if (sibling) 
+    {    // get next sibling    
         return sibling->getSibling(howfar - 1);
     }
-    else { // asking for a nonexistent sibling    
+    else 
+    { // asking for a nonexistent sibling    
         return NULL;
     }
 }
@@ -117,10 +126,12 @@ LCDMenuLib2_menu * LCDMenuLib2_menu::getSibling(uint8_t howfar)
 LCDMenuLib2_menu * LCDMenuLib2_menu::getParent()
 /* ******************************************************************** */
 {
-    if (parent) { // get parent if exists        
+    if (parent) 
+    { // get parent if exists        
         return parent;        
     }
-    else { // root menu    
+    else 
+    { // root menu    
         return this;
     }
 }
@@ -164,7 +175,8 @@ uint8_t LCDMenuLib2_menu::getParam()
 void LCDMenuLib2_menu::callback(uint8_t p)
 /* ******************************************************************** */
 {
-    if(cb_function != NULL) {
+    if(cb_function != NULL) 
+    {
         cb_function(p);
     }
 }
@@ -173,9 +185,12 @@ void LCDMenuLib2_menu::callback(uint8_t p)
 boolean LCDMenuLib2_menu::checkCallback()
 /* ******************************************************************** */
 {
-    if(cb_function == NULL) {
+    if(cb_function == NULL) 
+    {
         return false;
-    } else {
+    } 
+    else 
+    {
         return true;
     }
 }

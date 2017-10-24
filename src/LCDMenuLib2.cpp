@@ -117,90 +117,85 @@ boolean     LCDMenuLib2::MENU_selectElementDirect(LCDMenuLib2_menu &p_m, LCDML_F
     //deklaration
     LCDMenuLib2_menu *search = &p_m;
     LCDMenuLib2_menu *tmp;    
-    boolean found    = 0;   
-        
-    do 
-    {  
-        if (search->getChild(0) != NULL) 
-        {
-            tmp = search->getChild(0);
-            
-            if(tmp->checkCallback() == true && tmp->checkType_menu() == true) 
+    boolean found    = false;
+    
+    if(activMenu == NULL)
+    {
+        do 
+        {  
+            if (search->getChild(0) != NULL) 
             {
-                if (tmp->getCbFunction() == p_search) 
-                { //search elements in this layer            
-                    found = true;                
-                    break;
-                } 
-
-                found = MENU_selectElementDirect(*tmp, p_search); //recursive search until found is true or last item reached
-                            
-                if (found == true) //something found
-                {                     
-                    break; 
-                } 
-                else 
-                {  
-                    // go down
-                    if (curloc < child_cnt) 
-                    { 
-                        curloc++; 
-                        MENU_doScroll();
-                    } 
-                    child_cnt = MENU_countChilds();     
-                }                
-            } 
-            else
-            {   
-                //check elements for childs                    
-                MENU_goInto();               
+                tmp = search->getChild(0);
                 
-                if (tmp->getCbFunction() == p_search) 
-                { 
-                    //search elements in this layer            
-                    found = true;                
-                    break;
-                }               
-
-                found = MENU_selectElementDirect(*tmp, p_search); //recursive search until found is true or last item reached
-                            
-                if (found == true) //something found
-                {   
-                    break; 
-                } 
-                else 
-                {  
-                    //quit layer, go to next element
-                    MENU_goBack();
-                    child_cnt = MENU_countChilds();
-                    
-                    if (curloc < child_cnt) 
-                    { 
-                        curloc++; 
-                        MENU_doScroll();
+                if(tmp->checkCallback() == true && tmp->checkType_menu() == true) 
+                {
+                    if (tmp->getCbFunction() == p_search) 
+                    { //search elements in this layer            
+                        found = true;
                     }
-                }  
-            }           
-        } 
-        else 
-        {            
-            //no childs found                
-            if (search->getCbFunction() == p_search) //found something
-            {  
-                found = true;                
-                break;
+                    else
+                    {
+                        found = MENU_selectElementDirect(*tmp, p_search); //recursive search until found is true or last item reached
+                                    
+                        if (found == false) //something found
+                        { 
+                            // go down
+                            if (curloc < child_cnt) 
+                            { 
+                                curloc++; 
+                                MENU_doScroll();
+                            } 
+                            child_cnt = MENU_countChilds();     
+                        } 
+                    }                
+                } 
+                else
+                { 
+                    //check elements for childs                    
+                    MENU_goInto();               
+                    
+                    if (tmp->getCbFunction() == p_search) 
+                    { 
+                        //search elements in this layer            
+                        found = true;                   
+                    }  
+                    else
+                    {
+                        found = MENU_selectElementDirect(*tmp, p_search); //recursive search until found is true or last item reached
+                                    
+                        if (found == false) 
+                        {                     
+                            //quit layer, go to next element
+                            MENU_goBack();
+                            child_cnt = MENU_countChilds();
+                            
+                            if (curloc < child_cnt) 
+                            { 
+                                curloc++; 
+                                MENU_doScroll();
+                            }
+                        } 
+                    }                
+                }           
             } 
             else 
-            {                
-                //select next element            
-                if (curloc < child_cnt) { 
-                    curloc++; 
-                    MENU_doScroll();
-                }                
-            }
-        }        
-    } while ((search=search->getSibling(1)) != NULL && found == 0);    
-      
+            {  
+                //no childs found                
+                if (search->getCbFunction() == p_search) //found something
+                {  
+                    found = true;
+                } 
+                else 
+                {                
+                    //select next element            
+                    if (curloc < child_cnt) { 
+                        curloc++; 
+                        MENU_doScroll();
+                    }                
+                }
+            }        
+        } while ((search=search->getSibling(1)) != NULL && found == 0);    
+    }
     //return result
     return found;    
 }
@@ -210,8 +205,9 @@ void        LCDMenuLib2::MENU_goRoot()
 /* ******************************************************************** */
 {
     if(activMenu != NULL) 
-    {               
-        bitSet(funcReg, _LCDML_funcReg_end);
+    {  
+        bitSet(funcReg, _LCDML_funcReg_setup);  // disable setup
+        bitSet(funcReg, _LCDML_funcReg_end);    // disable loop, enable close
         FUNC_call();  // call active function for save close;
     } 
     
@@ -231,14 +227,14 @@ void        LCDMenuLib2::MENU_goRoot()
     
     MENU_display();
     
-    if(bitRead(control, _LCDML_control_search_display) == false)
+    if(activMenu != NULL)
     {
-        if(activMenu != NULL)
+        activMenu = NULL;
+        if(bitRead(control, _LCDML_control_search_display) == false)
         {
-            activMenu = NULL;
-            DISP_menuUpdate();
+             DISP_menuUpdate();
         }
-    } 
+    }   
 }
 
 /* ******************************************************************** */
@@ -299,14 +295,14 @@ void    LCDMenuLib2::MENU_goInto(void)
         if(tmp->checkCallback() == true && tmp->checkType_menu() == true)
         {
             // Menufunction found
-            activMenu = tmp;
+            activMenu = tmp;            
         }
         else
         { 
             if(tmp->checkType_dynParam() == true)
             {
                 MENU_display();
-                DISP_menuUpdate();                                    
+                DISP_menuUpdate();                                 
             } 
             else 
             {
@@ -573,7 +569,7 @@ uint8_t LCDMenuLib2::MENU_getParentId(uint8_t p_layer)
 /* ******************************************************************** */
 void LCDMenuLib2::DISP_menuUpdate()
 /* ******************************************************************** */
-{    
+{
     if(activMenu == NULL || bitRead(funcReg, _LCDML_funcReg_end) || bitRead(control, _LCDML_control_update_direct)) 
     { 
         callback_contentUpdate();
@@ -581,14 +577,16 @@ void LCDMenuLib2::DISP_menuUpdate()
     bitClear(control, _LCDML_control_disp_update);
     bitClear(control, _LCDML_control_cursor_update);
     bitClear(control, _LCDML_control_update_direct); 
-            
 }
 
 /* ******************************************************************** */
 void LCDMenuLib2::DISP_clear()
 /* ******************************************************************** */
 {
-    callback_contentClear();    
+    if(bitRead(control, _LCDML_control_search_display) == false)
+    {
+        callback_contentClear();
+    }        
 }
 
 /* ******************************************************************** */
@@ -929,7 +927,7 @@ boolean LCDMenuLib2::OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search)
     bitSet(control, _LCDML_control_disable_hidden);  
     bitSet(control, _LCDML_control_search_display);
     // got to root
-    MENU_goRoot();
+    MENU_goRoot();    
     
     if(MENU_selectElementDirect(*rootMenu, p_search)) 
     {  
@@ -941,6 +939,7 @@ boolean LCDMenuLib2::OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search)
     else
     {
         bitClear(control, _LCDML_control_search_display);
+        bitClear(control, _LCDML_control_disable_hidden);
         return false;
     }
 }
