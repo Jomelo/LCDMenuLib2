@@ -1,0 +1,271 @@
+/* ******************************************************************** */
+/*																		*/
+/*						LCDMenuLib (LCDML)								*/
+# ##############################################################################                                                                        
+#                        LCDMenuLib (LCDML)                                                                                                       
+# ##############################################################################  
+# 
+# MIT License
+# 
+# Copyright (c) [2017] [Nils Feldkämper]
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#                                      
+# ############################################################################## 
+#   
+# BUG / ISSUES REPORTING                                      
+#    https://github.com/Jomelo/LCDMenuLib/issues 
+# 
+# ARDUIONO FORUM                                                    
+#     http://forum.arduino.cc/index.php?topic=73816.0  
+#   
+# ##############################################################################  
+
+
+#######################################
+# LCDML 
+#######################################
+
+
+LCDMenuLib2	KEYWORD1
+LCDMenuLib2_menu	KEYWORD1
+
+LCDML	KEYWORD3
+LCDBL	KEYWORD3
+
+LCDML_0	KEYWORD3
+LCDBL_0	KEYWORD3
+#######################################
+# CONTROL / BUTTONS 
+#######################################
+
+_LCDML_CONTROL_cfg	LITERAL1
+
+_LCDML_DISP_cfg_scrollbar	LITERAL1
+
+_LCDML_VERSION	LITERAL1
+
+_LCDML_CONTROL_serial_enter	LITERAL1
+_LCDML_CONTROL_serial_up	LITERAL1          
+_LCDML_CONTROL_serial_down	LITERAL1
+_LCDML_CONTROL_serial_left	LITERAL1      
+_LCDML_CONTROL_serial_right	LITERAL1
+_LCDML_CONTROL_serial_quit	LITERAL1
+
+_LCDML_CONTROL_analog_pin	LITERAL1
+_LCDML_CONTROL_analog_enter_min	LITERAL1
+_LCDML_CONTROL_analog_enter_max	LITERAL1
+_LCDML_CONTROL_analog_up_min	LITERAL1
+_LCDML_CONTROL_analog_up_max	LITERAL1
+_LCDML_CONTROL_analog_down_min	LITERAL1
+_LCDML_CONTROL_analog_down_max	LITERAL1
+_LCDML_CONTROL_analog_enable_quit	LITERAL1
+_LCDML_CONTROL_analog_back_min	LITERAL1
+_LCDML_CONTROL_analog_back_max	LITERAL1
+_LCDML_CONTROL_analog_enable_lr	LITERAL1
+_LCDML_CONTROL_analog_left_min	LITERAL1
+_LCDML_CONTROL_analog_left_max	LITERAL1
+_LCDML_CONTROL_analog_right_min	LITERAL1
+_LCDML_CONTROL_analog_right_max	LITERAL1
+
+_LCDML_CONTROL_digital_low_active	LITERAL1
+_LCDML_CONTROL_digital_a	LITERAL1
+_LCDML_CONTROL_digital_enable_quit	LITERAL1
+_LCDML_CONTROL_digital_enable_lr	LITERAL1
+_LCDML_CONTROL_digital_enter	LITERAL1
+_LCDML_CONTROL_digital_up	LITERAL1
+_LCDML_CONTROL_digital_down	LITERAL1
+_LCDML_CONTROL_digital_quit	LITERAL1
+_LCDML_CONTROL_digital_left	LITERAL1
+_LCDML_CONTROL_digital_right	LITERAL1
+
+_LCDML_CONTROL_encoder_enable	LITERAL1
+_LCDML_CONTROL_encoder_pin_a	LITERAL1
+_LCDML_CONTROL_encoder_pin_b	LITERAL1
+_LCDML_CONTROL_encoder_pin_button	LITERAL1
+_LCDML_CONTROL_encoder_high_active	LITERAL1
+
+_LCDML_CONTROL_keypad_rows	LITERAL1
+_LCDML_CONTROL_keypad_cols	LITERAL1
+
+
+_LCDML_u8g_lcd_w	LITERAL1
+_LCDML_u8g_lcd_h	LITERAL1
+_LCDML_u8g_font	LITERAL1
+_LCDML_u8g_font_w	LITERAL1
+_LCDML_u8g_font_h	LITERAL1
+_LCDML_u8g_cols_max	LITERAL1
+_LCDML_u8g_rows_max	LITERAL1
+_LCDML_u8g_rows	LITERAL1
+_LCDML_u8g_cols	LITERAL1
+_LCDML_u8g_scrollbar_w	LITERAL1
+
+
+_LCDML_DISP_w	LITERAL1
+_LCDML_DISP_h	LITERAL1
+_LCDML_DISP_font	LITERAL1
+_LCDML_DISP_font_w	LITERAL1
+_LCDML_DISP_font_h	LITERAL1
+_LCDML_DISP_cursor_char	LITERAL1
+_LCDML_DISP_cur_space_before	LITERAL1
+_LCDML_DISP_cur_space_behind	LITERAL1
+_LCDML_DISP_box_x0	LITERAL1
+_LCDML_DISP_box_y0	LITERAL1
+_LCDML_DISP_box_x1	LITERAL1
+_LCDML_DISP_box_y1	LITERAL1
+_LCDML_DISP_draw_frame	LITERAL1
+_LCDML_DISP_scrollbar_w	LITERAL1
+_LCDML_DISP_cols_max	LITERAL1
+_LCDML_DISP_rows_max	LITERAL1
+
+
+_LCDML_DISP_cols	LITERAL1
+_LCDML_DISP_rows	LITERAL1
+_LCDML_DISP_rs	LITERAL1
+_LCDML_DISP_e	LITERAL1
+_LCDML_DISP_rw	LITERAL1
+_LCDML_DISP_dat0	LITERAL1
+_LCDML_DISP_dat1	LITERAL1
+_LCDML_DISP_dat2	LITERAL1
+_LCDML_DISP_dat3	LITERAL1
+_LCDML_DISP_dat4	LITERAL1
+_LCDML_DISP_dat5	LITERAL1
+_LCDML_DISP_dat6	LITERAL1
+_LCDML_DISP_dat7	LITERAL1
+_LCDML_DISP_backlight	LITERAL1
+_LCDML_DISP_backlight_pol	LITERAL1
+_LCDML_DISP_addr	LITERAL1
+_LCDML_DISP_srdata	LITERAL1
+_LCDML_DISP_srclk	LITERAL1
+_LCDML_DISP_strobe	LITERAL1
+_LCDML_DISP_enable	LITERAL1
+_LCDML_DogLCD_type	LITERAL1
+_LCDML_DogLCD_SI	LITERAL1
+_LCDML_DogLCD_CLK	LITERAL1
+_LCDML_DogLCD_RS	LITERAL1
+_LCDML_DogLCD_CSB	LITERAL1
+_LCDML_DogLCD_RESET	LITERAL1
+_LCDML_DogLCD_LIGHT	LITERAL1
+
+_LCDML_DISP_cfg_control	LITERAL1
+
+
+_LCDML_DISP_cfg_cursor	LITERAL1
+
+
+
+
+_LCDML_DISP_cnt	LITERAL1
+
+
+#######################################
+# MENU 
+#######################################
+getChild	KEYWORD2
+getParam	KEYWORD2
+checkCallback	KEYWORD2
+getID	KEYWORD2
+getSibling	KEYWORD2
+callback	KEYWORD2
+checkCondetion	KEYWORD2
+checkType_menu	KEYWORD2
+checkType_dynParam	KEYWORD2
+#######################################
+# DISPLAY / MENU 
+#######################################
+# class methods
+loop_menu	KEYWORD2
+loop_control	KEYWORD2
+
+MENU_display	KEYWORD2
+MENU_goRoot	KEYWORD2
+MENU_goBack	KEYWORD2
+MENU_getActiveId	KEYWORD2
+MENU_getLayer	KEYWORD2
+MENU_getCursorPos	KEYWORD2
+MENU_getChilds	KEYWORD2
+MENU_getCursorPosAbs	KEYWORD2
+MENU_getParentId	KEYWORD2
+MENU_enRollover	KEYWORD2
+MENU_getObj	KEYWORD2
+MENU_getScroll	KEYWORD2
+
+BT_setup	KEYWORD2
+BT_enter	KEYWORD2
+BT_up	KEYWORD2
+BT_down	KEYWORD2
+BT_left	KEYWORD2
+BT_right	KEYWORD2
+BT_quit	KEYWORD2
+
+BT_checkAll	KEYWORD2
+BT_checkAny	KEYWORD2
+BT_checkLeft	KEYWORD2
+BT_checkRight	KEYWORD2
+BT_checkUp	KEYWORD2
+BT_checkDown	KEYWORD2
+BT_checkEnter	KEYWORD2
+
+BT_resetAll	KEYWORD2
+BT_resetEnter	KEYWORD2
+BT_resetLeft	KEYWORD2
+BT_resetRight	KEYWORD2
+BT_resetUp	KEYWORD2
+BT_resetDown	KEYWORD2
+
+
+DISP_menuUpdate	KEYWORD2
+DISP_clear	KEYWORD2
+DISP_checkMenuUpdate	KEYWORD2
+DISP_checkMenuCursorUpdate	KEYWORD2
+DISP_getMenuContentId	KEYWORD2
+
+FUNC_call	KEYWORD2
+FUNC_setup	KEYWORD2
+FUNC_loop	KEYWORD2
+FUNC_close	KEYWORD2
+FUNC_goBackToMenu	KEYWORD2
+FUNC_getId	KEYWORD2
+FUNC_getParam	KEYWORD2
+FUNC_setLoopInterval	KEYWORD2
+FUNC_disableScreensaver	KEYWORD2
+
+OTHER_jumpToFunc	KEYWORD2
+
+TIMER_ms	KEYWORD2
+TIMER_msReset	KEYWORD2
+TIMER_us	KEYWORD2
+TIMER_usReset	KEYWORD2
+
+SCREEN_enable	KEYWORD2
+SCREEN_disable	KEYWORD2
+SCREEN_resetTimer	KEYWORD2
+SCREEN_start	KEYWORD2
+
+
+
+# Macros
+
+LCDML_getContent	KEYWORD2
+LCDML_createMenu	KEYWORD2
+LCDML_getElementName	KEYWORD2
+LCDML_getElementNameCheck	KEYWORD2
+LCDML_add	KEYWORD2
+LCDML_addAdvanced	KEYWORD2
+LCDML_setup	KEYWORD2
