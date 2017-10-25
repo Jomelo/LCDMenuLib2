@@ -182,17 +182,6 @@ void mFunc_p2(uint8_t param)
 }
 
 
-// *********************************************************************
-void mFunc_back(uint8_t param)
-// *********************************************************************
-{
-  if(LCDML.FUNC_setup())          // ****** SETUP *********
-  {
-    // end function and go an layer back
-    LCDML.FUNC_goBackToMenu(1);      // leave this function
-  } 
-}
-
 
 // *********************************************************************
 void mFunc_screensaver(uint8_t param)
@@ -214,15 +203,53 @@ void mFunc_screensaver(uint8_t param)
   {
     if (LCDML.BT_checkAny()) // check if any button is pressed (enter, up, down, left, right)
     {      
-      LCDML.FUNC_goBackToMenu();     
+      LCDML.FUNC_goBackToMenu();  // leave this function   
     }
   } 
 
   if(LCDML.FUNC_close())
   {
-     LCDML.MENU_goRoot();
+    // The screensaver go to the root menu
+    LCDML.MENU_goRoot();
   }
 }
 
 
 
+// *********************************************************************
+void mFunc_back(uint8_t param)
+// *********************************************************************
+{
+  if(LCDML.FUNC_setup())          // ****** SETUP *********
+  {
+    // end function and go an layer back
+    LCDML.FUNC_goBackToMenu(1);      // leave this function and go a layer back
+  } 
+}
+
+
+// *********************************************************************
+void mFunc_goToRootMenu(uint8_t param)
+// *********************************************************************
+{
+  if(LCDML.FUNC_setup())          // ****** SETUP *********
+  {
+    // go to root and display menu
+    LCDML.MENU_goRoot();    
+  } 
+}
+
+// *********************************************************************
+void mFunc_jumpTo_timer_info(uint8_t param)
+// *********************************************************************
+{
+  if(LCDML.FUNC_setup())          // ****** SETUP *********
+  {
+    // Jump to Initscreen
+    if(!LCDML.OTHER_jumpToFunc(mFunc_timer_info)) 
+    {
+      // function not found or not callable
+      LCDML.MENU_goRoot();           
+    }
+  }
+}

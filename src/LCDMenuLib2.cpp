@@ -570,13 +570,10 @@ uint8_t LCDMenuLib2::MENU_getParentId(uint8_t p_layer)
 void LCDMenuLib2::DISP_menuUpdate()
 /* ******************************************************************** */
 {
-    if(activMenu == NULL || bitRead(funcReg, _LCDML_funcReg_end) || bitRead(control, _LCDML_control_update_direct)) 
+    if(activMenu == NULL || bitRead(funcReg, _LCDML_funcReg_end) || bitRead(control, _LCDML_control_update_direct) || bitRead(control, _LCDML_control_disp_update) ) 
     { 
         callback_contentUpdate();
-    }
-    bitClear(control, _LCDML_control_disp_update);
-    bitClear(control, _LCDML_control_cursor_update);
-    bitClear(control, _LCDML_control_update_direct); 
+    }    
 }
 
 /* ******************************************************************** */
@@ -594,6 +591,8 @@ boolean LCDMenuLib2::DISP_checkMenuUpdate()
 /* ******************************************************************** */
 {
     if (bitRead(control, _LCDML_control_disp_update) || bitRead(control, _LCDML_control_update_direct)) { 
+        bitClear(control, _LCDML_control_disp_update);        
+        bitClear(control, _LCDML_control_update_direct); 
         return true; 
     } else { 
         return false; 
@@ -604,7 +603,8 @@ boolean LCDMenuLib2::DISP_checkMenuUpdate()
 boolean LCDMenuLib2::DISP_checkMenuCursorUpdate()
 /* ******************************************************************** */
 {
-    if(bitRead(control, _LCDML_control_cursor_update)) { 
+    if(bitRead(control, _LCDML_control_cursor_update)) {
+        bitClear(control, _LCDML_control_cursor_update);
         return true; 
     } else { 
         return false;

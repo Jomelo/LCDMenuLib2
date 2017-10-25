@@ -220,4 +220,31 @@ void mFunc_screensaver(uint8_t param)
 }
 
 
+// *********************************************************************
+void mFunc_goToRootMenu(uint8_t param)
+// *********************************************************************
+{
+  if(LCDML.FUNC_setup())          // ****** SETUP *********
+  {
+    // go to root and display menu
+    LCDML.MENU_goRoot();    
+  } 
+}
+
+// *********************************************************************
+void mFunc_jumpTo_timer_info(uint8_t param)
+// *********************************************************************
+{
+  if(LCDML.FUNC_setup())          // ****** SETUP *********
+  {
+    // Jump to Initscreen
+    if(!LCDML.OTHER_jumpToFunc(mFunc_timer_info)) 
+    {
+      // function not found or not callable
+      LCDML.MENU_goRoot();           
+    }
+  }
+}
+
+
 

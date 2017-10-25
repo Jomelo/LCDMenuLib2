@@ -40,29 +40,34 @@
   // LCDML_0_X      => layer 1 
   // LCDML_0_X_X    => layer 2 
   // LCDML_0_X_X_X  => layer 3 
-  // LCDML_0_...      => layer ... 
+  // LCDML_0_...      => layer ...  
 
+  // LCDML_add(id, prev_layer, new_num, lang_char_array, callback_function)
+  
+  LCDML_add         (0  , LCDML_0         , 1  , "Information"      , mFunc_information);       // this menu function can be found on "LCDML_display_menuFunction" tab
+  LCDML_add         (1  , LCDML_0         , 2  , "Time info"        , mFunc_timer_info);        // this menu function can be found on "LCDML_display_menuFunction" tab
+  LCDML_add         (2  , LCDML_0         , 3  , "Programme"        , NULL);                    // NULL = no menu function    
+  LCDML_add         (3  , LCDML_0_3       , 1  , "Program 1"        , NULL);                    // NULL = no menu function  
+  LCDML_add         (4  , LCDML_0_3_1     , 1  , "P1 dummy"         , NULL);                    // NULL = no menu function  
+  LCDML_add         (5  , LCDML_0_3_1     , 2  , "P1 Settings"      , NULL);                    // NULL = no menu function  
+  LCDML_add         (6  , LCDML_0_3_1_2   , 1  , "Warm"             , NULL);                    // NULL = no menu function  
+  LCDML_add         (7  , LCDML_0_3_1_2   , 2  , "Cold"             , NULL);                    // NULL = no menu function  
+  LCDML_add         (8  , LCDML_0_3_1_2   , 3  , "Back"             , mFunc_back);              // this menu function can be found on "LCDML_display_menuFunction" tab 
+  LCDML_add         (9  , LCDML_0_3_1     , 3  , "Back"             , mFunc_back);              // this menu function can be found on "LCDML_display_menuFunction" tab
+  LCDML_add         (10 , LCDML_0_3       , 2  , "Program 2"        , mFunc_p2);                // this menu function can be found on "LCDML_display_menuFunction" tab
+  LCDML_add         (11 , LCDML_0_3       , 3  , "Back"             , mFunc_back);              // this menu function can be found on "LCDML_display_menuFunction" tab
+  LCDML_add         (12 , LCDML_0         , 4  , "special"          , NULL);                    // NULL = no menu function 
+  LCDML_add         (13 , LCDML_0_4       , 1  , "go to Root"       , mFunc_goToRootMenu);      // this menu function can be found on "LCDML_display_menuFunction" tab 
+  LCDML_add         (14 , LCDML_0_4       , 2  , "jump to Time info", mFunc_jumpTo_timer_info); // this menu function can be found on "LCDML_display_menuFunction" tab 
+  LCDML_add         (15 , LCDML_0_4       , 3  , "Back"             , mFunc_back);              // this menu function can be found on "LCDML_display_menuFunction" tab   
+  LCDML_add         (16 , LCDML_0         , 5  , "Dummy B"          , NULL);                    // NULL = no menu function
+  LCDML_add         (17 , LCDML_0         , 6  , "Screemsaver"      , mFunc_screensaver);       // this menu function can be found on "LCDML_display_menuFunction" tab 
+  // ***TIP*** Try to update _LCDML_DISP_cnt when you add a menu elment.
+  
   // menu element count - last element id
   // this value must be the same as the last menu element
-  #define _LCDML_DISP_cnt    14  
-
-  // LCDMenuLib_add(id, prev_layer, new_num, condetion, lang_char_array, callback_function, parameter (0-255), menu function type  )
-  LCDML_add         (0  , LCDML_0         , 1  , "Information"  , mFunc_information);   // this menu function can be found on "LCDML_display_menuFunction" tab
-  LCDML_add         (1  , LCDML_0         , 2  , "Time info"    , mFunc_timer_info);    // this menu function can be found on "LCDML_display_menuFunction" tab
-  LCDML_add         (2  , LCDML_0         , 3  , "Programme"    , NULL);                // NULL = no menu function    
-  LCDML_add         (3  , LCDML_0_3       , 1  , "Program 1"    , NULL);                // NULL = no menu function  
-  LCDML_add         (4  , LCDML_0_3_1     , 1  , "P1 dummy"     , NULL);                // NULL = no menu function  
-  LCDML_add         (5  , LCDML_0_3_1     , 2  , "P1 Settings"  , NULL);                // NULL = no menu function  
-  LCDML_add         (6  , LCDML_0_3_1_2   , 1  , "Warm"         , NULL);                // NULL = no menu function  
-  LCDML_add         (7  , LCDML_0_3_1_2   , 2  , "Cold"         , NULL);                // NULL = no menu function  
-  LCDML_add         (8  , LCDML_0_3_1_2   , 3  , "Back"         , mFunc_back);          // this menu function can be found on "LCDML_display_menuFunction" tab 
-  LCDML_add         (9  , LCDML_0_3_1     , 3  , "Back"         , mFunc_back);          // this menu function can be found on "LCDML_display_menuFunction" tab
-  LCDML_add         (10 , LCDML_0_3       , 2  , "Program 2"    , mFunc_p2);            // this menu function can be found on "LCDML_display_menuFunction" tab
-  LCDML_add         (11 , LCDML_0_3       , 3  , "Back"         , mFunc_back);          // this menu function can be found on "LCDML_display_menuFunction" tab
-  LCDML_add         (12 , LCDML_0         , 4  , "Dummy A"      , NULL);                // NULL = no menu function            
-  LCDML_add         (13 , LCDML_0         , 5  , "Dummy B"      , NULL);                // NULL = no menu function
-  LCDML_add         (14 , LCDML_0         , 6  , "Screemsaver"  , mFunc_screensaver);   // this menu function can be found on "LCDML_display_menuFunction" tab 
-  // ***TIP*** Try to update the last ID when you add an menu elment.
+  #define _LCDML_DISP_cnt    17  
+  
   // create menu
   LCDML_createMenu(_LCDML_DISP_cnt);
 
