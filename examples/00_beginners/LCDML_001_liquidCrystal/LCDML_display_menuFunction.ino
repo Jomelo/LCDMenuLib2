@@ -52,13 +52,13 @@ void mFunc_information(uint8_t param)
   {  
     // setup function 
     lcd.setCursor(0, 0);
-    lcd.print(F("Um Funktion zu"));
+    lcd.print(F("To close this"));
     lcd.setCursor(0, 1);
-    lcd.print(F("schliessen eine"));
+    lcd.print(F("function press"));
     lcd.setCursor(0, 2);
-    lcd.print(F("Taste druecken oder"));
+    lcd.print(F("any button or use"));
     lcd.setCursor(0, 3);
-    lcd.print(F("Back Taste verwenden"));
+    lcd.print(F("back button"));
   }
 
   if(LCDML.FUNC_loop())           // ****** LOOP ********* 
