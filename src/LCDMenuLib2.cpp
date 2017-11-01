@@ -307,9 +307,9 @@ void    LCDMenuLib2::MENU_goInto(void)
             else 
             {
                 if(tmp->getChild(0) != NULL)
-                {
-                    while ((tmp = tmp->getSibling(1)) != NULL)
-                    {                   
+                {                    
+                    while ((tmp = tmp->getSibling(0)) != NULL)
+                    { 
                         if (tmp->checkCondetion() || bitRead(control, _LCDML_control_disable_hidden)) 
                         {                   
                             // Menu found, goInto
@@ -740,7 +740,7 @@ void LCDMenuLib2::BT_enter()
     if(activMenu == NULL) 
     {            
         //menu is active      
-        MENU_goInto();        
+        MENU_goInto(); 
         bitSet(control, _LCDML_control_update_direct);
     }
     
