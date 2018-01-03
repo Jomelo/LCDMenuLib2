@@ -126,7 +126,7 @@ void lcdml_menu_control(void)
 // settings
   unsigned long g_LCDML_DISP_press_time = 0;
   
-  #define _LCDML_CONTROL_digital_low_active      0    // (0 = low active (pullup), 1 = high active (pulldown) button
+  #define _LCDML_CONTROL_digital_low_active      0    // 0 = high active (pulldown) button, 1 = low active (pullup)
                                                       // http://playground.arduino.cc/CommonTopics/PullUpDownResistor
   #define _LCDML_CONTROL_digital_enable_quit     1
   #define _LCDML_CONTROL_digital_enable_lr       1
