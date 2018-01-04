@@ -77,7 +77,7 @@
     #else
         // stored in ram (esp)
         #define LCDML_LANG_DEF(name, content) \
-            char g_LCDML_DISP_lang_ ## name ##_var[_LCDML_DISP_cfg_max_string_length] = {content}
+            char g_LCDML_DISP_lang_ ## name ##_var[] = {content}
                     
         #define LCDML_getContent(var, id) \
             if(id < _LCDML_NO_FUNC) {\

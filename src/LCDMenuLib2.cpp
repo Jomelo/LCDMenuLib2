@@ -84,11 +84,14 @@ void LCDMenuLib2::loop_control()
     // Screensaver
     if(cb_screensaver != NULL && bitRead(funcReg, _LCDML_funcReg_disable_screensaver) == false)
     {
-        if(activMenu->getCbFunction() != cb_screensaver) // check if screensaver is active
+        if(activMenu != NULL)
         {
-            if(TIMER_ms(screensaver_timer, screensaver_default_time)) 
+            if(activMenu->getCbFunction() != cb_screensaver) // check if screensaver is active
             {
-                OTHER_jumpToFunc(cb_screensaver);
+                if(TIMER_ms(screensaver_timer, screensaver_default_time)) 
+                {
+                    OTHER_jumpToFunc(cb_screensaver);
+                }
             }
         }
     }    

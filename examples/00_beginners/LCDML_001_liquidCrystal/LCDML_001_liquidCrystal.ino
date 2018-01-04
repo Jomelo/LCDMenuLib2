@@ -142,6 +142,3 @@
 # if(_LCDML_DISP_rows > _LCDML_DISP_cfg_max_rows)
 # error change value of _LCDML_DISP_cfg_max_rows in LCDMenuLib2.h
 # endif
-# if(_LCDML_DISP_cols > _LCDML_DISP_cfg_max_string_length)
-# error change value of _LCDML_DISP_cfg_max_string_length in LCDMenuLib2.h
-# endif

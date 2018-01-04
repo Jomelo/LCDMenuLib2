@@ -4,7 +4,7 @@
  *
  * MIT License
  * 
- * Copyright (c) [2017] [Nils Feldkämper]
+ * Copyright (c) [2018] [Nils Feldkämper]
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,16 +42,14 @@
     // You can change this parameters 
     #define _LCDML_DISP_cfg_cursor_deep          10  // save the last position of the cursor until layer xx
     #define _LCDML_DISP_cfg_max_rows             10  // max rows which are supported
-    #define _LCDML_cfg_use_ram                   0   // set this to 1 when you will use the ram mode
-    #define _LCDML_DISP_cfg_max_string_length    20  // set max string length  
-      
+    #define _LCDML_cfg_use_ram                   0   // set this to 1 when you will use the ram mode      
       
       
     // ####################### // 
     // Do nothing change here
     // ####################### // 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v1.0.2"
+    #define _LCDML_VERSION                       "LCDML2 v1.0.3"
         
     // Include arduino ios 
     #include "Arduino.h"
