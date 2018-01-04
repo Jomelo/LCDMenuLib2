@@ -86,6 +86,7 @@ void LCDMenuLib2::loop_control()
     {
         if(activMenu != NULL)
         {
+            // a menu function is active
             if(activMenu->getCbFunction() != cb_screensaver) // check if screensaver is active
             {
                 if(TIMER_ms(screensaver_timer, screensaver_default_time)) 
@@ -93,7 +94,15 @@ void LCDMenuLib2::loop_control()
                     OTHER_jumpToFunc(cb_screensaver);
                 }
             }
-        }
+        }         
+        else
+        {
+            // only the menu is active
+            if(TIMER_ms(screensaver_timer, screensaver_default_time)) 
+            {
+                OTHER_jumpToFunc(cb_screensaver);
+            }
+        }   
     }    
 }
 
