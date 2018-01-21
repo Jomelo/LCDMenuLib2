@@ -139,7 +139,7 @@ boolean     LCDMenuLib2::MENU_selectElementDirect(LCDMenuLib2_menu &p_m, LCDML_F
             {
                 tmp = search->getChild(0);
                 
-                if(tmp->checkCallback() == true && tmp->checkType_menu() == true) 
+                if(tmp->checkCallback() == true) 
                 {
                     if (tmp->getCbFunction() == p_search) 
                     { //search elements in this layer            
@@ -147,6 +147,7 @@ boolean     LCDMenuLib2::MENU_selectElementDirect(LCDMenuLib2_menu &p_m, LCDML_F
                     }
                     else
                     {
+                        
                         found = MENU_selectElementDirect(*tmp, p_search); //recursive search until found is true or last item reached
                                     
                         if (found == false) //something found
@@ -159,6 +160,7 @@ boolean     LCDMenuLib2::MENU_selectElementDirect(LCDMenuLib2_menu &p_m, LCDML_F
                             } 
                             child_cnt = MENU_countChilds();     
                         } 
+                        
                     }                
                 } 
                 else
@@ -304,14 +306,14 @@ void    LCDMenuLib2::MENU_goInto(void)
         tmp = curMenu->getChild(curloc + MENU_curlocCorrection());
                         
         // check if element is a menu function
-        if(tmp->checkCallback() == true && tmp->checkType_menu() == true)
+        if(tmp->checkCallback() == true && tmp->checkType_menu() == true && bitRead(control, _LCDML_control_search_display) == false)
         {
-            // Menufunction found
-            activMenu = tmp;            
+            // Menufunction found 
+            activMenu = tmp;                            
         }
         else
         { 
-            if(tmp->checkType_dynParam() == true)
+            if(tmp->checkType_dynParam() == true && bitRead(control, _LCDML_control_search_display) == false)
             {
                 MENU_display();
                 DISP_menuUpdate();                                 
