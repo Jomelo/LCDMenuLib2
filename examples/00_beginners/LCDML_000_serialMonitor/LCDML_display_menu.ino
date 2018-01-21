@@ -51,30 +51,32 @@ void lcdml_menu_display()
         // check if a menu element has a condetion and if the condetion be true               
         if (tmp->checkCondetion()) 
         {
+          // display cursor
+          if (n == LCDML.MENU_getCursorPos()) 
+          {
+            Serial.print(F("(x) "));          
+          } 
+          else 
+          {
+            Serial.print(F("( ) "));
+          }
+            
           // check the type off a menu element
           if(tmp->checkType_menu() == true)
           {
-            // display cursor
-            if (n == LCDML.MENU_getCursorPos()) 
-            {
-              Serial.print(F("(x) "));          
-            } 
-            else 
-            {
-              Serial.print(F("( ) "));
-            } 
-
             // display normal content
             LCDML_getContent(content_text, tmp->getID()); 
             Serial.print(content_text);
-            Serial.println();
           }            
           else 
           { 
             if(tmp->checkType_dynParam()) {                      
               tmp->callback(n);
             }                 
-          }                  
+          }
+
+          Serial.println();
+                            
           // increment some values 
           i++; 
           n++;             

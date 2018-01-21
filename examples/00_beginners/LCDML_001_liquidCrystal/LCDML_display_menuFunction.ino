@@ -253,3 +253,60 @@ void mFunc_jumpTo_timer_info(uint8_t param)
     }
   }
 }
+
+
+// *********************************************************************
+void mFunc_para(uint8_t param)
+// *********************************************************************
+{
+  if(LCDML.FUNC_setup())          // ****** SETUP *********
+  {
+
+    char buf[20];
+    sprintf (buf, "parameter: %d", param);
+
+    lcd.setCursor(0, 0);
+    lcd.print(buf);  
+    lcd.setCursor(0, 1);
+    lcd.print(F("press any key"));
+    lcd.setCursor(0, 2);
+    lcd.print(F("to leave it"));
+    
+    LCDML.FUNC_setLoopInterval(100);  // starts a trigger event for the loop function every 100 millisecounds
+  }
+
+  if(LCDML.FUNC_loop())          // ****** LOOP *********
+  {
+    // For example
+    switch(param)
+    {
+      case 10:
+        // do something
+        break;
+
+      case 20:
+        // do something
+        break;
+
+      case 30:
+        // do something
+        break;
+
+      default:
+        // do nothing
+        break;
+    }
+
+    
+    if (LCDML.BT_checkAny()) // check if any button is pressed (enter, up, down, left, right)
+    {      
+      LCDML.FUNC_goBackToMenu();  // leave this function   
+    }
+  } 
+
+  if(LCDML.FUNC_close())        // ****** STABLE END *********
+  {    
+    // you can here reset some global vars or do nothing
+  }
+}
+

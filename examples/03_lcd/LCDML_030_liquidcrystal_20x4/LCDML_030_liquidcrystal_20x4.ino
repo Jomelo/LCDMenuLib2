@@ -26,7 +26,7 @@
 
   // lcd object
   // liquid crystal needs (rs, e, dat4, dat5, dat6, dat7)
-  LiquidCrystal lcd(2, 3, 4, 5, 6, 7);
+  LiquidCrystal lcd(22, 24, 9, 10, 11, 12);
    
   const uint8_t scroll_bar[5][8] = {
     {B10001, B10001, B10001, B10001, B10001, B10001, B10001, B10001}, // scrollbar top
@@ -63,8 +63,8 @@
   // LCDML_0_X_X_X  => layer 3 
   // LCDML_0_...      => layer ... 
 
-  // LCDML_add(id, prev_layer, new_num, lang_char_array, callback_function)
-  
+  // For beginners
+  // LCDML_add(id, prev_layer, new_num, lang_char_array, callback_function)  
   LCDML_add         (0  , LCDML_0         , 1  , "Information"      , mFunc_information);       // this menu function can be found on "LCDML_display_menuFunction" tab
   LCDML_add         (1  , LCDML_0         , 2  , "Time info"        , mFunc_timer_info);        // this menu function can be found on "LCDML_display_menuFunction" tab
   LCDML_add         (2  , LCDML_0         , 3  , "Programme"        , NULL);                    // NULL = no menu function    
@@ -81,13 +81,36 @@
   LCDML_add         (13 , LCDML_0_4       , 1  , "go to Root"       , mFunc_goToRootMenu);      // this menu function can be found on "LCDML_display_menuFunction" tab 
   LCDML_add         (14 , LCDML_0_4       , 2  , "jump to Time info", mFunc_jumpTo_timer_info); // this menu function can be found on "LCDML_display_menuFunction" tab 
   LCDML_add         (15 , LCDML_0_4       , 3  , "Back"             , mFunc_back);              // this menu function can be found on "LCDML_display_menuFunction" tab   
-  LCDML_add         (16 , LCDML_0         , 5  , "Dummy B"          , NULL);                    // NULL = no menu function
-  LCDML_add         (17 , LCDML_0         , 6  , "Screemsaver"      , mFunc_screensaver);       // this menu function can be found on "LCDML_display_menuFunction" tab 
+
+
+  // Advanced menu (for profis) part with more settings
+  // Example for one function and different parameters
+  // It is recommend to use parameters for switching settings like, (small drink, medium drink, big dring) or (200ml, 400ml, 600ml, 800ml) ... 
+  // the parameter change can also be released with dynParams on the next example
+  // LCDMenuLib_add(id, prev_layer,     new_num, condetion,   lang_char_array, callback_function, parameter (0-255), menu function type  )
+  LCDML_addAdvanced (16 , LCDML_0         , 5  , NULL,          "Parameter"      , NULL,                0,            _LCDML_TYPE_default);                    // NULL = no menu function
+  LCDML_addAdvanced (17 , LCDML_0_5       , 1  , NULL,          "Parameter 1"      , mFunc_para,       10,            _LCDML_TYPE_default);                    // NULL = no menu function
+  LCDML_addAdvanced (18 , LCDML_0_5       , 2  , NULL,          "Parameter 2"      , mFunc_para,       20,            _LCDML_TYPE_default);                    // NULL = no menu function
+  LCDML_addAdvanced (19 , LCDML_0_5       , 3  , NULL,          "Parameter 3"      , mFunc_para,       30,            _LCDML_TYPE_default);                    // NULL = no menu function
+
+  // Example for dynamic content 
+  // 1. set the string to ""
+  // 2. use type  _LCDML_TYPE_dynParam   instead of    _LCDML_TYPE_default
+  // this functiontype can not be used in combination with different parameters 
+  // LCDMenuLib_add(id, prev_layer,     new_num, condetion,   lang_char_array, callback_function, parameter (0-255), menu function type  )
+  LCDML_addAdvanced (20 , LCDML_0         , 6  , NULL,          ""                  , mDyn_para,                0,   _LCDML_TYPE_dynParam);                     // NULL = no menu function
+  
+  // Example for condetions (for example for a screensaver)  
+  // 1. define a condetion as a function of a boolean type -> return false = not displayed, return true = displayed
+  // 2. set the function name as callback (remove the braces '()' it gives bad errors)
+  // LCDMenuLib_add(id, prev_layer,     new_num, condetion,   lang_char_array, callback_function, parameter (0-255), menu function type  )
+  LCDML_addAdvanced (21 , LCDML_0         , 7  , COND_hide,  "screensaver"        , mFunc_screensaver,        0,   _LCDML_TYPE_default);       // this menu function can be found on "LCDML_display_menuFunction" tab 
+  
   // ***TIP*** Try to update _LCDML_DISP_cnt when you add a menu elment.
   
   // menu element count - last element id
   // this value must be the same as the last menu element
-  #define _LCDML_DISP_cnt    17  
+  #define _LCDML_DISP_cnt    21    
   
   // create menu
   LCDML_createMenu(_LCDML_DISP_cnt);
