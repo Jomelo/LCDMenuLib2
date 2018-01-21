@@ -21,18 +21,31 @@ Features:
 
 
 Attention:
-*  when you change from v2.3.4 to 3.0.0
+*  when you change from LCDMenuLib v2.3.4 to LCDMenuLib2 v1.0.0 or higher
 ** the backend system is removed from this lib use this when you need a task system: https://playground.arduino.cc/Code/TaskScheduler 	
 
 
-Description & Support (german):
+Description (german):
 http://forum.arduino.cc/index.php?topic=73816.0
 
+Images:
+![20x4 display](extras/img/20x4_1.jpg?raw=true "20x4 display")
+![20x4 display](extras/img/20x4_2.jpg?raw=true "20x4 display")
+![20x4 display](extras/img/20x4_3.jpg?raw=true "20x4 display")
+![20x4 display](extras/img/20x4_4.jpg?raw=true "20x4 display")
 
+![Graphic display](extras/img/glcd_1.jpg?raw=true "Graphic display")
+![Graphic display](extras/img/glcd_2.jpg?raw=true "Graphic display")
+![Graphic display](extras/img/glcd_3.jpg?raw=true "Graphic display")
+![Graphic display](extras/img/glcd_4.jpg?raw=true "Graphic display")
+
+![Serial Monitor](extras/img/console_1.png?raw=true "Serial Monitor")
+![Serial Monitor](extras/img/console_2.png?raw=true "Serial Monitor")
+![Serial Monitor](extras/img/console_3.png?raw=true "Serial Monitor")
 
 MIT License
 
-Copyright (c) [2017] [Nils Feldkämper]
+Copyright (c) [2018] [Nils Feldkämper]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
