@@ -939,7 +939,7 @@ boolean LCDMenuLib2::OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search)
     bitSet(control, _LCDML_control_disable_hidden);  
     bitSet(control, _LCDML_control_search_display);
     // got to root
-    MENU_goRoot();    
+    MENU_goRoot();
     
     if(MENU_selectElementDirect(*rootMenu, p_search)) 
     {  
