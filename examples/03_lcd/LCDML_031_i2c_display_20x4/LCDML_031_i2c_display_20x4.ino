@@ -26,9 +26,12 @@
   #define _LCDML_DISP_cfg_scrollbar                  1      // enable a scrollbar
 
   // lcd object
+  // for i2c there are many different steps for initialisation, some are listed here
+  // when the rows and cols are not set here, they have to be set in the setup
   //LiquidCrystal_I2C lcd(0x27);  // Set the LCD I2C address
   //LiquidCrystal_I2C lcd(0x27, BACKLIGHT_PIN, POSITIVE);  // Set the LCD I2C address
-  LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  // Set the LCD I2C address
+  LiquidCrystal_I2C lcd(0x27,_LCDML_DISP_cols,_LCDML_DISP_rows);
+  //LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  // Set the LCD I2C address
    
   const uint8_t scroll_bar[5][8] = {
     {B10001, B10001, B10001, B10001, B10001, B10001, B10001, B10001}, // scrollbar top
@@ -104,7 +107,11 @@
     Serial.println(F(_LCDML_VERSION)); // only for examples
     
     // LCD Begin
-    lcd.begin(_LCDML_DISP_cols,_LCDML_DISP_rows);  
+    lcd.init();
+    lcd.backlight();
+    //lcd.begin(_LCDML_DISP_cols,_LCDML_DISP_rows);  // some displaytypes needs here the initialisation
+    
+    
     // set special chars for scrollbar
     lcd.createChar(0, (uint8_t*)scroll_bar[0]);
     lcd.createChar(1, (uint8_t*)scroll_bar[1]);
