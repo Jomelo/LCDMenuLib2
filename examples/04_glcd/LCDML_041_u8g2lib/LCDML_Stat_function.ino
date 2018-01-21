@@ -50,14 +50,14 @@ void mFunc_information(uint8_t param)
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {  
     // setup function
-    u8g.setFont(_LCDML_DISP_font);
-    u8g.firstPage();  
+    u8g2.setFont(_LCDML_DISP_font);
+    u8g2.firstPage();  
     do {
-      u8g.drawStr( 0, (_LCDML_DISP_font_h * 1), F("To close this"));
-      u8g.drawStr( 0, (_LCDML_DISP_font_h * 2), F("function press"));
-      u8g.drawStr( 0, (_LCDML_DISP_font_h * 3), F("any button or use"));
-      u8g.drawStr( 0, (_LCDML_DISP_font_h * 4), F("back button"));
-    } while( u8g.nextPage() );
+      u8g2.drawStr( 0, (_LCDML_DISP_font_h * 1), "To close this");
+      u8g2.drawStr( 0, (_LCDML_DISP_font_h * 2), "function press");
+      u8g2.drawStr( 0, (_LCDML_DISP_font_h * 3), "any button or use");
+      u8g2.drawStr( 0, (_LCDML_DISP_font_h * 4), "back button");
+    } while( u8g2.nextPage() );
   }
 
   if(LCDML.FUNC_loop())           // ****** LOOP ********* 
@@ -85,18 +85,18 @@ void mFunc_timer_info(uint8_t param)
 // *********************************************************************
 {
   if(LCDML.FUNC_setup())          // ****** SETUP ********* 
-  {
-    g_func_timer_info = 20;       // reset and set timer    
-  
+  { 
+     g_func_timer_info = 20;       // reset and set timer   
+    
     char buf[20];
     sprintf (buf, "wait %d secounds", g_func_timer_info);
     
-    u8g.setFont(_LCDML_DISP_font);
-    u8g.firstPage();  
+    u8g2.setFont(_LCDML_DISP_font);
+    u8g2.firstPage();  
     do {
-      u8g.drawStr( 0, (_LCDML_DISP_font_h * 1), buf);
-      u8g.drawStr( 0, (_LCDML_DISP_font_h * 2), F("or press back button"));
-    } while( u8g.nextPage() );
+      u8g2.drawStr( 0, (_LCDML_DISP_font_h * 1), buf);
+      u8g2.drawStr( 0, (_LCDML_DISP_font_h * 2), "or press back button");
+    } while( u8g2.nextPage() );
   
        
     
@@ -113,7 +113,7 @@ void mFunc_timer_info(uint8_t param)
     // reset screensaver timer
     LCDML.SCREEN_resetTimer();
 
-    // this function is called every 100 millisecounds
+     // this function is called every 100 millisecounds
     
     // this method checks every 1000 millisecounds if it is called
     if(LCDML.TIMER_ms(g_timer_1, 1000)) 
@@ -123,12 +123,12 @@ void mFunc_timer_info(uint8_t param)
       char buf[20];
       sprintf (buf, "wait %d secounds", g_func_timer_info);
       
-      u8g.setFont(_LCDML_DISP_font);
-      u8g.firstPage();  
+      u8g2.setFont(_LCDML_DISP_font);
+      u8g2.firstPage();  
       do {
-        u8g.drawStr( 0, (_LCDML_DISP_font_h * 1), buf);
-        u8g.drawStr( 0, (_LCDML_DISP_font_h * 2), F("or press back button"));
-      } while( u8g.nextPage() );   
+        u8g2.drawStr( 0, (_LCDML_DISP_font_h * 1), buf);
+        u8g2.drawStr( 0, (_LCDML_DISP_font_h * 2), "or press back button");
+      } while( u8g2.nextPage() );   
          
     }
         
@@ -159,12 +159,12 @@ void mFunc_p2(uint8_t param)
     char buf[17];
     sprintf (buf, "count: %d of 3", 0);
     
-    u8g.setFont(_LCDML_DISP_font);
-    u8g.firstPage();  
+    u8g2.setFont(_LCDML_DISP_font);
+    u8g2.firstPage();  
     do {
-      u8g.drawStr( 0, (_LCDML_DISP_font_h * 1), F("press a or w button"));
-      u8g.drawStr( 0, (_LCDML_DISP_font_h * 2), buf);
-    } while( u8g.nextPage() );  
+      u8g2.drawStr( 0, (_LCDML_DISP_font_h * 1), "press a or w button");
+      u8g2.drawStr( 0, (_LCDML_DISP_font_h * 2), buf);
+    } while( u8g2.nextPage() );  
   
     // Reset Button Value
     g_button_value = 0; 
@@ -188,15 +188,15 @@ void mFunc_p2(uint8_t param)
         g_button_value++;
       
         // update lcd content
-        char buf[17];
+        char buf[20];
         sprintf (buf, "count: %d of 3", g_button_value);
         
-        u8g.setFont(_LCDML_DISP_font);
-        u8g.firstPage();  
+        u8g2.setFont(_LCDML_DISP_font);
+        u8g2.firstPage();  
         do {
-          u8g.drawStr( 0, (_LCDML_DISP_font_h * 1), F("press a or w button"));
-          u8g.drawStr( 0, (_LCDML_DISP_font_h * 2), buf);
-        } while( u8g.nextPage() );        
+          u8g2.drawStr( 0, (_LCDML_DISP_font_h * 1), "press a or w button");
+          u8g2.drawStr( 0, (_LCDML_DISP_font_h * 2), buf);
+        } while( u8g2.nextPage() );        
       }    
     }
   
@@ -220,18 +220,18 @@ void mFunc_screensaver(uint8_t param)
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
     // setup function
-    u8g.setFont(_LCDML_DISP_font);
-    u8g.firstPage();  
+    u8g2.setFont(_LCDML_DISP_font);
+    u8g2.firstPage();  
     do {
-      u8g.drawStr( 0, (_LCDML_DISP_font_h * 1), F("screensaver"));
-      u8g.drawStr( 0, (_LCDML_DISP_font_h * 2), F("press any key"));
-      u8g.drawStr( 0, (_LCDML_DISP_font_h * 3), F("to leave it"));
-    } while( u8g.nextPage() );
+      u8g2.drawStr( 0, (_LCDML_DISP_font_h * 1), "screensaver");
+      u8g2.drawStr( 0, (_LCDML_DISP_font_h * 2), "press any key");
+      u8g2.drawStr( 0, (_LCDML_DISP_font_h * 3), "to leave it");
+    } while( u8g2.nextPage() );
     
     LCDML.FUNC_setLoopInterval(100);  // starts a trigger event for the loop function every 100 millisecounds
   }
 
-  if(LCDML.FUNC_loop())              // ****** LOOP *********
+  if(LCDML.FUNC_loop())           // ****** LOOP *********
   {
     if (LCDML.BT_checkAny()) // check if any button is pressed (enter, up, down, left, right)
     {      
@@ -239,7 +239,7 @@ void mFunc_screensaver(uint8_t param)
     }
   } 
 
-  if(LCDML.FUNC_close())            // ****** STABLE END *********
+  if(LCDML.FUNC_close())          // ****** STABLE END *********
   {
     // The screensaver go to the root menu
     LCDML.MENU_goRoot();
@@ -298,18 +298,18 @@ void mFunc_para(uint8_t param)
     sprintf (buf, "parameter: %d", param);
     
     // setup function
-    u8g.setFont(_LCDML_DISP_font);
-    u8g.firstPage();  
+    u8g2.setFont(_LCDML_DISP_font);
+    u8g2.firstPage();  
     do {
-      u8g.drawStr( 0, (_LCDML_DISP_font_h * 1), buf);
-      u8g.drawStr( 0, (_LCDML_DISP_font_h * 2), F("press any key"));
-      u8g.drawStr( 0, (_LCDML_DISP_font_h * 3), F("to leave it"));
-    } while( u8g.nextPage() );
+      u8g2.drawStr( 0, (_LCDML_DISP_font_h * 1), buf);
+      u8g2.drawStr( 0, (_LCDML_DISP_font_h * 2), "press any key");
+      u8g2.drawStr( 0, (_LCDML_DISP_font_h * 3), "to leave it");
+    } while( u8g2.nextPage() );
     
     LCDML.FUNC_setLoopInterval(100);  // starts a trigger event for the loop function every 100 millisecounds
   }
 
-  if(LCDML.FUNC_loop())          // ****** LOOP *********
+  if(LCDML.FUNC_loop())               // ****** LOOP *********
   {
     // For example
     switch(param)
@@ -338,13 +338,10 @@ void mFunc_para(uint8_t param)
     }
   } 
 
-  if(LCDML.FUNC_close())        // ****** STABLE END *********
-  {    
+  if(LCDML.FUNC_close())      // ****** STABLE END *********
+  {
     // you can here reset some global vars or do nothing
   }
-
-
-  
 }
 
 
