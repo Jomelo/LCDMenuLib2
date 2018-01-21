@@ -29,19 +29,27 @@ Description (german):
 http://forum.arduino.cc/index.php?topic=73816.0
 
 Images:
+
+* 20x4
+
 ![20x4 display](extras/img/20x4_1.jpg?raw=true "20x4 display")
 ![20x4 display](extras/img/20x4_2.jpg?raw=true "20x4 display")
 ![20x4 display](extras/img/20x4_3.jpg?raw=true "20x4 display")
 ![20x4 display](extras/img/20x4_4.jpg?raw=true "20x4 display")
+
+* glcd with u8glib
 
 ![Graphic display](extras/img/glcd_1.jpg?raw=true "Graphic display")
 ![Graphic display](extras/img/glcd_2.jpg?raw=true "Graphic display")
 ![Graphic display](extras/img/glcd_3.jpg?raw=true "Graphic display")
 ![Graphic display](extras/img/glcd_4.jpg?raw=true "Graphic display")
 
+* serial monitor for testing or programming without a connected display
+
 ![Serial Monitor](extras/img/console_1.png?raw=true "Serial Monitor")
 ![Serial Monitor](extras/img/console_2.png?raw=true "Serial Monitor")
 ![Serial Monitor](extras/img/console_3.png?raw=true "Serial Monitor")
+
 
 MIT License
 
