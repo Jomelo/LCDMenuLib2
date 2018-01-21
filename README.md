@@ -22,7 +22,7 @@ Features:
 
 Attention:
 *  when you change from LCDMenuLib v2.3.4 to LCDMenuLib2 v1.0.0 or higher
-** the backend system is removed from this lib use this when you need a task system: https://playground.arduino.cc/Code/TaskScheduler 	
+** the backend system is removed from this lib use this when you need a task system: https://github.com/arkhipenko/TaskScheduler	
 
 
 Description (german):
