@@ -211,7 +211,9 @@ void LCDMenuLib2::loop_menu()
             FUNC_call(); 
             BT_resetAll();
         }
-    } else {        
+    } 
+    else 
+    {        
         menu_default_time = 100000000;
     }
 }
@@ -667,6 +669,7 @@ void LCDMenuLib2::DISP_menuUpdate()
     if(activMenu == NULL || bitRead(funcReg, _LCDML_funcReg_end) || bitRead(control, _LCDML_control_update_direct) || bitRead(control, _LCDML_control_disp_update) ) 
     { 
         callback_contentUpdate();
+        BT_resetAll();
     }    
 }
 
