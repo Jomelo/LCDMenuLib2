@@ -234,13 +234,13 @@ boolean     LCDMenuLib2::MENU_selectElementDirect(LCDMenuLib2_menu &p_m, LCDML_F
             DBG_print(LCDML_DBG_search, F(" : "));
             
             if(search->getCbFunction() == p_search) {
-                DBG_print(LCDML_DBG_search, F("found"));
+                DBG_println(LCDML_DBG_search, F("found"));
                 // uncomment found when you will debug this function                
                 found = true;                
             }
             else
             { 
-                DBG_print(LCDML_DBG_search, "");
+                DBG_println(LCDML_DBG_search, "");
                 
                 // check if an element have a child or children            
                 if (search->getChild(0) != NULL) 
