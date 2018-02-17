@@ -99,7 +99,7 @@
     #define _LCDML_control_rollover             1
     #define _LCDML_control_disable_hidden       0
     
-    #define _LCDML_funcReg_free7                7
+    #define _LCDML_funcReg_jumpTo_w_para        7
     #define _LCDML_funcReg_free6                6
     #define _LCDML_funcReg_free5                5
     #define _LCDML_funcReg_free4                4
@@ -174,7 +174,8 @@
             uint8_t parents[_LCDML_DISP_cfg_cursor_deep];    // save last parent 
             uint8_t button;                                  // button variable 
             uint8_t control;                                 // control bits 
-            uint8_t funcReg;                                 // control bits            
+            uint8_t funcReg;                                 // control bits
+            uint8_t jumpTo_w_para;                           // jumpTo with parameter
 
             unsigned long menu_timer;
             unsigned long menu_default_time;
@@ -264,7 +265,8 @@
             void    TIMER_usReset(unsigned long &var);              
             
             // Other
-            boolean OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search);      
+            boolean OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t para=0);
+            boolean OTHER_jumpToID(uint8_t p_search, uint8_t para=0);
 
             // Screensaver
             void    SCREEN_enable(LCDML_FuncPtr_pu8 function, unsigned long t); 
