@@ -38,6 +38,24 @@
 // File header
 #ifndef LCDMenuLib2_h
     #define LCDMenuLib2_h
+    
+   //#define LCDML_DBG               0    
+
+    #define LCDML_DBG_goRoot        1
+    #define LCDML_DBG_jumpToFunc    1
+    #define LCDML_DBG_jumpToID      1
+    #define LCDML_DBG_search        1
+    
+    #define LCDML_DBG_control       0
+    
+    
+    #ifdef LCDML_DBG
+        #define DBG_print(enable, str)          if(enable == 1) { Serial.print(str); }
+        #define DBG_println(enable, str)        if(enable == 1) { Serial.println(str); }
+    #else
+        #define DBG_print(enable, str)      
+        #define DBG_println(enable, str)    
+    #endif    
    
     // You can change this parameters 
     #define _LCDML_DISP_cfg_cursor_deep          10  // save the last position of the cursor until layer xx
@@ -49,7 +67,7 @@
     // Do nothing change here
     // ####################### // 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v1.0.6"
+    #define _LCDML_VERSION                       "LCDML2 v1.1.0"
         
     // Include arduino ios 
     #include "Arduino.h"
@@ -79,7 +97,7 @@
     #define _LCDML_control_rollover             1
     #define _LCDML_control_disable_hidden       0
     
-    #define _LCDML_funcReg_free7                7
+    #define _LCDML_funcReg_jumpTo_w_para        7
     #define _LCDML_funcReg_free6                6
     #define _LCDML_funcReg_free5                5
     #define _LCDML_funcReg_free4                4
@@ -154,7 +172,8 @@
             uint8_t parents[_LCDML_DISP_cfg_cursor_deep];    // save last parent 
             uint8_t button;                                  // button variable 
             uint8_t control;                                 // control bits 
-            uint8_t funcReg;                                 // control bits            
+            uint8_t funcReg;                                 // control bits
+            uint8_t jumpTo_w_para;                           // jumpTo with parameter
 
             unsigned long menu_timer;
             unsigned long menu_default_time;
@@ -168,11 +187,14 @@
             void    MENU_setCursor();                                                 // set the cursor to the current position in the menu 
             void    MENU_doScroll();                                                  // scroll the menu             
             void    MENU_goMenu(LCDMenuLib2_menu &m);                                  // go to a menu element                          
-            boolean MENU_selectElementDirect(LCDMenuLib2_menu &p_m, LCDML_FuncPtr_pu8 p_search);
+            
             uint8_t MENU_countChilds();                                               // how many childs exists on next layer             
             uint8_t MENU_curlocCorrection();                                          // correction of the cursor position with hidden button
             void    BT_control();
             void    FUNC_call(); 
+            
+            boolean OTHER_searchFunction(LCDMenuLib2_menu &p_m, uint8_t mode, LCDML_FuncPtr_pu8 p_search, uint8_t p_id);
+            boolean OTHER_helpFunction(uint8_t mode, LCDML_FuncPtr_pu8 p_search, uint8_t p_id, uint8_t para);
                       
         public:  
                
@@ -212,12 +234,14 @@
             void    BT_resetDown(); 
             void    BT_resetLeft(); 
             void    BT_resetRight();
+            void    BT_resetQuit();
             boolean BT_checkAny();  
             boolean BT_checkEnter();
             boolean BT_checkUp();                      
             boolean BT_checkDown();                    
             boolean BT_checkLeft();                    
-            boolean BT_checkRight();                   
+            boolean BT_checkRight();
+            boolean BT_checkQuit();
             
             // Display              
             void    DISP_menuUpdate();                 
@@ -242,7 +266,10 @@
             void    TIMER_usReset(unsigned long &var);              
             
             // Other
-            boolean OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search);      
+            boolean OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t para=0);            
+            boolean OTHER_jumpToID(uint8_t p_search, uint8_t para=0);
+            boolean OTHER_setCursorToID(uint8_t p_search);
+            boolean OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search);
 
             // Screensaver
             void    SCREEN_enable(LCDML_FuncPtr_pu8 function, unsigned long t); 
