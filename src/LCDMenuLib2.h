@@ -189,7 +189,7 @@
             void    MENU_setCursor();                                                 // set the cursor to the current position in the menu 
             void    MENU_doScroll();                                                  // scroll the menu             
             void    MENU_goMenu(LCDMenuLib2_menu &m);                                  // go to a menu element                          
-            boolean MENU_selectElementDirect(LCDMenuLib2_menu &p_m, LCDML_FuncPtr_pu8 p_search);
+            boolean MENU_selectElementDirect(LCDMenuLib2_menu &p_m, uint8_t mode, LCDML_FuncPtr_pu8 p_search, uint8_t p_id);
             uint8_t MENU_countChilds();                                               // how many childs exists on next layer             
             uint8_t MENU_curlocCorrection();                                          // correction of the cursor position with hidden button
             void    BT_control();

@@ -217,7 +217,7 @@ void LCDMenuLib2::loop_menu()
 
 
 /* ******************************************************************** */
-boolean     LCDMenuLib2::MENU_selectElementDirect(LCDMenuLib2_menu &p_m, LCDML_FuncPtr_pu8 p_search)
+boolean     LCDMenuLib2::MENU_selectElementDirect(LCDMenuLib2_menu &p_m, uint8_t mode, LCDML_FuncPtr_pu8 p_search, uint8_t p_id)
 /* ******************************************************************** */
 {    
     //deklaration
@@ -233,7 +233,7 @@ boolean     LCDMenuLib2::MENU_selectElementDirect(LCDMenuLib2_menu &p_m, LCDML_F
             DBG_print(LCDML_DBG_search, (activMenu == NULL)?"0":"1");
             DBG_print(LCDML_DBG_search, F(" : "));
             
-            if(search->getCbFunction() == p_search) {
+            if((search->getCbFunction() == p_search && mode == 0)  || (search->getID() == p_id && mode == 1)) {
                 DBG_println(LCDML_DBG_search, F("found"));
                 // uncomment found when you will debug this function                
                 found = true;                
@@ -248,7 +248,7 @@ boolean     LCDMenuLib2::MENU_selectElementDirect(LCDMenuLib2_menu &p_m, LCDML_F
                     //go into a menu, but do not start a menu function until the search mode is run                     
                     MENU_goInto();
                    
-                    found = MENU_selectElementDirect(*search->getChild(0), p_search); //recursive search until found is true or last item reached
+                    found = MENU_selectElementDirect(*search->getChild(0), mode, p_search, p_id); //recursive search until found is true or last item reached
                                 
                     if (found == false) 
                     {                     
@@ -951,7 +951,55 @@ boolean LCDMenuLib2::OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t para)
     // got to root
     MENU_goRoot();    
     
-    if(MENU_selectElementDirect(*rootMenu, p_search)) 
+    if(MENU_selectElementDirect(*rootMenu, 0, p_search, 0)) 
+    {
+        bitClear(control, _LCDML_control_search_display);  
+        
+        DBG_println(LCDML_DBG_jumpToFunc, "jumpToFunc:_element_found");
+
+        if(para != 0) 
+        {
+            bitSet(funcReg, _LCDML_funcReg_jumpTo_w_para);
+            jumpTo_w_para = para;
+        }
+        else
+        {
+            bitClear(funcReg, _LCDML_funcReg_jumpTo_w_para);
+        }
+              
+        MENU_goInto();
+        
+        bitClear(control, _LCDML_control_disable_hidden); 
+        
+        DBG_println(LCDML_DBG_jumpToFunc, "jumpToFunc:_end");
+        
+        return true;
+    } 
+    else
+    {
+        DBG_println(LCDML_DBG_jumpToFunc, "jumpToFunc:_element_not_found");
+        
+        bitClear(control, _LCDML_control_search_display);
+        bitClear(control, _LCDML_control_disable_hidden);
+        
+        DBG_println(LCDML_DBG_jumpToFunc, "jumpToFunc:_end");
+        
+        return false;
+    }
+}
+
+/* ******************************************************************** */
+boolean LCDMenuLib2::OTHER_jumpToID(uint8_t p_id, uint8_t para)
+/* ******************************************************************** */
+{
+    DBG_println(LCDML_DBG_jumpToFunc, "jumpToFunc:_start");    
+    
+    bitSet(control, _LCDML_control_disable_hidden);  
+    bitSet(control, _LCDML_control_search_display); 
+    // got to root
+    MENU_goRoot();    
+    
+    if(MENU_selectElementDirect(*rootMenu, 1, NULL, p_id)) 
     {
         bitClear(control, _LCDML_control_search_display);  
         
