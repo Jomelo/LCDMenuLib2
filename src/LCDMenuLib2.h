@@ -38,6 +38,26 @@
 // File header
 #ifndef LCDMenuLib2_h
     #define LCDMenuLib2_h
+    
+   //#define LCDML_DBG               0    
+
+    #define LCDML_DBG_goRoot        1
+    #define LCDML_DBG_jumpToFunc    1
+    #define LCDML_DBG_jumpToID      1
+    #define LCDML_DBG_search        1
+    
+    #define LCDML_DBG_control       0
+    
+    
+    #ifdef LCDML_DBG
+        #define DBG_print(enable, str)          if(enable == 1) { Serial.print(str); }
+        #define DBG_println(enable, str)        if(enable == 1) { Serial.println(str); }
+    #else
+        #define DBG_print(enable, str)      
+        #define DBG_println(enable, str)    
+    #endif
+    
+    
    
     // You can change this parameters 
     #define _LCDML_DISP_cfg_cursor_deep          10  // save the last position of the cursor until layer xx
@@ -49,7 +69,7 @@
     // Do nothing change here
     // ####################### // 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v1.0.6"
+    #define _LCDML_VERSION                       "LCDML2 v1.1.0 (beta)"
         
     // Include arduino ios 
     #include "Arduino.h"
@@ -212,12 +232,14 @@
             void    BT_resetDown(); 
             void    BT_resetLeft(); 
             void    BT_resetRight();
+            void    BT_resetQuit();
             boolean BT_checkAny();  
             boolean BT_checkEnter();
             boolean BT_checkUp();                      
             boolean BT_checkDown();                    
             boolean BT_checkLeft();                    
-            boolean BT_checkRight();                   
+            boolean BT_checkRight();
+            boolean BT_checkQuit();
             
             // Display              
             void    DISP_menuUpdate();                 
