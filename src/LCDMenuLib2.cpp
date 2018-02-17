@@ -146,8 +146,7 @@ void LCDMenuLib2::loop_menu()
                         MENU_doScroll();
                         MENU_display();
                     }            
-                }
-                BT_resetAll();
+                }                
                 DISP_menuUpdate();
             }
             
@@ -168,8 +167,7 @@ void LCDMenuLib2::loop_menu()
                         MENU_doScroll();
                         MENU_display();                
                     }
-                } 
-                BT_resetAll();
+                }                
                 DISP_menuUpdate();    
             }
             
@@ -188,9 +186,11 @@ void LCDMenuLib2::loop_menu()
                     MENU_goBack();
                     MENU_display();
                     DISP_menuUpdate();
-                }
-                BT_resetQuit();
+                }                
             }
+            
+            // reset all buttons
+            BT_resetAll();
         } 
         else
         {
@@ -208,7 +208,8 @@ void LCDMenuLib2::loop_menu()
     {        
         if(TIMER_ms(menu_timer, menu_default_time) || bitRead(funcReg, _LCDML_funcReg_setup) == 0 || button > 0) 
         {            
-            FUNC_call();            
+            FUNC_call(); 
+            BT_resetAll();
         }
     } else {        
         menu_default_time = 100000000;
