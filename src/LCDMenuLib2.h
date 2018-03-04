@@ -67,7 +67,7 @@
     // Do nothing change here
     // ####################### // 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v1.1.0"
+    #define _LCDML_VERSION                       "LCDML2 v1.1.1"
         
     // Include arduino ios 
     #include "Arduino.h"

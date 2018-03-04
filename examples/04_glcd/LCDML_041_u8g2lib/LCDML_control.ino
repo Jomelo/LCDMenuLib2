@@ -9,9 +9,9 @@
 // (0) Control over serial interface  with asdw_e_q 
 // (1) Control over one analog input 
 // (2) Control over 4 - 6 digital input pins (internal pullups enabled)
-// (3) Control over encoder (internal pullups enabled)
-// (4) Control with Keypad ( http://playground.arduino.cc/Main/KeypadTutorial )
-// (5) Control with an ir remote ( https://github.com/z3t0/Arduino-IRremote )
+// (3) Control over encoder [third party lib] (Download: https://github.com/PaulStoffregen/Encoder)
+// (4) Control with Keypad  [third party lib] (Download: http://playground.arduino.cc/Main/KeypadTutorial )
+// (5) Control with an ir remote [third party lib] (Download: https://github.com/z3t0/Arduino-IRremote )
 // (6) Control with a youstick
 // (7) Control over I2C PCF8574
 // *********************************************************************
@@ -200,161 +200,132 @@ void lcdml_menu_control(void)
 // *************** (3) CONTROL WITH ENCODER ****************************
 // *********************************************************************
 #elif(_LCDML_CONTROL_cfg == 3)
-// settings
-  #define _LCDML_CONTROL_encoder_pin_a           10 // pin encoder b
-  #define _LCDML_CONTROL_encoder_pin_b           11 // pin encoder a
-  #define _LCDML_CONTROL_encoder_pin_button      12 // pin taster
-  #define _LCDML_CONTROL_encoder_high_active     0  // (0 = low active (pullup), 1 = high active (pulldown)) button
-                                                    // http://playground.arduino.cc/CommonTopics/PullUpDownResistor
+  /*
+   * Thanks to "MuchMore" (arduino forum) to add this encoder functionality
+   *
+   * rotate left = Up
+   * rotete right = Down
+   * push = Enter
+   * push long = Quit
+   * push + rotate left = Left
+   * push + rotate right = Right
+   */
 
-  #define _LCDML_CONTROL_encoder_refresh_time           5UL  // 5ms
-  #define _LCDML_CONTROL_encoder_switch_time            75UL // 75 ms 
-
-// macros which define the functionality
-  #define _LCDML_CONTROL_encoder_switch_press_short()   LCDML.BT_enter()
-  #define _LCDML_CONTROL_encoder_rotary_a()             LCDML.BT_up()  
-  #define _LCDML_CONTROL_encoder_rotary_b()             LCDML.BT_down()
-
-  #define _LCDML_CONTROL_encoder_advanced_switch        1
-  #define _LCDML_CONTROL_encoder_switch_press_long()    LCDML.BT_quit()
-
-  #define _LCDML_CONTROL_encoder_advanced_rotary        1
-  #define _LCDML_CONTROL_encoder_rotary_a_and_press()   LCDML.BT_left()
-  #define _LCDML_CONTROL_encoder_rotary_b_and_press()   LCDML.BT_right()
-                                                      
-  #define _LCDML_CONTROL_encoder_t_long_press    1000   // maximum is 1275 (5*255)                                                  
-
-// global defines
-  uint8_t  g_LCDML_CONTROL_encoder_t_prev = 0;
-  uint8_t  g_LCDML_CONTROL_encoder_a_prev = 0;
-  uint8_t  g_LCDML_CONTROL_t_pressed = 0;
-  uint8_t  g_LCDML_CONTROL_t_press_time = 0;
-  unsigned long g_LCDML_DISP_press_time = millis();
+  /* encoder connection 
+   * button * (do not use an external resistor, the internal pullup resistor is used)   
+   * .-------o  Arduino Pin  
+   * |   
+   * |   
+   * o  /
+   *   /
+   *  /
+   * o
+   * |
+   * '-------o   GND
+   *
+   * encoder * (do not use an external resistor, the internal pullup resistors are used)
+   * 
+   * .---------------o  Arduino Pin A 
+   * |        .------o  Arduino Pin B 
+   * |        |   
+   * o  /     o  /
+   *   /        /
+   *  /        /
+   * o        o
+   * |        |
+   * '--------o----o   GND (common pin)
+   */
+   
+  // global defines
+  #define encoder_A_pin       20    // physical pin has to be 2 or 3 to use interrupts (on mega e.g. 20 or 21), use internal pullups
+  #define encoder_B_pin       21    // physical pin has to be 2 or 3 to use interrupts (on mega e.g. 20 or 21), use internal pullups
+  #define encoder_button_pin  49    // physical pin , use internal pullup
+  
+  #define g_LCDML_CONTROL_button_long_press    800   // ms
+  #define g_LCDML_CONTROL_button_short_press   120   // ms
+  
+  #define ENCODER_OPTIMIZE_INTERRUPTS //Only when using pin2/3 (or 20/21 on mega)
+  #include <Encoder.h> //for Encoder    Download:  https://github.com/PaulStoffregen/Encoder
+  
+  Encoder ENCODER(encoder_A_pin, encoder_B_pin);
+  
+  long  g_LCDML_CONTROL_button_press_time = 0;
+  bool  g_LCDML_CONTROL_button_prev       = HIGH;
   
 // *********************************************************************
 void lcdml_menu_control(void)
+// *********************************************************************
 {
   // If something must init, put in in the setup condition
-  if(LCDML.BT_setup()) {
+  if(LCDML.BT_setup()) 
+  {
     // runs only once
-    // set encoder update intervall time 
-    //LCDML_BACK_dynamic_setLoopTime(LCDML_BACKEND_control, 1000UL);  // 1000us 
+
+    // init pins  
+    pinMode(encoder_A_pin      , INPUT_PULLUP);
+    pinMode(encoder_B_pin      , INPUT_PULLUP);
+    pinMode(encoder_button_pin  , INPUT_PULLUP); 
+  }
+  
+  //volitail Variabl
+  long g_LCDML_CONTROL_Encoder_position = ENCODER.read();
+  bool button                           = digitalRead(encoder_button_pin);
+
+  if(g_LCDML_CONTROL_Encoder_position <= -3) {
     
-    // init pins
-    if(_LCDML_CONTROL_encoder_high_active == 0) 
-    {  
-      pinMode(_LCDML_CONTROL_encoder_pin_a      , INPUT_PULLUP);
-      pinMode(_LCDML_CONTROL_encoder_pin_b      , INPUT_PULLUP);
-      pinMode(_LCDML_CONTROL_encoder_pin_button , INPUT_PULLUP);
-    }  
-  }
-  
-  // read encoder status
-  unsigned char a = digitalRead(_LCDML_CONTROL_encoder_pin_a);
-  unsigned char b = digitalRead(_LCDML_CONTROL_encoder_pin_b);
-  unsigned char t = digitalRead(_LCDML_CONTROL_encoder_pin_button);
-  
-  // change button status if high and low active are switched
-  if (_LCDML_CONTROL_encoder_high_active == 1) 
+    if(!button)
+    {
+      LCDML.BT_left();
+      g_LCDML_CONTROL_button_prev = LOW;
+      g_LCDML_CONTROL_button_press_time = -1;
+    }
+    else
+    {
+      LCDML.BT_down();
+    }    
+    ENCODER.write(g_LCDML_CONTROL_Encoder_position+4);
+  }  
+  else if(g_LCDML_CONTROL_Encoder_position >= 3)
   {
-    t = !t;
-  }
-  
-  // check if the button was pressed and save this state
-  if((millis() - g_LCDML_DISP_press_time) >= _LCDML_CONTROL_encoder_switch_time) {
-    g_LCDML_DISP_press_time = millis(); // reset button press time
     
-    // press button once
-    if (t == false && g_LCDML_CONTROL_encoder_t_prev == 0) 
+    if(!button)
     {
-      g_LCDML_CONTROL_t_pressed = 1;
-    } 
-    else {
-      g_LCDML_CONTROL_encoder_t_prev = 0;
+      LCDML.BT_right();
+      g_LCDML_CONTROL_button_prev = LOW;
+      g_LCDML_CONTROL_button_press_time = -1;
     }
-  } 
-
-  // check if button is currently pressed
-  if(t == false) 
-  {
-    // check if the advanced rotary function is enabled
-    if(_LCDML_CONTROL_encoder_advanced_rotary == 1)
+    else
     {
-      // check if the rotary encoder was moved
-      if (a == false && g_LCDML_CONTROL_encoder_a_prev ) {
-        g_LCDML_CONTROL_encoder_t_prev = 1;
-        
-        if (b == false) 
-        { 
-          // switch active and rotary b moved
-          _LCDML_CONTROL_encoder_rotary_b_and_press();       
-        }
-        else    
-        { 
-          // switch active and rotary a moved
-          _LCDML_CONTROL_encoder_rotary_a_and_press(); 
-        }
-  
-        g_LCDML_CONTROL_t_pressed = 0;
-        g_LCDML_CONTROL_t_press_time = 0;            
-      }
-    } 
-
-    // check advanced mode "long press switch"
-    if(_LCDML_CONTROL_encoder_advanced_switch == 1)
-    {    
-      // button was pressed
-      if(g_LCDML_CONTROL_t_pressed == 1) 
-      {
-        // check overrun and stop
-        if(g_LCDML_CONTROL_t_press_time < 255) 
-        {
-          g_LCDML_CONTROL_t_press_time++;
-        }
-      }
+      LCDML.BT_up();
+    }
+    ENCODER.write(g_LCDML_CONTROL_Encoder_position-4);
+  }  
+  else 
+  {
+    if(!button && g_LCDML_CONTROL_button_prev)  //falling edge, button pressed 
+    { 
+      g_LCDML_CONTROL_button_prev = LOW;
+      g_LCDML_CONTROL_button_press_time = millis();
+    }
+    else if(button && !g_LCDML_CONTROL_button_prev) //rising edge, button not active
+    { 
+       g_LCDML_CONTROL_button_prev = HIGH;
+       
+       if(g_LCDML_CONTROL_button_press_time < 0)
+       {
+         g_LCDML_CONTROL_button_press_time = millis();
+         //Reset for left right action
+       }
+       else if((millis() - g_LCDML_CONTROL_button_press_time) >= g_LCDML_CONTROL_button_long_press) 
+       {
+         LCDML.BT_quit(); 
+       }
+       else if((millis() - g_LCDML_CONTROL_button_press_time) >= g_LCDML_CONTROL_button_short_press)
+       {
+         LCDML.BT_enter();  
+       }
     }
   }
-  else
-  {
-    // switch is not active
-
-    // check encoder
-    if (a == false && g_LCDML_CONTROL_encoder_a_prev) {
-      g_LCDML_CONTROL_encoder_t_prev = 1;
-      
-      if (b == false) 
-      { 
-        _LCDML_CONTROL_encoder_rotary_a();        
-      }
-      else    
-      { 
-        _LCDML_CONTROL_encoder_rotary_b(); 
-      }
-
-      g_LCDML_CONTROL_t_pressed = 0;
-      g_LCDML_CONTROL_t_press_time = 0;
-      g_LCDML_DISP_press_time = millis();            
-    } 
-
-    // check if an button was pressed
-    if(g_LCDML_CONTROL_t_pressed == 1) 
-    {
-      if(g_LCDML_CONTROL_t_press_time * _LCDML_CONTROL_encoder_refresh_time >= _LCDML_CONTROL_encoder_t_long_press && _LCDML_CONTROL_encoder_advanced_switch == 1)
-      {        
-        _LCDML_CONTROL_encoder_switch_press_long();
-      } 
-      else 
-      {
-        _LCDML_CONTROL_encoder_switch_press_short();
-      }
-      
-      g_LCDML_CONTROL_t_pressed = 0;
-      g_LCDML_CONTROL_t_press_time = 0;
-      g_LCDML_DISP_press_time = millis();
-    }
-  }
-  
-  g_LCDML_CONTROL_encoder_a_prev = a;  // set new encoder status  
 }
 // *********************************************************************
 // ******************************* END *********************************
@@ -574,4 +545,3 @@ void lcdml_menu_control(void)
 #else
   #error _LCDML_CONTROL_cfg is not defined or not in range
 #endif
-
