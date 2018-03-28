@@ -16,22 +16,50 @@ void mDyn_para(uint8_t line)
   {
     // make only an action when the cursor stands on this menuitem
     //check Button
-    if(LCDML.BT_checkAny()) {
-      if(LCDML.BT_checkEnter()) {
+    if(LCDML.BT_checkAny()) 
+    {
+      if(LCDML.BT_checkEnter()) 
+      {
+        // this function checks returns the scroll disable status (0 = menu scrolling enabled, 1 = menu scrolling disabled)
+        if(LCDML.MENU_getScrollDisableStatus() == 0)
+        {
+          // disable the menu scroll function to catch the cursor on this point
+          // now it is possible to work with BT_checkUp and BT_checkDown in this function
+          // this function can only be called in a menu, not in a menu function
+          LCDML.MENU_disScroll();
+        }
+        else
+        {
+          // enable the normal menu scroll function
+          LCDML.MENU_enScroll();
+        }
         // dosomething for example save the data or something else             
         LCDML.BT_resetEnter();
       }
-      if(LCDML.BT_checkLeft()) {
-        g_dynParam++;
-        LCDML.BT_resetLeft();
+
+      // This check have only an effekt when MENU_disScroll is set
+      if(LCDML.BT_checkUp())
+      {        
+        g_dynParam++;        
       }
-      if(LCDML.BT_checkRight()) {
-        g_dynParam--;
-        LCDML.BT_resetRight();
+
+      // This check have only an effekt when MENU_disScroll is set
+      if(LCDML.BT_checkDown())
+      {
+        g_dynParam--;        
+      }      
+
+      
+      if(LCDML.BT_checkLeft())
+      {
+        g_dynParam++;        
+      }
+      if(LCDML.BT_checkRight()) 
+      {
+        g_dynParam--;        
       }
     }              
   }
-
 
   Serial.print("dynValue:");
   Serial.print(g_dynParam);  

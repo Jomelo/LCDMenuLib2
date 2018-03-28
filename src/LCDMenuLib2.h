@@ -67,7 +67,7 @@
     // Do nothing change here
     // ####################### // 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v1.1.1"
+    #define _LCDML_VERSION                       "LCDML2 v1.2.0"
         
     // Include arduino ios 
     #include "Arduino.h"
@@ -101,7 +101,7 @@
     #define _LCDML_funcReg_free6                6
     #define _LCDML_funcReg_free5                5
     #define _LCDML_funcReg_free4                4
-    #define _LCDML_funcReg_free3                3
+    #define _LCDML_funcReg_disable_scroll       3
     #define _LCDML_funcReg_disable_screensaver  2
     #define _LCDML_funcReg_setup                1
     #define _LCDML_funcReg_end                  0
@@ -209,16 +209,19 @@
              // Menu           
             LCDMenuLib2_menu * MENU_getObj();
             void    MENU_display(uint8_t update=0);   
-            void    MENU_goRoot();                    
+            void    MENU_goRoot(); 
+            void    MENU_enRollover(void);
+            void    MENU_disRollover(void);
+            void    MENU_enScroll();
+            void    MENU_disScroll();
+            boolean MENU_getScrollDisableStatus();
             uint8_t MENU_getLayer();                  
             uint8_t MENU_getCursorPos();              
             uint8_t MENU_getCursorPosAbs();           
             uint8_t MENU_getChilds();                 
             uint8_t MENU_getParentId();               
             uint8_t MENU_getParentId(uint8_t p_layer);
-            uint8_t MENU_getScroll(void);
-            void    MENU_enRollover(void);
-            void    MENU_disRollover(void);
+            uint8_t MENU_getScroll(void);            
             
             // BT = Button
             boolean BT_setup();     
@@ -228,6 +231,7 @@
             void    BT_left();      
             void    BT_right();     
             void    BT_quit();     
+           
             void    BT_resetAll();  
             void    BT_resetEnter();
             void    BT_resetUp();   
@@ -235,6 +239,7 @@
             void    BT_resetLeft(); 
             void    BT_resetRight();
             void    BT_resetQuit();
+            
             boolean BT_checkAny();  
             boolean BT_checkEnter();
             boolean BT_checkUp();                      

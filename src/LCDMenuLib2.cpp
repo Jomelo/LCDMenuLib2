@@ -128,48 +128,65 @@ void LCDMenuLib2::loop_menu()
             // -- UP --
             if(BT_checkUp() == true)
             {
-                if (curloc > 0) { 
-                    curloc--; 
-                    MENU_doScroll();             
-                } 
+                if(bitRead(funcReg, _LCDML_funcReg_disable_scroll) == false)
+                {
+                    if (curloc > 0) { 
+                        curloc--; 
+                        MENU_doScroll();             
+                    } 
+                    else
+                    {
+                        if(bitRead(control, _LCDML_control_rollover))
+                        {
+                            // jump to the end of the menu
+                            curloc = child_cnt;
+                            if(child_cnt-rows < 0) {
+                                scroll = 0;
+                            } else {
+                                scroll = child_cnt-rows;
+                            }                    
+                            MENU_doScroll();
+                            MENU_display();
+                        }            
+                    }                
+                    DISP_menuUpdate();
+                }
                 else
                 {
-                    if(bitRead(control, _LCDML_control_rollover))
-                    {
-                        // jump to the end of the menu
-                        curloc = child_cnt;
-                        if(child_cnt-rows < 0) {
-                            scroll = 0;
-                        } else {
-                            scroll = child_cnt-rows;
-                        }                    
-                        MENU_doScroll();
-                        MENU_display();
-                    }            
-                }                
-                DISP_menuUpdate();
+                    MENU_display();
+                    DISP_menuUpdate();
+                }
             }
             
             // -- DOWN --
             if(BT_checkDown() == true)
             {
-                if(curloc < child_cnt) { 
-                    curloc++; 
-                    MENU_doScroll();
-                }
-                else
+                if(bitRead(funcReg, _LCDML_funcReg_disable_scroll) == false)
                 {
-                    if(bitRead(control, _LCDML_control_rollover))
-                    {
-                        // jump to the first line
-                        curloc = 0;
-                        scroll = 0;                
+                    if(curloc < child_cnt) { 
+                        curloc++; 
                         MENU_doScroll();
-                        MENU_display();                
                     }
-                }                
-                DISP_menuUpdate();    
-            }
+                    else
+                    {
+                        if(bitRead(control, _LCDML_control_rollover))
+                        {
+                            // jump to the first line
+                            curloc = 0;
+                            scroll = 0;                
+                            MENU_doScroll();
+                            MENU_display();                
+                        }
+                    }                
+                    DISP_menuUpdate();
+                } 
+                else 
+                {
+                    MENU_display();
+                    DISP_menuUpdate();
+                }                   
+            } 
+            
             
             // -- LEFT or RIGHT --
             if(BT_checkLeft() == true or BT_checkRight() == true)
@@ -486,6 +503,7 @@ void    LCDMenuLib2::MENU_doScroll()
     {
         curloc--;
     }
+    
     //scroll down
     if (curloc >= (rows + scroll))
     {
@@ -599,6 +617,13 @@ void LCDMenuLib2::DISP_menuUpdate()
 {
     if(activMenu == NULL || bitRead(funcReg, _LCDML_funcReg_end) || bitRead(control, _LCDML_control_update_direct) || bitRead(control, _LCDML_control_disp_update) ) 
     { 
+        if(bitRead(funcReg, _LCDML_funcReg_disable_scroll) == false)
+        {
+            // clear button status from scrolling
+            BT_resetUp();
+            BT_resetDown();
+        }
+        
         callback_contentUpdate();
         BT_resetAll();
     }    
@@ -646,7 +671,7 @@ void LCDMenuLib2::FUNC_call()
     if(activMenu != NULL) 
     {
         if(bitRead(funcReg, _LCDML_funcReg_jumpTo_w_para))
-        {            
+        {   
             activMenu->callback(jumpTo_w_para);
         }
         else
@@ -974,19 +999,24 @@ boolean LCDMenuLib2::OTHER_helpFunction(uint8_t mode, LCDML_FuncPtr_pu8 p_search
         default:
             // error
             break;
-    }    
+    }   
+
+    // reset jump param flag 
+    bitClear(funcReg, _LCDML_funcReg_jumpTo_w_para);    
 
     // check element handling
     if(found == true)
     {
-        bitClear(control, _LCDML_control_search_display); 
+        bitClear(control, _LCDML_control_search_display);        
         
         switch(mode)
         {
-            case 0: // jumpToFunc
-            case 1: // jumpToID
+            case 0: // jumpToFunc                 
+            case 1: // jumpToID  
+                // set jump param flag 
                 bitSet(funcReg, _LCDML_funcReg_jumpTo_w_para);
                 jumpTo_w_para = para;
+                // open menu element
                 MENU_goInto();
                 break;
                 
@@ -1012,10 +1042,10 @@ boolean LCDMenuLib2::OTHER_helpFunction(uint8_t mode, LCDML_FuncPtr_pu8 p_search
    
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t para) { return OTHER_helpFunction(0, p_search, 0, para); }
-boolean LCDMenuLib2::OTHER_jumpToID(uint8_t p_id, uint8_t para)                 { return OTHER_helpFunction(1, NULL, p_id, para); }
-boolean LCDMenuLib2::OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search)          { return OTHER_helpFunction(2, p_search, 0, 0); }
-boolean LCDMenuLib2::OTHER_setCursorToID(uint8_t p_id)                          { return OTHER_helpFunction(3, NULL, p_id, 0); }
+boolean LCDMenuLib2::OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t para) { MENU_enScroll(); return OTHER_helpFunction(0, p_search, 0, para); }
+boolean LCDMenuLib2::OTHER_jumpToID(uint8_t p_id, uint8_t para)                 { MENU_enScroll(); return OTHER_helpFunction(1, NULL, p_id, para); }
+boolean LCDMenuLib2::OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search)          { MENU_enScroll(); return OTHER_helpFunction(2, p_search, 0, 0); }
+boolean LCDMenuLib2::OTHER_setCursorToID(uint8_t p_id)                          { MENU_enScroll(); return OTHER_helpFunction(3, NULL, p_id, 0); }
 /* ******************************************************************** */
 
 
@@ -1049,3 +1079,33 @@ void    LCDMenuLib2::SCREEN_start()
 {
     screensaver_timer = millis()+1000;
 }
+
+/* ******************************************************************** */
+void    LCDMenuLib2::MENU_enScroll()
+/* ******************************************************************** */
+{
+    bitClear(funcReg, _LCDML_funcReg_disable_scroll);
+}
+            
+/* ******************************************************************** */            
+void    LCDMenuLib2::MENU_disScroll()
+/* ******************************************************************** */
+{
+    if(activMenu == NULL)
+    {
+        bitSet(funcReg, _LCDML_funcReg_disable_scroll);
+    }
+    else
+    {
+        bitClear(funcReg, _LCDML_funcReg_disable_scroll);
+    }        
+}
+
+/* ******************************************************************** */
+boolean LCDMenuLib2::MENU_getScrollDisableStatus()
+/* ******************************************************************** */
+{
+    return bitRead(funcReg, _LCDML_funcReg_disable_scroll);
+}
+            
+            
