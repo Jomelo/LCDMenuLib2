@@ -96,9 +96,9 @@
     #endif     
          
     //Menu Item Types        
-    #define LCDML_addAdvanced(id, parent, child, condetion, content, callback, param, settings) \
+    #define LCDML_addAdvanced(id, parent, child, condition, content, callback, param, settings) \
         LCDML_LANG_DEF(id, content); \
-        LCDMenuLib2_menu parent ## _ ## child(id, param, settings, callback, condetion ); \
+        LCDMenuLib2_menu parent ## _ ## child(id, param, settings, callback, condition ); \
         void LCDML_DISP_ ## id ## _function() { \
             parent.addChild(parent ## _ ## child); \
         }

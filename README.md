@@ -13,7 +13,7 @@ Features:
 *  support for screensaver which is shown after x secounds
 *  display a scrollbar when more menu elments in a layer then display rows
 *  the menu function are only updated when a button is hit or a trigger is set
-*  it is possible to set special condetions to display an element
+*  it is possible to set special conditions to display an element
 *  it is possible to change parameter direct from the menu
 *  possibility to jump from one menu elment directly to another       
 *  examples for many different lcd librarys 

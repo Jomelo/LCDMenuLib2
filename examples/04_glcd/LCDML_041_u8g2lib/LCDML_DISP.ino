@@ -56,8 +56,8 @@ void lcdml_menu_display()
       // loop to display lines        
       do
       {            
-        // check if a menu element has a condetion and if the condetion be true               
-        if (tmp->checkCondetion()) 
+        // check if a menu element has a condition and if the condition be true               
+        if (tmp->checkCondition()) 
         {          
           // check the type off a menu element
           if(tmp->checkType_menu() == true)

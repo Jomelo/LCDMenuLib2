@@ -183,7 +183,7 @@ checkCallback	KEYWORD2
 getID	KEYWORD2
 getSibling	KEYWORD2
 callback	KEYWORD2
-checkCondetion	KEYWORD2
+checkCondition	KEYWORD2
 checkType_menu	KEYWORD2
 checkType_dynParam	KEYWORD2
 #######################################

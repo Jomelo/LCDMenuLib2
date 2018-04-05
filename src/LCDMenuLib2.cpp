@@ -121,8 +121,8 @@ void LCDMenuLib2::loop_menu()
             if(BT_checkEnter() == true)
             {
                 //menu is active      
-                MENU_goInto(); 
-                bitSet(control, _LCDML_control_update_direct);
+                MENU_goInto();
+	            bitSet(control, _LCDML_control_update_direct);
             }
             
             // -- UP --
@@ -293,7 +293,7 @@ uint8_t        LCDMenuLib2::MENU_curlocCorrection()
     {
         do
         {
-            if (tmp->checkCondetion() || bitRead(control, _LCDML_control_disable_hidden)) 
+            if (tmp->checkCondition() || bitRead(control, _LCDML_control_disable_hidden)) 
             {
                 j++;
             }
@@ -353,7 +353,7 @@ void    LCDMenuLib2::MENU_goInto(void)
                 {                    
                     while ((tmp = tmp->getSibling(0)) != NULL)
                     { 
-                        if (tmp->checkCondetion() || bitRead(control, _LCDML_control_disable_hidden)) 
+                        if (tmp->checkCondition() || bitRead(control, _LCDML_control_disable_hidden)) 
                         {                   
                             // Menu found, goInto
                             MENU_goMenu(*curMenu->getChild(curloc + MENU_curlocCorrection()));
@@ -434,7 +434,7 @@ uint8_t    LCDMenuLib2::MENU_countChilds()
     if ((tmp = curMenu->getChild(0)) != NULL) {    
         do
         {                
-            if (tmp->checkCondetion() || bitRead(control, _LCDML_control_disable_hidden)) {                
+            if (tmp->checkCondition() || bitRead(control, _LCDML_control_disable_hidden)) {                
                 j++;
             } 
         } while ((tmp = tmp->getSibling(1)) != NULL);        

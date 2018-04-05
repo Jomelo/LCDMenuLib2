@@ -59,7 +59,7 @@
             LCDMenuLib2_menu * sibling;                              // Next sibling menu, NULL if this is the last sibling
             
             LCDML_FuncPtr_pu8 cb_function;                          // Menu Funktion callback            
-            LCDML_FuncPtr_rb  cb_condetion;                         // Menu Condetion callback
+            LCDML_FuncPtr_rb  cb_condition;                         // Menu Condition callback
             
             void setParent(LCDMenuLib2_menu &p);                     // Sets the menu's parent to p
             void addSibling(LCDMenuLib2_menu &s,LCDMenuLib2_menu &p); // Adds a sibling s with parent p.  If the menu already has a sibling, ask that sibling to add it
@@ -70,7 +70,7 @@
             
         public:  
              // Constructs the menu with a name and a NULL use function (be careful calling it)
-            LCDMenuLib2_menu(uint8_t p_id, uint8_t p_param, uint8_t p_configuration, LCDML_FuncPtr_pu8 p_callback_function, LCDML_FuncPtr_rb p_condetion_function);           
+            LCDMenuLib2_menu(uint8_t p_id, uint8_t p_param, uint8_t p_configuration, LCDML_FuncPtr_pu8 p_callback_function, LCDML_FuncPtr_rb p_condition_function);           
             
             LCDML_FuncPtr_pu8 getCbFunction();
             
@@ -81,7 +81,7 @@
             LCDMenuLib2_menu * getParent();                          // Returns this menu's parent menu.  If no parent, returns itself
             
             uint8_t getID();                                        // return the id of a menu element
-            boolean checkCondetion();                                 // check menu display condetion
+            boolean checkCondition();                                 // check menu display condition
             uint8_t getParam();                                     // return a parameter which is set on the initialisation
             boolean checkType_menu();
             boolean checkType_dynParam();

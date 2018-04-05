@@ -40,7 +40,7 @@
 
 
 /* ******************************************************************** */
-LCDMenuLib2_menu::LCDMenuLib2_menu(uint8_t p_id, uint8_t p_param, uint8_t p_configuration, LCDML_FuncPtr_pu8 p_callback_function, LCDML_FuncPtr_rb p_condetion_function)
+LCDMenuLib2_menu::LCDMenuLib2_menu(uint8_t p_id, uint8_t p_param, uint8_t p_configuration, LCDML_FuncPtr_pu8 p_callback_function, LCDML_FuncPtr_rb p_condition_function)
 /* ******************************************************************** */
 {    
     parent  = NULL;
@@ -50,7 +50,7 @@ LCDMenuLib2_menu::LCDMenuLib2_menu(uint8_t p_id, uint8_t p_param, uint8_t p_conf
     param   = p_param;     // element configuration
     configuration= p_configuration;
     cb_function = p_callback_function;
-    cb_condetion = p_condetion_function;
+    cb_condition = p_condition_function;
 }
 
 /* ******************************************************************** */
@@ -144,12 +144,12 @@ uint8_t LCDMenuLib2_menu::getID()
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2_menu::checkCondetion()
+boolean LCDMenuLib2_menu::checkCondition()
 /* ******************************************************************** */
 {
-    if(cb_condetion != NULL)
+    if(cb_condition != NULL)
     {
-        return cb_condetion();
+        return cb_condition();
     }
     else
     {

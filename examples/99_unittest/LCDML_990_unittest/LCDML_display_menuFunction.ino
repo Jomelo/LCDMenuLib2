@@ -284,11 +284,11 @@ void mFunc_test_complex(uint8_t param)
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
     if(param == 10) {
-      g_condetion_test_allowed = false;
+      g_condition_test_allowed = false;
     }
     else
     {
-      g_condetion_test_allowed = true;
+      g_condition_test_allowed = true;
     }
     LCDML.FUNC_goBackToMenu(); 
   } 

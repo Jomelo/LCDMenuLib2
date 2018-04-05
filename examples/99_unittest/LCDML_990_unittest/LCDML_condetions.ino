@@ -1,6 +1,6 @@
 /* ===================================================================== *
  *                                                                       *
- * Condetions to show or hide a menu element on the display              *
+ * Conditions to show or hide a menu element on the display              *
  *                                                                       *
  * ===================================================================== *
  */
@@ -19,7 +19,7 @@ boolean COND_hide()  // hide a menu element
 boolean COND_a1()  // hide a menu element
 // ********************************************************************* 
 { 
-  if(g_condetion_test_allowed == false)
+  if(g_condition_test_allowed == false)
   {
     return true;
   }
@@ -33,7 +33,7 @@ boolean COND_a1()  // hide a menu element
 boolean COND_a2()  // hide a menu element
 // ********************************************************************* 
 { 
-  if(g_condetion_test_allowed == true)
+  if(g_condition_test_allowed == true)
   {
     return true;
   }

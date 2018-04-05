@@ -30,7 +30,7 @@
 // *********************************************************************
 // global variables
 // *********************************************************************
-  boolean g_condetion_test_allowed = false;
+  boolean g_condition_test_allowed = false;
 
 // *********************************************************************
 // Objects
@@ -51,7 +51,7 @@
   // this value must be the same as the last menu element
   #define _LCDML_DISP_cnt    35  
 
-  // LCDMenuLib_add(id, prev_layer, new_num, condetion, lang_char_array, callback_function, parameter (0-255), menu function type  )
+  // LCDMenuLib_add(id, prev_layer, new_num, condition, lang_char_array, callback_function, parameter (0-255), menu function type  )
   LCDML_add         (0  , LCDML_0         , 1  , "Information"   , mFunc_information);  // a small function
   LCDML_addAdvanced (1  , LCDML_0         , 2  , NULL     ,  "Time info"         , mFunc_timer_info    ,   0, _LCDML_TYPE_default);  // a function which display a secound counter
   // test: more then display rows dynamic functions with a hidden function
@@ -86,7 +86,7 @@
   LCDML_addAdvanced (27 , LCDML_0_9       , 1  , NULL     ,  "visible submenu 1" , mFunc_test_hidden   ,   0, _LCDML_TYPE_default); 
   LCDML_addAdvanced (28 , LCDML_0_9       , 2  , NULL     ,  "visible submenu 2" , NULL                ,   0, _LCDML_TYPE_default);
   LCDML_addAdvanced (29 , LCDML_0_9       , 3  , NULL     ,  "Back"              , NULL                ,   0, _LCDML_TYPE_default);   
-  // hidden menu test with a special condetion
+  // hidden menu test with a special condition
   LCDML_addAdvanced (30 , LCDML_0         ,10  , NULL     ,  "Test Hidden Menu"  , NULL                ,   0, _LCDML_TYPE_default);
   LCDML_addAdvanced (31 , LCDML_0_10      , 1  , COND_a1  ,  "show"              , mFunc_test_complex  ,   0, _LCDML_TYPE_default);
   LCDML_addAdvanced (32 , LCDML_0_10      , 2  , COND_a2  ,  "hide"              , mFunc_test_complex  ,  10, _LCDML_TYPE_default);
