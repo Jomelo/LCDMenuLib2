@@ -759,19 +759,20 @@ void LCDMenuLib2::FUNC_goBackToMenu(uint8_t e)
         bitSet(funcReg, _LCDML_funcReg_end);         
         FUNC_call();  // call active function for save close;
         bitClear(funcReg, _LCDML_funcReg_jumpTo_w_para);
-        activMenu = NULL;        
-    }
-    BT_resetAll();
-    bitClear(funcReg, _LCDML_funcReg_disable_screensaver);
-    bitClear(funcReg, _LCDML_funcReg_end);
-    bitClear(funcReg, _LCDML_funcReg_setup);       
-   
-    for(uint8_t i=0; i<e; i++)
-    {
-        MENU_goBack();
-    }
-    MENU_display();
-    DISP_menuUpdate();    
+        activMenu = NULL; 
+
+        BT_resetAll();
+        bitClear(funcReg, _LCDML_funcReg_disable_screensaver);
+        bitClear(funcReg, _LCDML_funcReg_end);
+        bitClear(funcReg, _LCDML_funcReg_setup);       
+       
+        for(uint8_t i=0; i<e; i++)
+        {
+            MENU_goBack();
+        }
+        MENU_display();
+        DISP_menuUpdate(); 
+    }       
 }
 
 /* ******************************************************************** */

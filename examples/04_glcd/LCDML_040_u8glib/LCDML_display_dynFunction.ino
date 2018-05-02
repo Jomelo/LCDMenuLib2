@@ -33,8 +33,9 @@ void mDyn_para(uint8_t line)
           // enable the normal menu scroll function
           LCDML.MENU_enScroll();
         }
-        // dosomething for example save the data or something else             
-        LCDML.BT_resetEnter();
+        
+        // do something
+        // ...
       }
 
       // This check have only an effekt when MENU_disScroll is set
