@@ -198,6 +198,8 @@ void LCDMenuLib2::loop_menu()
             // -- QUIT Part 1 --
             if(BT_checkQuit() == true) 
             {
+                MENU_enScroll();
+                
                 if(layer > 0) 
                 {
                     MENU_goBack();
@@ -214,6 +216,7 @@ void LCDMenuLib2::loop_menu()
             // -- QUIT Part 2 --
             if(BT_checkQuit() == true)
             {
+                MENU_enScroll();
                 FUNC_goBackToMenu();
                 BT_resetQuit();
             }
