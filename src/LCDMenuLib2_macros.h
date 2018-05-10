@@ -1,21 +1,21 @@
-/* ******************************************************************************                                                                        
- *                        LCDMenuLib2 (LCDML)                                                                                                       
- * ****************************************************************************** 
+/* ******************************************************************************
+ *                        LCDMenuLib2 (LCDML)
+ * ******************************************************************************
  *
  * MIT License
- * 
+ *
  * Copyright (c) [2017] [Nils Feldkämper]
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,99 +23,99 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *                                      
+ *
  * ******************************************************************************
- *   
- * BUG / ISSUES REPORTING                                      
- *    https://github.com/Jomelo/LCDMenuLib2/issues 
- * 
- * ARDUIONO FORUM                                                    
- *     http://forum.arduino.cc/index.php?topic=73816.0  
- *   
- * ****************************************************************************** 
+ *
+ * BUG / ISSUES REPORTING
+ *    https://github.com/Jomelo/LCDMenuLib2/issues
+ *
+ * ARDUINO FORUM
+ *    http://forum.arduino.cc/index.php?topic=73816.0
+ *
+ * ******************************************************************************
  */
- 
+
 #ifndef _LCDML_macros_h
     #define _LCDML_macros_h
-    
-    /* ------------------ 
-     * Include Arduino IOS                                                     
+
+    /* ------------------
+     * Include Arduino IOS
      * ------------------
      */
     #include <Arduino.h>
-    
-    
-    /* ------------------ 
-     * DISP / MENU                                                      
+
+
+    /* ------------------
+     * DISP / MENU
      * ------------------
      */
-         
-    // get global language variable for name xyz 
+
+    // get global language variable for name xyz
     #define LCDML_DISP_lang(name)           g_LCDML_DISP_lang_ ## name ## _var
-    
-    // call repeat of function 
+
+    // call repeat of function
     #define LCDML_DISP_initFunction(N)      LCDML_DISP_func_repeat(N);
-     
+
     #ifndef _LCDML_ESP
-        // stored in flash (arduino) 
+        // stored in flash (Arduino)
         #define LCDML_LANG_DEF(name, content) \
             const char g_LCDML_DISP_lang_ ## name ##_var[] PROGMEM = {content}
-            
+
         #define LCDML_getContent(var, id) \
             if(id < _LCDML_NO_FUNC) {\
                 strcpy_P(var, (char*)pgm_read_word(&(g_LCDML_DISP_lang_table[id]))); \
             }
-                    
+
         #define LCDML_createMenu(N)\
             const char * const g_LCDML_DISP_lang_table[] PROGMEM = { LCDML_DISP_lang_repeat(N) }
-          
+
         #define LCDML_getElementName(var, element_id) \
             if(element_id < _LCDML_NO_FUNC && (sizeof(g_LCDML_DISP_lang_table)-1) >= element_id) {\
                 strcpy_P(var, (char*)pgm_read_word(&(g_LCDML_DISP_lang_table[element_id])));\
             }
-          
+
     #else
         // stored in ram (esp)
         #define LCDML_LANG_DEF(name, content) \
             char g_LCDML_DISP_lang_ ## name ##_var[] = {content}
-                    
+
         #define LCDML_getContent(var, id) \
             if(id < _LCDML_NO_FUNC) {\
                 strcpy(var, g_LCDML_DISP_lang_table[id]); \
             }
-                    
+
         #define LCDML_createMenu(N)\
             char * g_LCDML_DISP_lang_table[] = { LCDML_DISP_lang_repeat(N) }
-           
+
 
         #define LCDML_getElementName(var, element_id) \
             if(element_id < _LCDML_NO_FUNC && (sizeof(g_LCDML_DISP_lang_table)-1) >= element_id) {\
                 strcpy_P(var, (char*)(g_LCDML_DISP_lang_table[element_id]));\
             }
-            
-    #endif     
-         
-    //Menu Item Types        
-    #define LCDML_addAdvanced(id, parent, child, condetion, content, callback, param, settings) \
+
+    #endif
+
+    //Menu Item Types
+    #define LCDML_addAdvanced(id, parent, child, condition, content, callback, param, settings) \
         LCDML_LANG_DEF(id, content); \
-        LCDMenuLib2_menu parent ## _ ## child(id, param, settings, callback, condetion ); \
+        LCDMenuLib2_menu parent ## _ ## child(id, param, settings, callback, condition ); \
         void LCDML_DISP_ ## id ## _function() { \
             parent.addChild(parent ## _ ## child); \
         }
-        
+
     #define LCDML_add(id, parent, child, content, callback) \
-        LCDML_addAdvanced(id, parent, child, NULL, content, callback, 0, _LCDML_TYPE_default)        
-    
+        LCDML_addAdvanced(id, parent, child, NULL, content, callback, 0, _LCDML_TYPE_default)
+
     #define LCDML_setup(N)\
         LCDML_DISP_initFunction(N); \
         LCDML.MENU_display(); \
-        LCDML.DISP_menuUpdate() 
+        LCDML.DISP_menuUpdate()
 
 
-    /* --------------------------------------- 
-     * lang repeat                     
+    /* ---------------------------------------
+     * lang repeat
      * ---------------------------------------
-     */    
+     */
     #define LCDML_DISP_lang_repeat_255() LCDML_DISP_lang_repeat_254() LCDML_DISP_lang(255),
     #define LCDML_DISP_lang_repeat_254() LCDML_DISP_lang_repeat_253() LCDML_DISP_lang(254),
     #define LCDML_DISP_lang_repeat_253() LCDML_DISP_lang_repeat_252() LCDML_DISP_lang(253),
@@ -370,12 +370,12 @@
     #define LCDML_DISP_lang_repeat_4()   LCDML_DISP_lang_repeat_3()   LCDML_DISP_lang(4),
     #define LCDML_DISP_lang_repeat_3()   LCDML_DISP_lang_repeat_2()   LCDML_DISP_lang(3),
     #define LCDML_DISP_lang_repeat_2()   LCDML_DISP_lang_repeat_1()   LCDML_DISP_lang(2),
-    #define LCDML_DISP_lang_repeat_1()   LCDML_DISP_lang_repeat_0()   LCDML_DISP_lang(1), 
-    #define LCDML_DISP_lang_repeat_0()   LCDML_DISP_lang(0), 
+    #define LCDML_DISP_lang_repeat_1()   LCDML_DISP_lang_repeat_0()   LCDML_DISP_lang(1),
+    #define LCDML_DISP_lang_repeat_0()   LCDML_DISP_lang(0),
     #define LCDML_DISP_lang_repeat(N)     LCDML_DISP_lang_repeat_##N ()
 
-    /* --------------------------------------- 
-     * func repeat                      
+    /* ---------------------------------------
+     * func repeat
      * ---------------------------------------
      */
     #define LCDML_DISP_func_repeat_255() LCDML_DISP_func_repeat_254() LCDML_DISP_255_function();
@@ -635,5 +635,5 @@
     #define LCDML_DISP_func_repeat_1() LCDML_DISP_func_repeat_0()   LCDML_DISP_1_function();
     #define LCDML_DISP_func_repeat_0() LCDML_DISP_0_function();
     #define LCDML_DISP_func_repeat(N) LCDML_DISP_func_repeat_ ## N ()
- 
+
 #endif
