@@ -736,6 +736,8 @@ boolean LCDMenuLib2::FUNC_setup()
     else
     {
         bitClear(funcReg, _LCDML_funcReg_setup); // run setup
+		
+        return false;
     }
 }
 
@@ -757,6 +759,8 @@ boolean LCDMenuLib2::FUNC_loop()
     else
     {
         bitClear(funcReg, _LCDML_funcReg_end);
+		
+        return false;
     }
 }
 
@@ -778,6 +782,8 @@ boolean LCDMenuLib2::FUNC_close()
     else
     {
         bitClear(funcReg, _LCDML_funcReg_end);
+		
+        return false;
     }
 }
 
