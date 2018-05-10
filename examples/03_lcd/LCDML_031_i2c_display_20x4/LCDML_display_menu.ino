@@ -35,7 +35,7 @@ void lcdml_menu_display()
     uint8_t n = 0;
 
     // check if this element has children
-    if (tmp = LCDML.MENU_getObj()->getChild(LCDML.MENU_getScroll()))
+    if ((tmp = LCDML.MENU_getObj()->getChild(LCDML.MENU_getScroll())))
     {
       // loop to display lines
       do
