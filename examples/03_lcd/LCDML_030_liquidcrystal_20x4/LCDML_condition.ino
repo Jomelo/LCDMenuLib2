@@ -1,6 +1,6 @@
 /* ===================================================================== *
  *                                                                       *
- * Condetions to show or hide a menu element on the display              *
+ * Conditions to show or hide a menu element on the display              *
  *                                                                       *
  * ===================================================================== *
  */

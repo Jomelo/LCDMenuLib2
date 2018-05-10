@@ -67,7 +67,7 @@
     // Do nothing change here
     // ####################### // 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v1.2.4"
+    #define _LCDML_VERSION                       "LCDML2 v1.2.5"
         
     // Include arduino ios 
     #include "Arduino.h"
@@ -88,7 +88,7 @@
     #define _LCDML_NO_FUNC                      255
     
     // Bit pos control
-    #define _LCDML_control_menu_back            7
+    #define _LCDML_control_free                 7
     #define _LCDML_control_disp_update          6
     #define _LCDML_control_cursor_update        5
     #define _LCDML_control_setup                4
@@ -98,7 +98,7 @@
     #define _LCDML_control_disable_hidden       0
     
     #define _LCDML_funcReg_jumpTo_w_para        7
-    #define _LCDML_funcReg_free6                6
+    #define _LCDML_funcReg_goRoot               6
     #define _LCDML_funcReg_free5                5
     #define _LCDML_funcReg_free4                4
     #define _LCDML_funcReg_disable_scroll       3
@@ -174,6 +174,7 @@
             uint8_t control;                                 // control bits 
             uint8_t funcReg;                                 // control bits
             uint8_t jumpTo_w_para;                           // jumpTo with parameter
+            uint8_t goBackCnt;                               // save the layer to go back
 
             unsigned long menu_timer;
             unsigned long menu_default_time;
@@ -186,7 +187,7 @@
             void    MENU_goBack();                                                    // move to the parent menu
             void    MENU_setCursor();                                                 // set the cursor to the current position in the menu 
             void    MENU_doScroll();                                                  // scroll the menu             
-            void    MENU_goMenu(LCDMenuLib2_menu &m);                                  // go to a menu element                          
+            void    MENU_goMenu(LCDMenuLib2_menu &p_m, uint8_t p_back);               // go to a menu element                          
             
             uint8_t MENU_countChilds();                                               // how many childs exists on next layer             
             uint8_t MENU_curlocCorrection();                                          // correction of the cursor position with hidden button
@@ -261,23 +262,23 @@
             boolean FUNC_close();                      
             void    FUNC_goBackToMenu(uint8_t e=0);    
             uint8_t FUNC_getID();                                   
-            void    FUNC_setLoopInterval(unsigned long t);
+            void    FUNC_setLoopInterval(unsigned long p_t);
             void    FUNC_disableScreensaver();
               
             // Timmer
-            boolean TIMER_ms(unsigned long &var, unsigned long t);  
-            void    TIMER_msReset(unsigned long &var);              
-            boolean TIMER_us(unsigned long &var, unsigned long t);  
-            void    TIMER_usReset(unsigned long &var);              
+            boolean TIMER_ms(unsigned long &p_var, unsigned long p_t);  
+            void    TIMER_msReset(unsigned long &p_var);              
+            boolean TIMER_us(unsigned long &p_var, unsigned long p_t);  
+            void    TIMER_usReset(unsigned long &p_var);              
             
             // Other
-            boolean OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t para=0);            
-            boolean OTHER_jumpToID(uint8_t p_search, uint8_t para=0);
+            boolean OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t p_para = 0);            
+            boolean OTHER_jumpToID(uint8_t p_search, uint8_t p_para = 0);
             boolean OTHER_setCursorToID(uint8_t p_search);
             boolean OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search);
 
             // Screensaver
-            void    SCREEN_enable(LCDML_FuncPtr_pu8 function, unsigned long t); 
+            void    SCREEN_enable(LCDML_FuncPtr_pu8 p_function, unsigned long p_t); 
             void    SCREEN_disable();                                           
             void    SCREEN_resetTimer();                                        
             void    SCREEN_start();

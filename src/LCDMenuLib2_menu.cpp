@@ -144,7 +144,7 @@ uint8_t LCDMenuLib2_menu::getID()
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2_menu::checkCondetion()
+boolean LCDMenuLib2_menu::checkCondition()
 /* ******************************************************************** */
 {
     if(cb_condetion != NULL)

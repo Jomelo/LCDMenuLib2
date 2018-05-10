@@ -81,7 +81,7 @@
             LCDMenuLib2_menu * getParent();                          // Returns this menu's parent menu.  If no parent, returns itself
             
             uint8_t getID();                                        // return the id of a menu element
-            boolean checkCondetion();                                 // check menu display condetion
+            boolean checkCondition();                                 // check menu display condetion
             uint8_t getParam();                                     // return a parameter which is set on the initialisation
             boolean checkType_menu();
             boolean checkType_dynParam();

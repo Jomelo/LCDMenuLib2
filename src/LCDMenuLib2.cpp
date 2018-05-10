@@ -225,11 +225,54 @@ void LCDMenuLib2::loop_menu()
     
     // Check Function
     if(activMenu != NULL)
-    {        
-        if(TIMER_ms(menu_timer, menu_default_time) || bitRead(funcReg, _LCDML_funcReg_setup) == 0 || button > 0) 
-        {            
-            FUNC_call(); 
+    {   
+        if(bitRead(funcReg, _LCDML_funcReg_end) == false && bitRead(funcReg, _LCDML_funcReg_goRoot) == false)
+        {
+            if(TIMER_ms(menu_timer, menu_default_time) == true || bitRead(funcReg, _LCDML_funcReg_setup) == false || button > 0) 
+            {  
+                FUNC_call();               
+                BT_resetAll();
+            }           
+        }
+        else
+        {   
+            // set this bit to call the FUNC_close function when the goRoot function is called 
+            bitSet(funcReg, _LCDML_funcReg_end);
+            
+            FUNC_call();    // call active function for save close;           
             BT_resetAll();
+            
+            activMenu = NULL;            
+           
+            bitClear(funcReg, _LCDML_funcReg_disable_screensaver);
+            bitClear(funcReg, _LCDML_funcReg_end);
+            bitClear(funcReg, _LCDML_funcReg_setup);
+            bitClear(funcReg, _LCDML_funcReg_jumpTo_w_para);
+
+            for(uint8_t i=0; i<goBackCnt; i++)
+            {
+                MENU_goBack();
+            }
+            goBackCnt = 0;
+            
+            if(bitRead(funcReg, _LCDML_funcReg_goRoot) == true)
+            {   
+                // set the cursor the the root position
+                bitClear(funcReg, _LCDML_funcReg_goRoot);
+                
+                curMenu     = rootMenu;                
+                layer       = 0;
+                cursor_pos  = 0;
+                curloc      = 0;
+                scroll      = 0;
+            }
+
+            if(bitRead(control, _LCDML_control_search_display) == false)
+            {
+                // only update the content when no jump function is active
+                MENU_display();
+                DISP_menuUpdate();                
+            }
         }
     } 
     else 
@@ -243,52 +286,35 @@ void LCDMenuLib2::loop_menu()
 void        LCDMenuLib2::MENU_goRoot()
 /* ******************************************************************** */
 {
-    DBG_println(LCDML_DBG_goRoot, "goRoot:_start");
-    
     if(activMenu != NULL) 
-    { 
-        DBG_println(LCDML_DBG_goRoot, "goRoot:_close_active_function");
-        bitSet(funcReg, _LCDML_funcReg_setup);  // disable setup
-        bitSet(funcReg, _LCDML_funcReg_end);    // disable loop, enable close
-        FUNC_call();  // call active function for save close;
-    } 
-    DBG_println(LCDML_DBG_goRoot, "goRoot:_reset_some_variables");
-    
-    BT_resetAll();
-    bitClear(funcReg, _LCDML_funcReg_disable_screensaver);
-    bitClear(funcReg, _LCDML_funcReg_end);
-    bitClear(funcReg, _LCDML_funcReg_setup);
-    
-    curMenu = rootMenu;
-    
-    layer = 0;
-    cursor_pos = 0;
-    curloc = 0;
-    scroll = 0;        
-
-    button = 0;    
-    
-    MENU_display();
-    
-    if(activMenu != NULL)
     {
-        DBG_println(LCDML_DBG_goRoot, "goRoot:_reset_active_menu_function");
-        activMenu = NULL;
+        bitSet(funcReg, _LCDML_funcReg_goRoot);
+    }
+    else
+    {
+        // check if root position is reached
+        BT_resetAll();        
+        
+        curMenu     = rootMenu;        
+        layer       = 0;
+        cursor_pos  = 0;
+        curloc      = 0;
+        scroll      = 0;  
+
         if(bitRead(control, _LCDML_control_search_display) == false)
         {
-             DISP_menuUpdate();
+            // only update the content when no jump function is active
+            MENU_display();
         }
-        bitClear(funcReg, _LCDML_funcReg_jumpTo_w_para);
     }
-    DBG_println(LCDML_DBG_goRoot, "goRoot:_end");
 }
 
 /* ******************************************************************** */
 uint8_t        LCDMenuLib2::MENU_curlocCorrection()
 /* ******************************************************************** */
 {
-    uint8_t    curloc_cor = 0;
-    uint8_t j = 0;
+    uint8_t curloc_cor  = 0;
+    uint8_t j           = 0;
     LCDMenuLib2_menu *tmp;
     
     //correct function / menu element to open for hidden menu elements
@@ -296,7 +322,7 @@ uint8_t        LCDMenuLib2::MENU_curlocCorrection()
     {
         do
         {
-            if (tmp->checkCondetion() || bitRead(control, _LCDML_control_disable_hidden)) 
+            if (tmp->checkCondition() || bitRead(control, _LCDML_control_disable_hidden)) 
             {
                 j++;
             }
@@ -317,11 +343,9 @@ void    LCDMenuLib2::MENU_goBack(void)
 /* ******************************************************************** */
 {    
     if(curMenu->getParent() != NULL)
-    {
-        //go back
-        bitWrite(control, _LCDML_control_menu_back, 1);
+    { 
         //set current menu object         
-        MENU_goMenu(*curMenu->getParent());       
+        MENU_goMenu(*curMenu->getParent(), true);       
     }     
 }
 
@@ -356,10 +380,10 @@ void    LCDMenuLib2::MENU_goInto(void)
                 {                    
                     while ((tmp = tmp->getSibling(0)) != NULL)
                     { 
-                        if (tmp->checkCondetion() || bitRead(control, _LCDML_control_disable_hidden)) 
+                        if (tmp->checkCondition() || bitRead(control, _LCDML_control_disable_hidden)) 
                         {                   
                             // Menu found, goInto
-                            MENU_goMenu(*curMenu->getChild(curloc + MENU_curlocCorrection()));
+                            MENU_goMenu(*curMenu->getChild(curloc + MENU_curlocCorrection()), false);
                             
                             if(bitRead(control, _LCDML_control_search_display) == false)
                             {
@@ -380,16 +404,18 @@ void    LCDMenuLib2::MENU_goInto(void)
 }
 
 /* ******************************************************************** */
-void    LCDMenuLib2::MENU_goMenu(LCDMenuLib2_menu &m)
+void    LCDMenuLib2::MENU_goMenu(LCDMenuLib2_menu &p_m, uint8_t p_back)
 /* ******************************************************************** */
 {
     //declare variables
     int diff;
 
-    curMenu = &m;
+    curMenu = &p_m;
             
-    if(layer < _LCDML_DISP_cfg_cursor_deep) { //check layer deep        
-        if(bitRead(control, _LCDML_control_menu_back) == 0) { //check back button        
+    if(layer < _LCDML_DISP_cfg_cursor_deep) //check layer deep  
+    {       
+        if(p_back == false) 
+        {          
             // go into the next layer
             // save old layer data
             layer_save[layer] = curloc;
@@ -399,22 +425,23 @@ void    LCDMenuLib2::MENU_goMenu(LCDMenuLib2_menu &m)
             scroll = 0;
             layer++;            
             // save parent id
-            if(layer < _LCDML_DISP_cfg_cursor_deep) {
+            if(layer < _LCDML_DISP_cfg_cursor_deep) 
+            {
                 parents[layer] = curMenu->getID();
             }            
             curloc = 0;
         } 
-        else {
-            //button reset
-            bitWrite(control, _LCDML_control_menu_back, 0);
-            
-            if(layer > 0) {                
+        else 
+        {   
+            if(layer > 0) 
+            {                
                 layer--; 
                 scroll = scroll_save[layer];
                 curloc = layer_save[layer];
 
-                if(curloc >= rows) {
-                    diff = curloc-(rows-1);
+                if(curloc >= rows) 
+                {
+                    diff = curloc - rows + 1;
                     for(int i=0; i<diff; i++) 
                     {                        
                         MENU_doScroll();
@@ -434,18 +461,23 @@ uint8_t    LCDMenuLib2::MENU_countChilds()
     LCDMenuLib2_menu *tmp;
     
     //check if element has childs
-    if ((tmp = curMenu->getChild(0)) != NULL) {    
+    if ((tmp = curMenu->getChild(0)) != NULL) 
+    {    
         do
         {                
-            if (tmp->checkCondetion() || bitRead(control, _LCDML_control_disable_hidden)) {                
+            if (tmp->checkCondition() || bitRead(control, _LCDML_control_disable_hidden)) 
+            {                
                 j++;
             } 
         } while ((tmp = tmp->getSibling(1)) != NULL);        
     }    
 
-    if(j == 0) {
+    if(j == 0) 
+    {
         return 0;
-    } else {    
+    } 
+    else 
+    {    
         return --j;
     }
 }
@@ -463,11 +495,10 @@ void    LCDMenuLib2::MENU_display(uint8_t update)
 {
     //declaration
     uint8_t i = scroll;
-    uint8_t maxi = (rows + scroll);
     LCDMenuLib2_menu *tmp;
         
     //check children
-    if ((tmp = curMenu->getChild(i))) 
+    if((tmp = curMenu->getChild(i))) 
     { 
         bitSet(control, _LCDML_control_disp_update);
     }    
@@ -502,7 +533,7 @@ void    LCDMenuLib2::MENU_doScroll()
 /* ******************************************************************** */
 {    
     //only allow it to go up to menu element   
-    while (curloc>0 && !curMenu->getChild(curloc))
+    while (curloc > 0 && curMenu->getChild(curloc) == false)
     {
         curloc--;
     }
@@ -558,10 +589,10 @@ uint8_t    LCDMenuLib2::FUNC_getID()
 }
 
 /* ******************************************************************** */
-void    LCDMenuLib2::FUNC_setLoopInterval(unsigned long t)
+void    LCDMenuLib2::FUNC_setLoopInterval(unsigned long p_t)
 /* ******************************************************************** */
 {
-    menu_default_time = t;
+    menu_default_time = p_t;
 }
 
 /* ******************************************************************** */
@@ -680,16 +711,15 @@ void LCDMenuLib2::FUNC_call()
         else
         {
             activMenu->callback(activMenu->getParam());
-        }
-        
+        }                 
     }
 }
 
 /* ******************************************************************** */
 boolean LCDMenuLib2::FUNC_setup()
 /* ******************************************************************** */
-{    
-    if(activMenu != NULL) 
+{
+    if(activMenu != NULL)
     {
         // function active 
         if(bitRead(funcReg, _LCDML_funcReg_setup) == 0) {           
@@ -701,77 +731,65 @@ boolean LCDMenuLib2::FUNC_setup()
         else
         {
             return false;
-        }         
-    } 
-    else 
-    {
-        bitClear(funcReg, _LCDML_funcReg_setup);
-        return false; 
-    }      
-}
-
-/* ******************************************************************** */
-boolean LCDMenuLib2::FUNC_loop()
-/* ******************************************************************** */
-{
-    if(activMenu != NULL) 
-    {
-        if(bitRead(funcReg, _LCDML_funcReg_end) == false) {
-            return true;
-        } else {
-            return false;
         }  
     }
     else
     {
-        return false;
-    }    
+        bitClear(funcReg, _LCDML_funcReg_setup); // run setup
+    }
+}
+
+/* ******************************************************************** */
+boolean LCDMenuLib2::FUNC_loop()
+/* ******************************************************************** */ 
+{  
+    if(activMenu != NULL)
+    {
+        if(bitRead(funcReg, _LCDML_funcReg_end) == false)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }   
+    else
+    {
+        bitClear(funcReg, _LCDML_funcReg_end);
+    }
 }
 
 /* ******************************************************************** */
 boolean LCDMenuLib2::FUNC_close()
 /* ******************************************************************** */
 {
-    if(activMenu != NULL) 
+    if(activMenu != NULL)
     {
-        if(bitRead(funcReg, _LCDML_funcReg_end) == true) 
+        if(bitRead(funcReg, _LCDML_funcReg_end) == true)
         {
-            bitClear(funcReg, _LCDML_funcReg_setup);
-            bitClear(funcReg, _LCDML_funcReg_jumpTo_w_para);            
-            activMenu = NULL;
             return true;
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
     else
     {
-        return false;
+        bitClear(funcReg, _LCDML_funcReg_end);
     }
 }
+  
 
 /* ******************************************************************** */
-void LCDMenuLib2::FUNC_goBackToMenu(uint8_t e)
+void LCDMenuLib2::FUNC_goBackToMenu(uint8_t p_e)
 /* ******************************************************************** */
 {
     if(activMenu != NULL) 
-    {       
-        bitSet(funcReg, _LCDML_funcReg_end);         
-        FUNC_call();  // call active function for save close;
-        bitClear(funcReg, _LCDML_funcReg_jumpTo_w_para);
-        activMenu = NULL; 
-
-        BT_resetAll();
-        bitClear(funcReg, _LCDML_funcReg_disable_screensaver);
-        bitClear(funcReg, _LCDML_funcReg_end);
-        bitClear(funcReg, _LCDML_funcReg_setup);       
-       
-        for(uint8_t i=0; i<e; i++)
-        {
-            MENU_goBack();
-        }
-        MENU_display();
-        DISP_menuUpdate(); 
+    {    
+        goBackCnt = p_e;
+        bitSet(funcReg, _LCDML_funcReg_end);
     }       
 }
 
@@ -786,7 +804,7 @@ void    LCDMenuLib2::FUNC_disableScreensaver()
 boolean LCDMenuLib2::BT_setup()
 /* ******************************************************************** */
 {
-    if(bitRead(control, _LCDML_control_setup) == 0) 
+    if(bitRead(control, _LCDML_control_setup) == false) 
     {
         bitSet(control, _LCDML_control_setup);
         return true;
@@ -862,19 +880,19 @@ void LCDMenuLib2::BT_resetQuit()         { bitClear(button, _LCDML_button_quit);
 
 
 /* ******************************************************************** */
-void    LCDMenuLib2::TIMER_msReset(unsigned long &var)
+void    LCDMenuLib2::TIMER_msReset(unsigned long &p_var)
 /* ******************************************************************** */
 {
-    var = millis();
+    p_var = millis();
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::TIMER_ms(unsigned long &var, unsigned long t)
+boolean LCDMenuLib2::TIMER_ms(unsigned long &p_var, unsigned long p_t)
 /* ******************************************************************** */
 {
-    if((millis() - var) >= t) 
+    if((millis() - p_var) >= p_t) 
     {
-        var = millis(); 
+        p_var = millis(); 
         return true;
     }
     else
@@ -884,19 +902,19 @@ boolean LCDMenuLib2::TIMER_ms(unsigned long &var, unsigned long t)
 }
 
 /* ******************************************************************** */
-void    LCDMenuLib2::TIMER_usReset(unsigned long &var)
+void    LCDMenuLib2::TIMER_usReset(unsigned long &p_var)
 /* ******************************************************************** */
 {
-    var = micros();
+    p_var = micros();
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::TIMER_us(unsigned long &var, unsigned long t)
+boolean LCDMenuLib2::TIMER_us(unsigned long &p_var, unsigned long p_t)
 /* ******************************************************************** */
 {
-    if((micros() - var) >= t) 
+    if((micros() - p_var) >= p_t) 
     {
-        var = micros(); 
+        p_var = micros(); 
         return true;
     }
     else
@@ -931,9 +949,7 @@ boolean     LCDMenuLib2::OTHER_searchFunction(LCDMenuLib2_menu &p_m, uint8_t mod
             }
             else
             { 
-                DBG_println(LCDML_DBG_search, "");
-                
-                
+                DBG_println(LCDML_DBG_search, ""); 
                 
                 // check if an element have a child or children            
                 if (search->getChild(0) != NULL) 
@@ -977,15 +993,22 @@ boolean     LCDMenuLib2::OTHER_searchFunction(LCDMenuLib2_menu &p_m, uint8_t mod
     return found; //found;    
 }
 
-
-boolean LCDMenuLib2::OTHER_helpFunction(uint8_t mode, LCDML_FuncPtr_pu8 p_search, uint8_t p_id, uint8_t para)
+/* ******************************************************************** */
+boolean LCDMenuLib2::OTHER_helpFunction(uint8_t mode, LCDML_FuncPtr_pu8 p_search, uint8_t p_id, uint8_t p_para)
+/* ******************************************************************** */
 {
     boolean found = false;
     
     bitSet(control, _LCDML_control_disable_hidden);  
     bitSet(control, _LCDML_control_search_display); 
-    // got to root
+    
+    // got to root    
     MENU_goRoot();
+    if(activMenu != NULL)
+    {
+        // this function called be recursive (only once)
+        loop_menu();
+    }
     
     // search element
     switch(mode)
@@ -1019,7 +1042,7 @@ boolean LCDMenuLib2::OTHER_helpFunction(uint8_t mode, LCDML_FuncPtr_pu8 p_search
             case 1: // jumpToID  
                 // set jump param flag 
                 bitSet(funcReg, _LCDML_funcReg_jumpTo_w_para);
-                jumpTo_w_para = para;
+                jumpTo_w_para = p_para;
                 // open menu element
                 MENU_goInto();
                 break;
@@ -1046,21 +1069,44 @@ boolean LCDMenuLib2::OTHER_helpFunction(uint8_t mode, LCDML_FuncPtr_pu8 p_search
    
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t para) { MENU_enScroll(); return OTHER_helpFunction(0, p_search, 0, para); }
-boolean LCDMenuLib2::OTHER_jumpToID(uint8_t p_id, uint8_t para)                 { MENU_enScroll(); return OTHER_helpFunction(1, NULL, p_id, para); }
-boolean LCDMenuLib2::OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search)          { MENU_enScroll(); return OTHER_helpFunction(2, p_search, 0, 0); }
-boolean LCDMenuLib2::OTHER_setCursorToID(uint8_t p_id)                          { MENU_enScroll(); return OTHER_helpFunction(3, NULL, p_id, 0); }
-/* ******************************************************************** */
-
-
-
+boolean LCDMenuLib2::OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t p_para)
+/* ******************************************************************** */ 
+{ 
+    MENU_enScroll(); 
+    return OTHER_helpFunction(0, p_search, 0, p_para); 
+}
 
 /* ******************************************************************** */
-void    LCDMenuLib2::SCREEN_enable(LCDML_FuncPtr_pu8 function, unsigned long t)
+boolean LCDMenuLib2::OTHER_jumpToID(uint8_t p_id, uint8_t p_para)         
+/* ******************************************************************** */        
+{ 
+    MENU_enScroll(); 
+    return OTHER_helpFunction(1, NULL, p_id, p_para); 
+}
+
+/* ******************************************************************** */
+boolean LCDMenuLib2::OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search)    
+/* ******************************************************************** */        
+{ 
+    MENU_enScroll(); 
+    return OTHER_helpFunction(2, p_search, 0, 0); 
+}
+
+/* ******************************************************************** */
+boolean LCDMenuLib2::OTHER_setCursorToID(uint8_t p_id)                    
+/* ******************************************************************** */        
+{ 
+    MENU_enScroll(); 
+    return OTHER_helpFunction(3, NULL, p_id, 0); 
+}
+
+
+/* ******************************************************************** */
+void    LCDMenuLib2::SCREEN_enable(LCDML_FuncPtr_pu8 function, unsigned long p_t)
 /* ******************************************************************** */
 {
-    cb_screensaver = function;
-    screensaver_default_time = t;    
+    cb_screensaver           = function;
+    screensaver_default_time = p_t;    
 }
 
 /* ******************************************************************** */
@@ -1081,7 +1127,7 @@ void    LCDMenuLib2::SCREEN_resetTimer()
 void    LCDMenuLib2::SCREEN_start()
 /* ******************************************************************** */
 {
-    screensaver_timer = millis()+1000;
+    screensaver_timer = millis() + 1000;
 }
 
 /* ******************************************************************** */
