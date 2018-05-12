@@ -127,9 +127,9 @@ void LCDMenuLib2::loop_menu()
 
             // -- UP --
             if(BT_checkUp() == true)
-            {
+            {               
                 if(bitRead(funcReg, _LCDML_funcReg_disable_scroll) == false)
-                {
+                {                   
                     if (curloc > 0) {
                         curloc--;
                         MENU_doScroll();
@@ -149,13 +149,14 @@ void LCDMenuLib2::loop_menu()
                             MENU_display();
                         }
                     }
+                    MENU_setCursor();
                     DISP_menuUpdate();
                 }
                 else
-                {
+                {                    
                     MENU_display();
                     DISP_menuUpdate();
-                }
+                }                
             }
 
             // -- DOWN --
@@ -178,10 +179,11 @@ void LCDMenuLib2::loop_menu()
                             MENU_display();
                         }
                     }
+                    MENU_setCursor();
                     DISP_menuUpdate();
                 }
                 else
-                {
+                {                    
                     MENU_display();
                     DISP_menuUpdate();
                 }
