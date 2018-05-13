@@ -36,28 +36,35 @@ void mDyn_para(uint8_t line)
 
         // do something
         // ...
+        
+        LCDML.BT_resetEnter();
       }
 
       // This check have only an effect when MENU_disScroll is set
       if(LCDML.BT_checkUp())
       {
         g_dynParam++;
+        LCDML.BT_resetUp();
       }
 
       // This check have only an effect when MENU_disScroll is set
       if(LCDML.BT_checkDown())
       {
         g_dynParam--;
+        LCDML.BT_resetDown();
       }
 
 
       if(LCDML.BT_checkLeft())
       {
         g_dynParam++;
+        LCDML.BT_resetLeft();
       }
+      
       if(LCDML.BT_checkRight())
       {
         g_dynParam--;
+        LCDML.BT_resetRight();
       }
     }
   }
