@@ -4,28 +4,28 @@ Arduino LCDMenuLib2 (LCDML) with layers for any LCD Type (Row Displays, Graphic 
 https://github.com/Jomelo/LCDMenuLib2/wiki
 
 Features:
-*  max 254 menu elements												
+*  max 254 menu elements
 *  max 254 menu elements per layer
-*  based on a tree model (parent, child, sibling)								      			
-*  max support for 6 buttons up, down, left, right, back/quit, enter  
-*  min 3 buttons needed up, down, enter                               
-*  separation of structural and functional level                     
-*  support for screensaver which is shown after x secounds
-*  display a scrollbar when more menu elments in a layer then display rows
+*  based on a tree model (parent, child, sibling)
+*  max support for 6 buttons up, down, left, right, back/quit, enter
+*  min 3 buttons needed up, down, enter
+*  separation of structural and functional level
+*  support for screensaver which is shown after x seconds
+*  display a scrollbar when more menu elements in a layer then display rows
 *  the menu function are only updated when a button is hit or a trigger is set
 *  it is possible to set special conditions to display an element
 *  it is possible to change parameter direct from the menu
-*  possibility to jump from one menu elment directly to another       
-*  examples for many different lcd librarys 
+*  possibility to jump from one menu element directly to another
+*  examples for many different LCD libraries
 *  examples for different functionality (change param, set params, ...)
 
 
 Attention:
 *  when you change from LCDMenuLib v2.3.4 to LCDMenuLib2 v1.0.0 or higher
-** the backend system is removed from this lib use this when you need a task system: https://github.com/arkhipenko/TaskScheduler	
+** the backend system is removed from this lib use this when you need a task system: https://github.com/arkhipenko/TaskScheduler
 
 
-Description (german):
+Description (German):
 http://forum.arduino.cc/index.php?topic=73816.0
 
 Images:
