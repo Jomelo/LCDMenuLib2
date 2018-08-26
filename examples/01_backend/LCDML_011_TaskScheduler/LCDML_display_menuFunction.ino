@@ -51,7 +51,15 @@ void mFunc_thread_start(uint8_t param)
   {
     // setup
     // start thread 
-    t2.enable();
+    if(t2.isEnabled() == false)
+    {
+      t2.enable();
+    }
+    else
+    {
+      Serial.println("is enabled");
+    }
+    
 
     // end function and go an layer back
     LCDML.FUNC_goBackToMenu(1);      // leave this function
@@ -67,7 +75,14 @@ void mFunc_thread_stop(uint8_t param)
   {
     // setup
     // stop thread
-    t2.disable();
+    if(t2.isEnabled() == true)
+    {
+      t2.disable();
+    }
+    else
+    {
+      Serial.println("is disabled");
+    }
 
     // end function and go an layer back
     LCDML.FUNC_goBackToMenu(1);      // leave this function
