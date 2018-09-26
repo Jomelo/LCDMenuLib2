@@ -219,7 +219,7 @@ void LCDMenuLib2::loop_menu()
             // reset all buttons
             BT_resetAll();
         }
-        else
+/*         else
         {
             // -- QUIT Part 2 --
             if(BT_checkQuit() == true)
@@ -228,7 +228,7 @@ void LCDMenuLib2::loop_menu()
                 FUNC_goBackToMenu();
                 BT_resetQuit();
             }
-        }
+        } */
     }
 
     // Check Function
