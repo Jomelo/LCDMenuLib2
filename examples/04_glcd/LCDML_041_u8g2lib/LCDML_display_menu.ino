@@ -55,10 +55,17 @@ void lcdml_menu_display()
     {
       // loop to display lines
       do
+<<<<<<< HEAD:examples/04_glcd/LCDML_041_u8g2lib/LCDML_DISP.ino
+      {            
+        // check if a menu element has a condition and if the condition be true               
+        if (tmp->checkCondition()) 
+        {          
+=======
       {
         // check if a menu element has a condition and if the condition be true
         if (tmp->checkCondition())
         {
+>>>>>>> upstream/master:examples/04_glcd/LCDML_041_u8g2lib/LCDML_display_menu.ino
           // check the type off a menu element
           if(tmp->checkType_menu() == true)
           {

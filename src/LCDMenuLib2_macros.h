@@ -92,10 +92,17 @@
             if(element_id < _LCDML_NO_FUNC && (sizeof(g_LCDML_DISP_lang_table)-1) >= element_id) {\
                 strcpy_P(var, (char*)(g_LCDML_DISP_lang_table[element_id]));\
             }
+<<<<<<< HEAD
+            
+    #endif     
+         
+    //Menu Item Types        
+=======
 
     #endif
 
     //Menu Item Types
+>>>>>>> upstream/master
     #define LCDML_addAdvanced(id, parent, child, condition, content, callback, param, settings) \
         LCDML_LANG_DEF(id, content); \
         LCDMenuLib2_menu parent ## _ ## child(id, param, settings, callback, condition ); \

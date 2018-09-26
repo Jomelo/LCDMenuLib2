@@ -57,10 +57,17 @@
             LCDMenuLib2_menu * parent;                               // Parent menu, NULL if this is the top
             LCDMenuLib2_menu * child;                                // First child menu, NULL if no children
             LCDMenuLib2_menu * sibling;                              // Next sibling menu, NULL if this is the last sibling
+<<<<<<< HEAD
+            
+            LCDML_FuncPtr_pu8 cb_function;                          // Menu Funktion callback            
+            LCDML_FuncPtr_rb  cb_condition;                         // Menu Condition callback
+            
+=======
 
             LCDML_FuncPtr_pu8 cb_function;                          // Menu Function callback
             LCDML_FuncPtr_rb  cb_condition;                         // Menu Condition callback
 
+>>>>>>> upstream/master
             void setParent(LCDMenuLib2_menu &p);                     // Sets the menu's parent to p
             void addSibling(LCDMenuLib2_menu &s,LCDMenuLib2_menu &p); // Adds a sibling s with parent p.  If the menu already has a sibling, ask that sibling to add it
 
@@ -70,8 +77,13 @@
 
         public:
              // Constructs the menu with a name and a NULL use function (be careful calling it)
+<<<<<<< HEAD
+            LCDMenuLib2_menu(uint8_t p_id, uint8_t p_param, uint8_t p_configuration, LCDML_FuncPtr_pu8 p_callback_function, LCDML_FuncPtr_rb p_condition_function);           
+            
+=======
             LCDMenuLib2_menu(uint8_t p_id, uint8_t p_param, uint8_t p_configuration, LCDML_FuncPtr_pu8 p_callback_function, LCDML_FuncPtr_rb p_condition_function);
 
+>>>>>>> upstream/master
             LCDML_FuncPtr_pu8 getCbFunction();
 
             void addChild(LCDMenuLib2_menu &c);                      // Adds the child c to the menu.
@@ -82,7 +94,11 @@
 
             uint8_t getID();                                        // return the id of a menu element
             boolean checkCondition();                                 // check menu display condition
+<<<<<<< HEAD
+            uint8_t getParam();                                     // return a parameter which is set on the initialisation
+=======
             uint8_t getParam();                                     // return a parameter which is set on the initialization
+>>>>>>> upstream/master
             boolean checkType_menu();
             boolean checkType_dynParam();
 

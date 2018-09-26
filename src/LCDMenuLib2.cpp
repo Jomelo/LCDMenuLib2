@@ -120,9 +120,15 @@ void LCDMenuLib2::loop_menu()
             // -- ENTER --
             if(BT_checkEnter() == true)
             {
+<<<<<<< HEAD
+                //menu is active      
+                MENU_goInto();
+	            bitSet(control, _LCDML_control_update_direct);
+=======
                 //menu is active
                 MENU_goInto();
                 bitSet(control, _LCDML_control_update_direct);
+>>>>>>> upstream/master
             }
 
             // -- UP --
@@ -213,7 +219,7 @@ void LCDMenuLib2::loop_menu()
             // reset all buttons
             BT_resetAll();
         }
-        else
+/*         else
         {
             // -- QUIT Part 2 --
             if(BT_checkQuit() == true)
@@ -222,7 +228,7 @@ void LCDMenuLib2::loop_menu()
                 FUNC_goBackToMenu();
                 BT_resetQuit();
             }
-        }
+        } */
     }
 
     // Check Function
@@ -324,7 +330,11 @@ uint8_t        LCDMenuLib2::MENU_curlocCorrection()
     {
         do
         {
+<<<<<<< HEAD
+            if (tmp->checkCondition() || bitRead(control, _LCDML_control_disable_hidden)) 
+=======
             if (tmp->checkCondition() || bitRead(control, _LCDML_control_disable_hidden))
+>>>>>>> upstream/master
             {
                 j++;
             }
@@ -381,9 +391,15 @@ void    LCDMenuLib2::MENU_goInto(void)
                 if(tmp->getChild(0) != NULL)
                 {
                     while ((tmp = tmp->getSibling(0)) != NULL)
+<<<<<<< HEAD
+                    { 
+                        if (tmp->checkCondition() || bitRead(control, _LCDML_control_disable_hidden)) 
+                        {                   
+=======
                     {
                         if (tmp->checkCondition() || bitRead(control, _LCDML_control_disable_hidden))
                         {
+>>>>>>> upstream/master
                             // Menu found, goInto
                             MENU_goMenu(*curMenu->getChild(curloc + MENU_curlocCorrection()), false);
 
@@ -466,9 +482,14 @@ uint8_t    LCDMenuLib2::MENU_countChilds()
     if ((tmp = curMenu->getChild(0)) != NULL)
     {
         do
+<<<<<<< HEAD
+        {                
+            if (tmp->checkCondition() || bitRead(control, _LCDML_control_disable_hidden)) {                
+=======
         {
             if (tmp->checkCondition() || bitRead(control, _LCDML_control_disable_hidden))
             {
+>>>>>>> upstream/master
                 j++;
             }
         } while ((tmp = tmp->getSibling(1)) != NULL);
