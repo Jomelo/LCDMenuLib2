@@ -1,58 +1,27 @@
 // ============================================================
-// Example:     LCDML: graphic display with u8g
-// ============================================================
-// Author:      Nils Feldkämper
-// Last update: 21.01.2018
-// License:     MIT
+// Example:     LCDML_dynamic_file_list
 // ============================================================
 // Description:
-// This example shows how to use the u8glib with the LCDMenuLib
-// The menu can placed in a box that can be placed anywhere on
-// the screen.
+// This example includes the complete functionality over some
+// tabs. All Tabs which are started with "LCDML_display_.."
+// generates an output on the display / console / ....
+// This example is for the author to test the complete functionality
+// 
+// This example shows how a dynamic file list can be added
+// Program->Program 1-> Filelist
 // ============================================================
 
-  // include libs
+// *********************************************************************
+// includes
+// *********************************************************************
   #include <LCDMenuLib2.h>
-  #include <U8glib.h>
 
 // *********************************************************************
-// U8GLIB
+// LCDML display settings
 // *********************************************************************
-  // setup u8g object, please remove comment from one of the following constructor calls
-  // IMPORTANT NOTE: The following list is incomplete. The complete list of supported
-  // devices with all constructor calls is here: https://github.com/olikraus/u8glib/wiki/device
-  U8GLIB_ST7920_128X64 u8g(52, 51, 53, U8G_PIN_NONE);
-
-  // settings for u8g lib and LCD
-  #define _LCDML_DISP_w                 128            // LCD width
-  #define _LCDML_DISP_h                 64             // LCD height
-  // font settings
-  #define _LCDML_DISP_font              u8g_font_6x13  // u8glib font (more fonts under u8g.h line 1520 ...)
-  #define _LCDML_DISP_font_w            6              // font width
-  #define _LCDML_DISP_font_h            13             // font height
-  // cursor settings
-  #define _LCDML_DISP_cursor_char       "X"            // cursor char
-  #define _LCDML_DISP_cur_space_before  2              // cursor space between
-  #define _LCDML_DISP_cur_space_behind  4              // cursor space between
-  // menu position and size
-  #define _LCDML_DISP_box_x0            0              // start point (x0, y0)
-  #define _LCDML_DISP_box_y0            0              // start point (x0, y0)
-  #define _LCDML_DISP_box_x1            128            // width x  (x0 + width)
-  #define _LCDML_DISP_box_y1            64             // hight y  (y0 + height)
-  #define _LCDML_DISP_draw_frame        1              // draw a box around the menu
-   // scrollbar width
-  #define _LCDML_DISP_scrollbar_w       6  // scrollbar width (if this value is < 3, the scrollbar is disabled)
-
-  // nothing change here
-  #define _LCDML_DISP_cols_max          ((_LCDML_DISP_box_x1-_LCDML_DISP_box_x0)/_LCDML_DISP_font_w)
-  #define _LCDML_DISP_rows_max          ((_LCDML_DISP_box_y1-_LCDML_DISP_box_y0-((_LCDML_DISP_box_y1-_LCDML_DISP_box_y0)/_LCDML_DISP_font_h))/_LCDML_DISP_font_h)
-
-  // rows and cols
-  // when you use more rows or cols as allowed change in LCDMenuLib.h the define "_LCDML_DISP_cfg_max_rows" and "_LCDML_DISP_cfg_max_string_length"
-  // the program needs more ram with this changes
-  #define _LCDML_DISP_rows              _LCDML_DISP_rows_max  // max rows
-  #define _LCDML_DISP_cols              20                   // max cols
-
+  // settings for LCD
+  #define _LCDML_DISP_cols  20
+  #define _LCDML_DISP_rows  4
 
 // *********************************************************************
 // Prototypes
@@ -61,13 +30,20 @@
   void lcdml_menu_clear();
   void lcdml_menu_control();
 
-
 // *********************************************************************
 // Objects
 // *********************************************************************
   LCDMenuLib2_menu LCDML_0 (255, 0, 0, NULL, NULL); // root menu element (do not change)
   LCDMenuLib2 LCDML(LCDML_0, _LCDML_DISP_rows, _LCDML_DISP_cols, lcdml_menu_display, lcdml_menu_clear, lcdml_menu_control);
 
+// *********************************************************************
+// LCDML MENU/DISP
+// *********************************************************************
+  // LCDML_0        => layer 0
+  // LCDML_0_X      => layer 1
+  // LCDML_0_X_X    => layer 2
+  // LCDML_0_X_X_X  => layer 3
+  // LCDML_0_...      => layer ...
 
 // *********************************************************************
 // LCDML MENU/DISP
@@ -84,7 +60,7 @@
   LCDML_add         (1  , LCDML_0         , 2  , "Time info"        , mFunc_timer_info);        // this menu function can be found on "LCDML_display_menuFunction" tab
   LCDML_add         (2  , LCDML_0         , 3  , "Program"          , NULL);                    // NULL = no menu function
   LCDML_add         (3  , LCDML_0_3       , 1  , "Program 1"        , NULL);                    // NULL = no menu function
-  LCDML_add         (4  , LCDML_0_3_1     , 1  , "P1 dummy"         , NULL);                    // NULL = no menu function
+  LCDML_add         (4  , LCDML_0_3_1     , 1  , "Filelist"         , mFunc_filelist);          // Add an filelist which can be scrolled
   LCDML_add         (5  , LCDML_0_3_1     , 2  , "P1 Settings"      , NULL);                    // NULL = no menu function
   LCDML_add         (6  , LCDML_0_3_1_2   , 1  , "Warm"             , NULL);                    // NULL = no menu function
   LCDML_add         (7  , LCDML_0_3_1_2   , 2  , "Cold"             , NULL);                    // NULL = no menu function
@@ -96,7 +72,6 @@
   LCDML_add         (13 , LCDML_0_4       , 1  , "Go to Root"       , mFunc_goToRootMenu);      // this menu function can be found on "LCDML_display_menuFunction" tab
   LCDML_add         (14 , LCDML_0_4       , 2  , "Jump to Time info", mFunc_jumpTo_timer_info); // this menu function can be found on "LCDML_display_menuFunction" tab
   LCDML_add         (15 , LCDML_0_4       , 3  , "Back"             , mFunc_back);              // this menu function can be found on "LCDML_display_menuFunction" tab
-
 
   // Advanced menu (for profit) part with more settings
   // Example for one function and different parameters
@@ -132,9 +107,6 @@
   // create menu
   LCDML_createMenu(_LCDML_DISP_cnt);
 
-
-
-
 // *********************************************************************
 // SETUP
 // *********************************************************************
@@ -147,8 +119,10 @@
     // LCDMenuLib Setup
     LCDML_setup(_LCDML_DISP_cnt);
 
+    // Some settings which can be used
+
     // Enable Menu Rollover
-    LCDML.MENU_enRollover();
+    //LCDML.MENU_enRollover();
 
     // Enable Screensaver (screensaver menu function, time to activate in ms)
     LCDML.SCREEN_enable(mFunc_screensaver, 10000); // set to 10 seconds
@@ -165,22 +139,12 @@
 // *********************************************************************
   void loop()
   {
-    // this function must called here, do not delete it
     LCDML.loop();
   }
-
 
 // *********************************************************************
 // check some errors - do not change here anything
 // *********************************************************************
 # if(_LCDML_DISP_rows > _LCDML_DISP_cfg_max_rows)
 # error change value of _LCDML_DISP_cfg_max_rows in LCDMenuLib2.h
-# endif
-
-# if(_LCDML_glcd_tft_box_x1 > _LCDML_glcd_tft_w)
-# error _LCDML_glcd_tft_box_x1 is to big
-# endif
-
-# if(_LCDML_glcd_tft_box_y1 > _LCDML_glcd_tft_h)
-# error _LCDML_glcd_tft_box_y1 is to big
 # endif

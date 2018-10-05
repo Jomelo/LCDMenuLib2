@@ -43,6 +43,51 @@ void your_function_name(uint8_t param)
  * ===================================================================== *
  */
 
+// *********************************************************************
+void mFunc_thread_start(uint8_t param)
+// *********************************************************************
+{
+  if(LCDML.FUNC_setup())          // ****** SETUP *********
+  {
+    // setup
+    // start thread 
+    if(t2.isEnabled() == false)
+    {
+      t2.enable();
+    }
+    else
+    {
+      Serial.println("is enabled");
+    }
+    
+
+    // end function and go an layer back
+    LCDML.FUNC_goBackToMenu(1);      // leave this function
+  } 
+}
+
+
+// *********************************************************************
+void mFunc_thread_stop(uint8_t param)
+// *********************************************************************
+{
+  if(LCDML.FUNC_setup())          // ****** SETUP *********
+  {
+    // setup
+    // stop thread
+    if(t2.isEnabled() == true)
+    {
+      t2.disable();
+    }
+    else
+    {
+      Serial.println("is disabled");
+    }
+
+    // end function and go an layer back
+    LCDML.FUNC_goBackToMenu(1);      // leave this function
+  } 
+}
 
 // *********************************************************************
 void mFunc_information(uint8_t param)
