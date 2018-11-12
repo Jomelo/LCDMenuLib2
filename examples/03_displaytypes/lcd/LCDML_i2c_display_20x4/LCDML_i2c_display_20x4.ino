@@ -1,5 +1,5 @@
 // ============================================================
-// Example:     LCDML_serialmonitor
+// Example:     DisplayType - I2C LiquidCrystal 
 // ============================================================
 // Description:
 // This example includes the complete functionality over some

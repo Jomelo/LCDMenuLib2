@@ -1,40 +1,66 @@
 // ============================================================
-// Example:     LCDML_serialmonitor
+// Example:     LCDML: use ADAFRUIT i2c display ssd1306 
+// ============================================================
+// Author:      Nils Feldkämper
+// Last update: 12.11.2018
+// License:     MIT
 // ============================================================
 // Description:
-// This example includes the complete functionality over some
-// tabs. All Tabs which are started with "LCDML_display_.."
-// generates an output on the display / console / ....
-// This example is for the author to test the complete functionality
+// This example shows how to use the adafruit gfx library
+// with the LCDMenuLib.
+// The menu can placed in a box that can be placed anywhere on
+// the screen.
 // ============================================================
 
-// *********************************************************************
-// includes
-// *********************************************************************
-  #include <LiquidCrystal.h>
-  #include <LCDMenuLib2.h>
+  // include libs
+  #include <LCDMenuLib2.h>  
+
+  #include <SPI.h>
+  #include <Wire.h>
+  #include <Adafruit_GFX.h>
+  #include <Adafruit_SSD1306.h>
 
 // *********************************************************************
-// LCDML display settings
+// Adufruit SSD1306
 // *********************************************************************
-  // settings for LCD
-  #define _LCDML_DISP_cols  20
-  #define _LCDML_DISP_rows  4
+  // http://blog.simtronyx.de/ein-096-zoll-oled-display-i%C2%B2c-mit-128x64-pixel-und-ein-arduino/
 
-  #define _LCDML_DISP_cfg_cursor                     0x7E   // cursor Symbol
-  #define _LCDML_DISP_cfg_scrollbar                  1      // enable a scrollbar
+  #define _ADAFRUIT_I2C_ADR    0x3C
 
-  // LCD object
-  // liquid crystal needs (rs, e, dat4, dat5, dat6, dat7)
-  LiquidCrystal lcd(22, 24, 9, 10, 11, 12);
+  #define _ADAFRUIT_I2C_ADR    0x3C
+  #define _LCDML_ADAFRUIT_TEXT_COLOR WHITE 
+  
+  #define _LCDML_ADAFRUIT_FONT_SIZE   1   
+  #define _LCDML_ADAFRUIT_FONT_W      (6*_LCDML_ADAFRUIT_FONT_SIZE)             // font width 
+  #define _LCDML_ADAFRUIT_FONT_H      (8*_LCDML_ADAFRUIT_FONT_SIZE)             // font heigt 
+  
+  // settings for u8g lib and lcd
+  #define _LCDML_ADAFRUIT_lcd_w       128            // lcd width
+  #define _LCDML_ADAFRUIT_lcd_h       64             // lcd height
+ 
+  
+  
+  #define OLED_RESET 4 // not used / nicht genutzt bei diesem Display
+  Adafruit_SSD1306 display(OLED_RESET);
 
-  const uint8_t scroll_bar[5][8] = {
-    {B10001, B10001, B10001, B10001, B10001, B10001, B10001, B10001}, // scrollbar top
-    {B11111, B11111, B10001, B10001, B10001, B10001, B10001, B10001}, // scroll state 1
-    {B10001, B10001, B11111, B11111, B10001, B10001, B10001, B10001}, // scroll state 2
-    {B10001, B10001, B10001, B10001, B11111, B11111, B10001, B10001}, // scroll state 3
-    {B10001, B10001, B10001, B10001, B10001, B10001, B11111, B11111}  // scrollbar bottom
-  };
+  // nothing change here
+  #define _LCDML_ADAFRUIT_cols_max    (_LCDML_ADAFRUIT_lcd_w/_LCDML_ADAFRUIT_FONT_W)  
+  #define _LCDML_ADAFRUIT_rows_max    (_LCDML_ADAFRUIT_lcd_h/_LCDML_ADAFRUIT_FONT_H) 
+
+  // rows and cols 
+  // when you use more rows or cols as allowed change in LCDMenuLib.h the define "_LCDML_DISP_cfg_max_rows" and "_LCDML_DISP_cfg_max_string_length"
+  // the program needs more ram with this changes
+  #define _LCDML_ADAFRUIT_cols        20                   // max cols
+  #define _LCDML_ADAFRUIT_rows        _LCDML_ADAFRUIT_rows_max  // max rows 
+
+
+  // scrollbar width
+  #define _LCDML_ADAFRUIT_scrollbar_w 6  // scrollbar width 
+
+  // old defines with new content
+  #define _LCDML_DISP_cols      _LCDML_ADAFRUIT_cols
+  #define _LCDML_DISP_rows      _LCDML_ADAFRUIT_rows 
+
 
 // *********************************************************************
 // Prototypes
@@ -43,16 +69,13 @@
   void lcdml_menu_clear();
   void lcdml_menu_control();
 
-// *********************************************************************
-// Global variables
-// *********************************************************************
-
 
 // *********************************************************************
 // Objects
 // *********************************************************************
   LCDMenuLib2_menu LCDML_0 (255, 0, 0, NULL, NULL); // root menu element (do not change)
   LCDMenuLib2 LCDML(LCDML_0, _LCDML_DISP_rows, _LCDML_DISP_cols, lcdml_menu_display, lcdml_menu_clear, lcdml_menu_control);
+
 
 // *********************************************************************
 // LCDML MENU/DISP
@@ -117,6 +140,9 @@
   // create menu
   LCDML_createMenu(_LCDML_DISP_cnt);
 
+
+
+
 // *********************************************************************
 // SETUP
 // *********************************************************************
@@ -126,19 +152,23 @@
     Serial.begin(9600);                // start serial
     Serial.println(F(_LCDML_VERSION)); // only for examples
 
-    // LCD Begin
-    lcd.begin(_LCDML_DISP_cols,_LCDML_DISP_rows);
-    // set special chars for scrollbar
-    lcd.createChar(0, (uint8_t*)scroll_bar[0]);
-    lcd.createChar(1, (uint8_t*)scroll_bar[1]);
-    lcd.createChar(2, (uint8_t*)scroll_bar[2]);
-    lcd.createChar(3, (uint8_t*)scroll_bar[3]);
-    lcd.createChar(4, (uint8_t*)scroll_bar[4]);
+    /* INIT DISPLAY */
+    // initialize with the I2C addr / mit I2C-Adresse initialisieren
+    display.begin(SSD1306_SWITCHCAPVCC, _ADAFRUIT_I2C_ADR);
+    
+    // clear lcd
+    display.clearDisplay();
+    // set text color / Textfarbe setzen
+    display.setTextColor(_LCDML_ADAFRUIT_TEXT_COLOR);  
+    // set text size / Textgroesse setzen
+    display.setTextSize(_LCDML_ADAFRUIT_FONT_SIZE);
+    display.setCursor(0, _LCDML_ADAFRUIT_FONT_H * (3));
+    display.println("LCDMenuLib v2.1.4 alpha");
+    display.display();
 
+    /* INIT LCDML */
     // LCDMenuLib Setup
     LCDML_setup(_LCDML_DISP_cnt);
-
-    // Some settings which can be used
 
     // Enable Menu Rollover
     LCDML.MENU_enRollover();
@@ -158,12 +188,22 @@
 // *********************************************************************
   void loop()
   {
+    // this function must called here, do not delete it
     LCDML.loop();
   }
+
 
 // *********************************************************************
 // check some errors - do not change here anything
 // *********************************************************************
 # if(_LCDML_DISP_rows > _LCDML_DISP_cfg_max_rows)
 # error change value of _LCDML_DISP_cfg_max_rows in LCDMenuLib2.h
+# endif
+
+# if(_LCDML_glcd_tft_box_x1 > _LCDML_glcd_tft_w)
+# error _LCDML_glcd_tft_box_x1 is to big
+# endif
+
+# if(_LCDML_glcd_tft_box_y1 > _LCDML_glcd_tft_h)
+# error _LCDML_glcd_tft_box_y1 is to big
 # endif
