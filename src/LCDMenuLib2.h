@@ -67,7 +67,7 @@
     // Do nothing change here
     // ####################### //
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v1.2.8"
+    #define _LCDML_VERSION                       "LCDML2 v1.2.9"
 
     // Include Arduino ios
     #include "Arduino.h"
@@ -100,7 +100,7 @@
     #define _LCDML_funcReg_jumpTo_w_para        7
     #define _LCDML_funcReg_goRoot               6
     #define _LCDML_funcReg_free5                5
-    #define _LCDML_funcReg_free4                4
+    #define _LCDML_funcReg_close_active         4
     #define _LCDML_funcReg_disable_scroll       3
     #define _LCDML_funcReg_disable_screensaver  2
     #define _LCDML_funcReg_setup                1

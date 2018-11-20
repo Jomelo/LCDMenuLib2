@@ -90,7 +90,10 @@ void LCDMenuLib2::loop_control()
             if(activMenu->getCbFunction() != cb_screensaver) // check if screensaver is active
             {
                 if(TIMER_ms(screensaver_timer, screensaver_default_time))
-                {
+                {  
+                    // close the running function 
+                    FUNC_goBackToMenu(); 
+                    loop_control();
                     OTHER_jumpToFunc(cb_screensaver);
                 }
             }
@@ -241,11 +244,15 @@ void LCDMenuLib2::loop_menu()
             // set this bit to call the FUNC_close function when the goRoot function is called
             bitSet(funcReg, _LCDML_funcReg_end);
 
-            FUNC_call();    // call active function for save close;
+            if(bitRead(funcReg, _LCDML_funcReg_close_active) == false)
+            {
+                FUNC_call();    // call active function for save close;
+            }
             BT_resetAll();
 
             activMenu = NULL;
-
+            
+            bitClear(funcReg, _LCDML_funcReg_close_active);
             bitClear(funcReg, _LCDML_funcReg_disable_screensaver);
             bitClear(funcReg, _LCDML_funcReg_end);
             bitClear(funcReg, _LCDML_funcReg_setup);
@@ -774,6 +781,7 @@ boolean LCDMenuLib2::FUNC_close()
     {
         if(bitRead(funcReg, _LCDML_funcReg_end) == true)
         {
+            bitSet(funcReg, _LCDML_funcReg_close_active);
             return true;
         }
         else
@@ -1009,15 +1017,13 @@ boolean LCDMenuLib2::OTHER_helpFunction(uint8_t mode, LCDML_FuncPtr_pu8 p_search
 
     bitSet(control, _LCDML_control_disable_hidden);
     bitSet(control, _LCDML_control_search_display);
-
     // got to root
-    MENU_goRoot();
     if(activMenu != NULL)
     {
         // this function called be recursive (only once)
-        loop_menu();
-    }
-
+        FUNC_goBackToMenu();                    
+        loop_menu();        
+    }    
     // search element
     switch(mode)
     {
@@ -1035,7 +1041,6 @@ boolean LCDMenuLib2::OTHER_helpFunction(uint8_t mode, LCDML_FuncPtr_pu8 p_search
             // error
             break;
     }
-
     // reset jump param flag
     bitClear(funcReg, _LCDML_funcReg_jumpTo_w_para);
 
