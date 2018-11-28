@@ -33,6 +33,9 @@ void lcdml_menu_display()
     uint8_t i = LCDML.MENU_getScroll();
     uint8_t maxi = _LCDML_DISP_rows + i;
     uint8_t n = 0;
+    
+    // check the type off a menu element
+    dyn_menu_is_displayed = false;
 
     // check if this element has children
     if ((tmp = LCDML.MENU_getObj()->getChild(LCDML.MENU_getScroll())))
@@ -42,9 +45,7 @@ void lcdml_menu_display()
       {
         // check if a menu element has a condition and if the condition be true
         if (tmp->checkCondition())
-        {
-          // check the type off a menu element
-          dyn_menu_is_displayed = false;
+        {          
           if(tmp->checkType_menu() == true)
           {
             // display normal content
