@@ -4,7 +4,7 @@
 #
 # MIT License
 #
-# Copyright (c) [2017] [Nils Feldkämper]
+# Copyright (c) [2018] [Nils Feldkämper]
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -167,6 +167,9 @@ _LCDML_DISP_cfg_cursor	LITERAL1
 
 _LCDML_DISP_cnt	LITERAL1
 
+_LCDML_TYPE_dynParam	LITERAL1
+_LCDML_TYPE_default	LITERAL1
+
 
 #######################################
 # MENU
@@ -206,6 +209,8 @@ MENU_getScroll	KEYWORD2
 MENU_enScroll	KEYWORD2
 MENU_disScroll	KEYWORD2
 MENU_getScrollDisableStatus	KEYWORD2
+MENU_setDynContent	KEYWORD2
+MENU_checkDynContent	KEYWORD2
 
 BT_setup	KEYWORD2
 BT_enter	KEYWORD2
@@ -230,7 +235,7 @@ BT_resetRight	KEYWORD2
 BT_resetUp	KEYWORD2
 BT_resetDown	KEYWORD2
 
-
+DISP_update	KEYWORD2
 DISP_menuUpdate	KEYWORD2
 DISP_clear	KEYWORD2
 DISP_checkMenuUpdate	KEYWORD2

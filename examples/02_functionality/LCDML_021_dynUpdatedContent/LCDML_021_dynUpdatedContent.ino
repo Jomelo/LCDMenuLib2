@@ -175,10 +175,9 @@ boolean dyn_menu_is_displayed = false;
     {
       // only update the menu when a dynamic content function is called
       // This variable is set in the LCDML_display_menu Tab on line 59/60
-      if(dyn_menu_is_displayed == true)
+      if(LCDML.MENU_checkDynContent() == true)
       {
-        LCDML.DISP_menuUpdate();
-        LCDML.MENU_display();
+        LCDML.DISP_update();
       }    
 
       // callculate a new value for the next update

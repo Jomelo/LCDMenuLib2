@@ -58,8 +58,8 @@ void lcdml_menu_display()
           {
             if(tmp->checkType_dynParam()) 
             {
-              // add a 
-              dyn_menu_is_displayed = true;              
+              // call a dyn content element
+              LCDML.MENU_setDynContent();             
               tmp->callback(n);
             }
           }
