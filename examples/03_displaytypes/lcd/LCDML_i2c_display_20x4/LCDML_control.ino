@@ -100,7 +100,7 @@ void lcdml_menu_control(void)
   if((millis() - g_LCDML_DISP_press_time) >= 200) {
     g_LCDML_DISP_press_time = millis(); // reset debounce timer
 
-    uint16_t value = analogRead(_LCDML_CONTROL_analog_pin);  // analogpin for keypad
+    uint16_t value = analogRead(_LCDML_CONTROL_analog_pin);  // analog pin for keypad
 
     if (value >= _LCDML_CONTROL_analog_enter_min && value <= _LCDML_CONTROL_analog_enter_max) { LCDML.BT_enter(); }
     if (value >= _LCDML_CONTROL_analog_up_min    && value <= _LCDML_CONTROL_analog_up_max)    { LCDML.BT_up();    }
@@ -267,7 +267,7 @@ void lcdml_menu_control(void)
     pinMode(encoder_button_pin  , INPUT_PULLUP);
   }
 
-  //volatile Variable
+  //Volatile Variable
   long g_LCDML_CONTROL_Encoder_position = ENCODER.read();
   bool button                           = digitalRead(encoder_button_pin);
 
@@ -421,6 +421,7 @@ void lcdml_menu_control(void)
           case 0x00000006: LCDML.BT_quit();  break;
           default: break;
       }
+      irrecv.resume(); // Receive the next value
   }
 }
 // *********************************************************************
@@ -486,7 +487,7 @@ void lcdml_menu_control(void)
 
 #elif(_LCDML_CONTROL_cfg == 7)
   unsigned long g_LCDML_DISP_press_time = 0;
-  #define PCF8574_1 0x26   #define PCF8574_1 0x26 // I2C address for the buttons
+  #define PCF8574_1 0x26 // I2C address for the buttons
 
   #define PCF8574_Pin0 254
   #define PCF8574_Pin1 253

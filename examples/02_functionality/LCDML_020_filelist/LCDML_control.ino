@@ -421,6 +421,7 @@ void lcdml_menu_control(void)
           case 0x00000006: LCDML.BT_quit();  break;
           default: break;
       }
+      irrecv.resume(); // Receive the next value
   }
 }
 // *********************************************************************
