@@ -53,16 +53,16 @@
 
     // debug special method groups
     #define LCDML_DBG_function_name_LOOP        0
-    #define LCDML_DBG_function_name_MENU        0
-    #define LCDML_DBG_function_name_FUNC        0
+    #define LCDML_DBG_function_name_MENU        1
+    #define LCDML_DBG_function_name_FUNC        1
     #define LCDML_DBG_function_name_BT          0
-    #define LCDML_DBG_function_name_OTHER       0
-    #define LCDML_DBG_function_name_DISP        0
-    #define LCDML_DBG_function_name_TIMER       0
-    #define LCDML_DBG_function_name_SCREEN      0
+    #define LCDML_DBG_function_name_OTHER       1
+    #define LCDML_DBG_function_name_DISP        1
+    #define LCDML_DBG_function_name_TIMER       1
+    #define LCDML_DBG_function_name_SCREEN      1
 
     // debug special complex functions
-    #define LCDML_DBG_search                    0
+    #define LCDML_DBG_search                    1
 
     // ####################### //
     // Do nothing change here
@@ -78,7 +78,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v1.3.0"
+    #define _LCDML_VERSION                       "LCDML2 v1.3.1 - beta"
 
     // Include Arduino ios
     #include "Arduino.h"

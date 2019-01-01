@@ -135,6 +135,14 @@ void LCDMenuLib2::loop_menu(void)
     // debug information
     DBG_println(LCDML_DBG_function_name_LOOP, F("LCDML.loop_menu"));
 
+    // lokal declaration
+    uint8_t cnt = 0;
+    LCDMenuLib2_menu *tmp;
+    boolean stop_while_loop = false;
+
+
+   
+
     // check control activity
     if(BT_checkAny() == true)
     {
@@ -284,8 +292,77 @@ void LCDMenuLib2::loop_menu(void)
             {
                 MENU_goBack();
             }
-            goBackCnt = 0;
-
+            goBackCnt = 0;            
+            
+            // on going back, when the parent element is hidden, the condition is checken
+            // if the element is hidden, go to the next parent element and so on ... 
+            while(stop_while_loop == false || layer == 0)
+            {            
+                if(curMenu->checkCondition() == false)
+                {
+                    for(uint8_t i=0; i<_LCDML_DISP_cfg_cursor_deep;i++)
+                    {                    
+                        if(curMenu->getParent() != NULL)
+                        {                        
+                            if(curMenu->getParent()->checkCondition() == false)
+                            {                            
+                                MENU_goMenu(*curMenu->getParent(), true);                            
+                            }
+                            else
+                            {
+                                MENU_goMenu(*curMenu->getParent(), true);
+                                // count visible childs
+                                child_cnt = MENU_countChilds();                            
+                                if(child_cnt > 0)
+                                { 
+                                    stop_while_loop = true;                               
+                                    break;
+                                }                                                             
+                            }
+                        }
+                        else
+                        {                                                  
+                            break;
+                        }
+                    }
+                   
+                    // check on layer 0 if the elment is hidden, when it is go to root
+                    if(layer == 0)
+                    {  
+                        // check on layer                  
+                        if(curMenu->getChild(curloc)->checkCondition() == false)
+                        {                        
+                            MENU_goRoot();                        
+                        } 
+                    }
+                }
+                else
+                {
+                    if ((tmp = curMenu->getChild(0)) != NULL)
+                    {
+                        do
+                        {                            
+                            if (tmp->checkCondition() || bitRead(REG_control, _LCDML_REG_control_disable_hidden))
+                            {
+                                cnt++;
+                                break;
+                            }
+                        } while ((tmp = tmp->getSibling(1)) != NULL);
+                    }
+                   
+                    if(cnt > 0)
+                    {                       
+                        // count visible childs                        
+                        stop_while_loop = true;                               
+                        break;                         
+                    }
+                    else
+                    {
+                        MENU_goMenu(*curMenu->getParent(), true); 
+                    }
+                }
+            }
+           
             if(bitRead(REG_special, _LCDML_REG_special_goRoot) == true)
             {
                 // set the cursor to the root position
@@ -389,9 +466,9 @@ void    LCDMenuLib2::MENU_goBack(void)
     DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_goBack"));
 
     if(curMenu->getParent() != NULL)
-    {
+    {        
         //set current menu object
-        MENU_goMenu(*curMenu->getParent(), true);
+        MENU_goMenu(*curMenu->getParent(), true);            
     }
 }
 
@@ -403,6 +480,8 @@ void    LCDMenuLib2::MENU_goInto(void)
     DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_goInto"));
 
     LCDMenuLib2_menu *tmp;
+    LCDMenuLib2_menu *tmp_cnt;
+    uint8_t cnt = 0;
 
     // check if a menu function is not active
     if (activMenu == NULL)
@@ -414,35 +493,44 @@ void    LCDMenuLib2::MENU_goInto(void)
         if(tmp->checkCallback() == true && tmp->checkType_menu() == true && bitRead(REG_control, _LCDML_REG_control_search_display) == false)
         {
             // Menu function found
-            activMenu = tmp;
+            activMenu = tmp;            
         }
         else
         {
             if(tmp->checkType_dynParam() == true && bitRead(REG_control, _LCDML_REG_control_search_display) == false)
-            {
+            {               
                 DISP_update();
             }
             else
-            {
+            {               
                 if(tmp->getChild(0) != NULL)
                 {
-                    while ((tmp = tmp->getSibling(0)) != NULL)
+                    //check if element has visible children
+                    if ((tmp_cnt = tmp->getChild(0)) != NULL)
                     {
-                        if (tmp->checkCondition() || bitRead(REG_control, _LCDML_REG_control_disable_hidden))
-                        {
-                            // Menu found, goInto
-                            MENU_goMenu(*curMenu->getChild(curloc + MENU_curlocCorrection()), false);
-
-                            if(bitRead(REG_control, _LCDML_REG_control_search_display) == false)
+                        do
+                        {                            
+                            if (tmp_cnt->checkCondition() || bitRead(REG_control, _LCDML_REG_control_disable_hidden))
                             {
-                                BT_resetAll(); // reset all buttons
-
-                                child_cnt = MENU_countChilds();
-
-                                DISP_update();
+                                cnt++;
+                                break;
                             }
-                            break;
-                        }
+                        } while ((tmp_cnt = tmp_cnt->getSibling(1)) != NULL);
+                    }
+                   
+                    if(cnt > 0)
+                    {
+                        // Menu found, goInto
+                        MENU_goMenu(*curMenu->getChild(curloc + MENU_curlocCorrection()), false);
+
+                        if(bitRead(REG_control, _LCDML_REG_control_search_display) == false)
+                        {
+                            BT_resetAll(); // reset all buttons
+
+                            child_cnt = MENU_countChilds();
+
+                            DISP_update();
+                        }                        
                     }
                 }
             }
@@ -517,13 +605,13 @@ uint8_t    LCDMenuLib2::MENU_countChilds(void)
     if ((tmp = curMenu->getChild(0)) != NULL)
     {
         do
-        {
+        {         
             if (tmp->checkCondition() || bitRead(REG_control, _LCDML_REG_control_disable_hidden))
             {
                 j++;
             }
         } while ((tmp = tmp->getSibling(1)) != NULL);
-    }
+    }   
 
     if(j == 0)
     {
@@ -1269,22 +1357,62 @@ boolean LCDMenuLib2::OTHER_helpFunction(uint8_t mode, LCDML_FuncPtr_pu8 p_search
     // check element handling
     if(found == true)
     {
+        
+        LCDMenuLib2_menu *tmp;    
+        // get element to to open
+        tmp = curMenu->getChild(curloc + MENU_curlocCorrection());               
+
         bitClear(REG_control, _LCDML_REG_control_search_display);
         
         switch(mode)
         {
             case 0: // jumpToFunc
             case 1: // jumpToID
-                // set jump param flag
-                bitSet(REG_special, _LCDML_REG_special_jumpTo_w_para);
-                jumpTo_w_para = p_para;
 
-                // open menu element
-                MENU_goInto();
+                // check if element is a menu function and no dynamic function
+                if(tmp->checkCallback() == false || tmp->checkType_menu() == false)
+                {
+                    //
+                    DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_helpFunction - no callback function found, go back to root menu")); 
+                    
+                    bitClear(REG_control, _LCDML_REG_control_disable_hidden);                    
+                    MENU_goRoot();
+                    DISP_update(); 
+                    
+                    return false;
+                } 
+                else
+                {
+                    // set jump param flag
+                    bitSet(REG_special, _LCDML_REG_special_jumpTo_w_para);
+                    jumpTo_w_para = p_para;
+
+                    // open menu element
+                    MENU_goInto();
+                }
                 break;
 
             case 2: // setCursorToFunc
             case 3: // setCursorToID
+            
+                if(tmp->checkCondition() == false)
+                {                    
+                    DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_helpFunction - callbackfunction is hidden, the cursor cannot be set to this possition: go back to root menu")); 
+                    
+                    bitClear(REG_control, _LCDML_REG_control_disable_hidden);
+                    MENU_goRoot();
+                    DISP_update(); 
+                    
+                    return false;
+                } 
+                else
+                {
+                    // update the menu
+                    DISP_update();
+                }
+                break;            
+            
+            
             default:
                 // update the menu
                 DISP_update();
