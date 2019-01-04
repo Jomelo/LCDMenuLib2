@@ -78,7 +78,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v1.3.1 - beta"
+    #define _LCDML_VERSION                       "LCDML2 v1.3.2 - beta"
 
     // Include Arduino ios
     #include "Arduino.h"
@@ -100,8 +100,8 @@
 
     // Bit pos control flags
     #define _LCDML_REG_control_dynMenuDisplayed             7
-    #define _LCDML_REG_control_disp_update                  6
-    #define _LCDML_REG_control_cursor_update                5
+    #define _LCDML_REG_control_free6                        6
+    #define _LCDML_REG_control_free5                        5
     #define _LCDML_REG_control_bt_init_setup                4
     #define _LCDML_REG_control_update_direct                3
     #define _LCDML_REG_control_search_display               2
@@ -137,6 +137,18 @@
     #define _LCDML_REG_button_down                          2
     #define _LCDML_REG_button_left                          1
     #define _LCDML_REG_button_right                         0
+
+    // display update handling
+    #define _LCDML_REG_update_content                       7
+    #define _LCDML_REG_update_cursor                        6
+    #define _LCDML_REG_update_menu                          5
+    #define _LCDML_REG_update_free4                         4
+    #define _LCDML_REG_update_free3                         3
+    #define _LCDML_REG_update_free2                         2
+    #define _LCDML_REG_update_free1                         1
+    #define _LCDML_REG_update_free0                         0
+
+
 
     // Configure Arduino flash lib and load it*/
     #ifndef __PROG_TYPES_COMPAT__
@@ -202,6 +214,7 @@
             uint8_t REG_control;                                        // control flags 
             uint8_t REG_MenuFunction;                                   // control flags for menu functions
             uint8_t REG_special;                                        // control flags for special function like screensaver, jumpTo, setCursorTo, goRoot, ..
+            uint8_t REG_update;                                         // control flags to update the content
 
             // variables for handling with menu function
             uint8_t jumpTo_w_para;                                      // jumpTo with parameter
@@ -223,7 +236,7 @@
             void    MENU_goMenu(LCDMenuLib2_menu &p_m, uint8_t p_back); // go to a menu element
             uint8_t MENU_countChilds(void);                             // how many children exists on next layer
             uint8_t MENU_curlocCorrection(void);                        // correction of the cursor position with hidden button
-                        
+                     
             // callback function
             void    FUNC_call(void);
 
