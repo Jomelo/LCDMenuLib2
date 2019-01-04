@@ -239,6 +239,7 @@ void mFunc_goToRootMenu(uint8_t param)
   }
 }
 
+
 // *********************************************************************
 void mFunc_jumpTo_timer_info(uint8_t param)
 // *********************************************************************
@@ -246,11 +247,7 @@ void mFunc_jumpTo_timer_info(uint8_t param)
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
     // Jump to main screen
-    if(!LCDML.OTHER_jumpToFunc(mFunc_timer_info))
-    {
-      // function not found or not callable
-      LCDML.MENU_goRoot();
-    }
+    LCDML.OTHER_jumpToFunc(mFunc_timer_info);
   }
 }
 

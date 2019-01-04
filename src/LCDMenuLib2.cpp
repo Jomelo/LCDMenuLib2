@@ -254,6 +254,171 @@ void LCDMenuLib2::loop_menu(void)
         }
     }
 
+    // jump to handling
+     /*
+    jT_mode     = 0;
+    jT_id       = 0;
+    jT_param    = p_para;
+    jT_function = p_search;
+    */
+
+    if(bitRead(REG_special, _LCDML_REG_special_jumpTo_enabled))
+    {
+        MENU_enScroll();
+
+        bitClear(REG_special, _LCDML_REG_special_jumpTo_enabled);
+
+        boolean found = false;
+
+        bitClear(REG_control, _LCDML_REG_control_dynMenuDisplayed);
+
+        bitSet(REG_control, _LCDML_REG_control_disable_hidden);
+        bitSet(REG_control, _LCDML_REG_control_search_display);
+
+        // got to root
+        if(activMenu != NULL)
+        {
+            // this function called be recursive (only once)
+            // set this bit to call the FUNC_close function when the goRoot function is called
+            bitSet(REG_MenuFunction, _LCDML_REG_MenuFunction_end);
+
+            if(bitRead(REG_MenuFunction, _LCDML_REG_MenuFunction_close_active) == false)
+            {
+                FUNC_call();    // call active function to bring it on a stable state;
+            }
+            BT_resetAll();
+
+            activMenu = NULL;
+            
+            bitClear(REG_MenuFunction, _LCDML_REG_MenuFunction_close_active);
+            bitClear(REG_special, _LCDML_REG_special_disable_screensaver);
+            bitClear(REG_MenuFunction, _LCDML_REG_MenuFunction_end);
+            bitClear(REG_MenuFunction, _LCDML_REG_MenuFunction_setup);
+            bitClear(REG_special, _LCDML_REG_special_jumpTo_w_para);
+           
+            MENU_goRoot();
+        }
+
+
+        // search element
+        switch(jT_mode)
+        {
+            case 0: // jumpToFunc
+            case 2: // setCursorToFunc
+                found = OTHER_searchFunction(*rootMenu, 0, jT_function, 0);
+                break;
+
+            case 1: // jumpToID
+            case 3: // setCursorToID
+                found = OTHER_searchFunction(*rootMenu, 1, NULL, jT_id);
+                break;
+
+            default:
+                // error
+                break;
+        }
+
+
+        // reset jump param flag
+        bitClear(REG_special, _LCDML_REG_special_jumpTo_w_para);
+
+
+        // check element handling
+        if(found == true)
+        {      
+            // get element to to open
+            tmp = curMenu->getChild(curloc + MENU_curlocCorrection());               
+
+            bitClear(REG_control, _LCDML_REG_control_search_display);
+            
+            switch(jT_mode)
+            {
+                case 0: // jumpToFunc
+                case 1: // jumpToID
+
+                    // check if element is a menu function and no dynamic function
+                    if(tmp->checkCallback() == false || tmp->checkType_menu() == false)
+                    {
+                        //
+                        DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_helpFunction - no callback function found, go back to root menu")); 
+                        
+                        bitClear(REG_control, _LCDML_REG_control_disable_hidden);                    
+                        MENU_goRoot();
+                        DISP_update(); 
+                        
+                        //return false;
+                    } 
+                    else
+                    {
+                        // set jump param flag
+                        bitSet(REG_special, _LCDML_REG_special_jumpTo_w_para);                        
+
+                        // open menu element
+                        MENU_goInto();
+                    }
+                    break;
+
+                case 2: // setCursorToFunc
+                case 3: // setCursorToID
+                
+                    if(tmp->checkCondition() == false)
+                    {                    
+                        DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_helpFunction - callbackfunction is hidden, the cursor cannot be set to this possition: go back to root menu")); 
+                        
+                        bitClear(REG_control, _LCDML_REG_control_disable_hidden);
+                        MENU_goRoot();
+                        DISP_update(); 
+                        
+                        //return false;
+                    } 
+                    else
+                    {
+                        // update the menu
+                        DISP_update();
+                    }
+                    break;            
+                
+                
+                default:
+                    // update the menu
+                    DISP_update();
+                    break;
+            }
+
+            bitClear(REG_control, _LCDML_REG_control_disable_hidden);
+            //return true;
+        }
+        else
+        {
+            bitClear(REG_control, _LCDML_REG_control_search_display);
+            bitClear(REG_control, _LCDML_REG_control_disable_hidden);
+
+            //return false;
+        }
+
+
+    }
+    
+    
+
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+
+
+
+
+
+
     // check if a menu function is active
     if(activMenu != NULL)
     {
@@ -374,12 +539,10 @@ void LCDMenuLib2::loop_menu(void)
                 curloc      = 0;
                 scroll      = 0;
             }
-
-            if(bitRead(REG_control, _LCDML_REG_control_search_display) == false)
-            {
-                // only update the content when no jump function is active
-                DISP_update();
-            }
+            
+            // only update the content when no jump function is active
+            DISP_update();          
+            
         }
     }
     else
@@ -389,9 +552,10 @@ void LCDMenuLib2::loop_menu(void)
 
 
 
+    
     // check update handling
-    if(bitRead(REG_update, _LCDML_REG_update_menu) == true || bitRead(REG_update, _LCDML_REG_update_cursor))
-    {        
+    if(bitRead(REG_update, _LCDML_REG_update_menu) == true || bitRead(REG_update, _LCDML_REG_update_cursor) == true)
+    {  
         if(activMenu == NULL)
         {
             if(bitRead(REG_special, _LCDML_REG_special_disable_scroll) == false)
@@ -403,10 +567,12 @@ void LCDMenuLib2::loop_menu(void)
 
             callback_contentUpdate();
             BT_resetAll();
-        }
-    }
+        }         
 
-    
+        // reset both values here because it can be happen on some examples, that not all values are reset
+        bitClear(REG_update, _LCDML_REG_update_menu);
+        bitClear(REG_update, _LCDML_REG_update_cursor);
+    }        
 }
 
 
@@ -699,7 +865,10 @@ void    LCDMenuLib2::MENU_setCursor(void)
         cursor_pos = child_cnt;
     }
 
-    bitSet(REG_update, _LCDML_REG_update_cursor);    
+    if(activMenu == NULL &&  bitRead(REG_control, _LCDML_REG_control_search_display) == false)
+    {
+        bitSet(REG_update, _LCDML_REG_update_cursor);
+    }    
 }
 
 /* ******************************************************************** */
@@ -951,7 +1120,7 @@ boolean LCDMenuLib2::DISP_checkMenuCursorUpdate(void)
 
     if(bitRead(REG_update, _LCDML_REG_update_cursor)) 
     {  
-        bitClear(REG_update, _LCDML_REG_update_cursor);        
+        bitClear(REG_update, _LCDML_REG_update_cursor);       
         return true;
     } 
     else 
@@ -1015,7 +1184,7 @@ void LCDMenuLib2::FUNC_call(void)
     {
         if(bitRead(REG_special, _LCDML_REG_special_jumpTo_w_para))
         {
-            activMenu->callback(jumpTo_w_para);
+            activMenu->callback(jT_param);
         }
         else
         {
@@ -1327,169 +1496,61 @@ boolean     LCDMenuLib2::OTHER_searchFunction(LCDMenuLib2_menu &p_m, uint8_t mod
     return found; //found;
 }
 
-/* ******************************************************************** */
-boolean LCDMenuLib2::OTHER_helpFunction(uint8_t mode, LCDML_FuncPtr_pu8 p_search, uint8_t p_id, uint8_t p_para)
-/* ******************************************************************** */
-{
-    // debug information
-    DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_helpFunction"));
-
-    boolean found = false;
-
-    bitClear(REG_control, _LCDML_REG_control_dynMenuDisplayed);
-
-    bitSet(REG_control, _LCDML_REG_control_disable_hidden);
-    bitSet(REG_control, _LCDML_REG_control_search_display);
-    // got to root
-    if(activMenu != NULL)
-    {
-        // this function called be recursive (only once)
-        FUNC_goBackToMenu();                    
-        loop_menu();
-        MENU_goRoot();
-    }
-
-    // search element
-    switch(mode)
-    {
-        case 0: // jumpToFunc
-        case 2: // setCursorToFunc
-            found = OTHER_searchFunction(*rootMenu, 0, p_search, 0);
-            break;
-
-        case 1: // jumpToID
-        case 3: // setCursorToID
-            found = OTHER_searchFunction(*rootMenu, 1, NULL, p_id);
-            break;
-
-        default:
-            // error
-            break;
-    }
-    
-    // reset jump param flag
-    bitClear(REG_special, _LCDML_REG_special_jumpTo_w_para);
-
-    // check element handling
-    if(found == true)
-    {
-        
-        LCDMenuLib2_menu *tmp;    
-        // get element to to open
-        tmp = curMenu->getChild(curloc + MENU_curlocCorrection());               
-
-        bitClear(REG_control, _LCDML_REG_control_search_display);
-        
-        switch(mode)
-        {
-            case 0: // jumpToFunc
-            case 1: // jumpToID
-
-                // check if element is a menu function and no dynamic function
-                if(tmp->checkCallback() == false || tmp->checkType_menu() == false)
-                {
-                    //
-                    DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_helpFunction - no callback function found, go back to root menu")); 
-                    
-                    bitClear(REG_control, _LCDML_REG_control_disable_hidden);                    
-                    MENU_goRoot();
-                    DISP_update(); 
-                    
-                    return false;
-                } 
-                else
-                {
-                    // set jump param flag
-                    bitSet(REG_special, _LCDML_REG_special_jumpTo_w_para);
-                    jumpTo_w_para = p_para;
-
-                    // open menu element
-                    MENU_goInto();
-                }
-                break;
-
-            case 2: // setCursorToFunc
-            case 3: // setCursorToID
-            
-                if(tmp->checkCondition() == false)
-                {                    
-                    DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_helpFunction - callbackfunction is hidden, the cursor cannot be set to this possition: go back to root menu")); 
-                    
-                    bitClear(REG_control, _LCDML_REG_control_disable_hidden);
-                    MENU_goRoot();
-                    DISP_update(); 
-                    
-                    return false;
-                } 
-                else
-                {
-                    // update the menu
-                    DISP_update();
-                }
-                break;            
-            
-            
-            default:
-                // update the menu
-                DISP_update();
-                break;
-        }
-
-        bitClear(REG_control, _LCDML_REG_control_disable_hidden);
-        return true;
-    }
-    else
-    {
-        bitClear(REG_control, _LCDML_REG_control_search_display);
-        bitClear(REG_control, _LCDML_REG_control_disable_hidden);
-
-        return false;
-    }
-}
-
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t p_para)
+void LCDMenuLib2::OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t p_para)
 /* ******************************************************************** */
 {
     // debug information
     DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc"));
 
-    MENU_enScroll();
-    return OTHER_helpFunction(0, p_search, 0, p_para);
+    bitSet(REG_special, _LCDML_REG_special_jumpTo_enabled);
+    jT_mode     = 0;
+    jT_id       = 0;
+    jT_param    = p_para;
+    jT_function = p_search;
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::OTHER_jumpToID(uint8_t p_id, uint8_t p_para)
+void LCDMenuLib2::OTHER_jumpToID(uint8_t p_id, uint8_t p_para)
 /* ******************************************************************** */
 {
     // debug information
     DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToID"));
 
-    MENU_enScroll();
-    return OTHER_helpFunction(1, NULL, p_id, p_para);
+    bitSet(REG_special, _LCDML_REG_special_jumpTo_enabled);
+    jT_mode     = 1;
+    jT_id       = p_id;
+    jT_param    = p_para;
+    jT_function = NULL;
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search)
+void LCDMenuLib2::OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search)
 /* ******************************************************************** */
 {
     // debug information
     DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_setCursorToFunc"));
 
-    MENU_enScroll();
-    return OTHER_helpFunction(2, p_search, 0, 0);
+    bitSet(REG_special, _LCDML_REG_special_jumpTo_enabled);
+    jT_mode     = 2;
+    jT_id       = 0;
+    jT_param    = 0;
+    jT_function = p_search;
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::OTHER_setCursorToID(uint8_t p_id)
+void LCDMenuLib2::OTHER_setCursorToID(uint8_t p_id)
 /* ******************************************************************** */
 {
     // debug information
     DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_setCursorToID"));
 
-    MENU_enScroll();
-    return OTHER_helpFunction(3, NULL, p_id, 0);
+    bitSet(REG_special, _LCDML_REG_special_jumpTo_enabled);
+    jT_mode     = 3;
+    jT_id       = p_id;
+    jT_param    = 0;
+    jT_function = NULL;    
 }
 
 

@@ -58,7 +58,7 @@
     #define LCDML_DBG_function_name_BT          0
     #define LCDML_DBG_function_name_OTHER       1
     #define LCDML_DBG_function_name_DISP        1
-    #define LCDML_DBG_function_name_TIMER       1
+    #define LCDML_DBG_function_name_TIMER       0
     #define LCDML_DBG_function_name_SCREEN      1
 
     // debug special complex functions
@@ -78,7 +78,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v1.3.2 - beta"
+    #define _LCDML_VERSION                       "LCDML2 v1.3.1 - beta 2"
 
     // Include Arduino ios
     #include "Arduino.h"
@@ -100,8 +100,8 @@
 
     // Bit pos control flags
     #define _LCDML_REG_control_dynMenuDisplayed             7
-    #define _LCDML_REG_control_free6                        6
-    #define _LCDML_REG_control_free5                        5
+    #define _LCDML_REG_control_free_6                       6
+    #define _LCDML_REG_control_free_5                       5
     #define _LCDML_REG_control_bt_init_setup                4
     #define _LCDML_REG_control_update_direct                3
     #define _LCDML_REG_control_search_display               2
@@ -110,7 +110,7 @@
 
     // screensaver, jump to function, go Root, ...
     #define _LCDML_REG_special_jumpTo_w_para                7
-    #define _LCDML_REG_special_free_6                       6 
+    #define _LCDML_REG_special_jumpTo_enabled               6 
     #define _LCDML_REG_special_free_5                       5 
     #define _LCDML_REG_special_free_4                       4 
     #define _LCDML_REG_special_free_3                       3 
@@ -142,11 +142,11 @@
     #define _LCDML_REG_update_content                       7
     #define _LCDML_REG_update_cursor                        6
     #define _LCDML_REG_update_menu                          5
-    #define _LCDML_REG_update_free4                         4
-    #define _LCDML_REG_update_free3                         3
-    #define _LCDML_REG_update_free2                         2
-    #define _LCDML_REG_update_free1                         1
-    #define _LCDML_REG_update_free0                         0
+    #define _LCDML_REG_update_free_4                        4
+    #define _LCDML_REG_update_free_3                        3
+    #define _LCDML_REG_update_free_2                        2
+    #define _LCDML_REG_update_free_1                        1
+    #define _LCDML_REG_update_free_0                        0
 
 
 
@@ -194,6 +194,12 @@
             LCDML_FuncPtr       callback_contentClear;                  // a callback function which clears the display
             LCDML_FuncPtr_pu8   cb_screensaver;                         // a callback function as screensaver (a normal menu function, but a defined name)
 
+            // jump To variables
+            uint8_t             jT_mode;                                // contains the jumpTo Mode            
+            uint8_t             jT_id;                                  // contains the jumpTo id
+            uint8_t             jT_param;                               // contains the jumpTo param
+            LCDML_FuncPtr_pu8   jT_function;                            // contains the jumpTo function
+
             // display features
             uint8_t display_rows;                                       // display rows
             
@@ -216,8 +222,7 @@
             uint8_t REG_special;                                        // control flags for special function like screensaver, jumpTo, setCursorTo, goRoot, ..
             uint8_t REG_update;                                         // control flags to update the content
 
-            // variables for handling with menu function
-            uint8_t jumpTo_w_para;                                      // jumpTo with parameter
+            // variables for handling with menu function            
             uint8_t goBackCnt;                                          // save the layer to go back
 
             // timer variable for the loop time of a menu function
@@ -242,7 +247,6 @@
 
             // help function to search special elements
             boolean OTHER_searchFunction(LCDMenuLib2_menu &p_m, uint8_t mode, LCDML_FuncPtr_pu8 p_search, uint8_t p_id);
-            boolean OTHER_helpFunction(uint8_t mode, LCDML_FuncPtr_pu8 p_search, uint8_t p_id, uint8_t para);
 
         public:
 
@@ -322,10 +326,10 @@
             void    TIMER_usReset(unsigned long &p_var);                // reset the micros timer
 
             // other methods
-            boolean OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t p_para = 0);   // jumpTo a defined function based on the function name 
-            boolean OTHER_jumpToID(uint8_t p_search, uint8_t p_para = 0);               // jumpTo a defined function based on the function id
-            boolean OTHER_setCursorToID(uint8_t p_search);                              // set the cursor to a defined function based on the id
-            boolean OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search);                  // set the cursor to a defined function based on the function name
+            void    OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t p_para = 0);   // jumpTo a defined function based on the function name 
+            void    OTHER_jumpToID(uint8_t p_search, uint8_t p_para = 0);               // jumpTo a defined function based on the function id
+            void    OTHER_setCursorToID(uint8_t p_search);                              // set the cursor to a defined function based on the id
+            void    OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search);                  // set the cursor to a defined function based on the function name
 
             // screensaver methods
             void    SCREEN_enable(LCDML_FuncPtr_pu8 p_function, unsigned long p_t);     // enable the screensaver feature 
