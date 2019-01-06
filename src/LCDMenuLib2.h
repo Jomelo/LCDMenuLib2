@@ -44,8 +44,8 @@
     // ####################### //
 
     // you can change this parameters
-    #define _LCDML_DISP_cfg_cursor_deep          10  // save the last position of the cursor until layer xx
-    #define _LCDML_DISP_cfg_max_rows             10  // max rows which are supported
+    //#define _LCDML_DISP_cfg_cursor_deep          10  // save the last position of the cursor until layer xx
+    //#define _LCDML_DISP_cfg_max_rows             10  // max rows which are supported
     #define _LCDML_cfg_use_ram                   0   // set this to 1 when you will use the ram mode
 
     // enable debug strings (remove comments from this line)
@@ -78,7 +78,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v1.3.1 - beta 2"
+    #define _LCDML_VERSION                       "LCDML2 v1.3.1 - beta 3"
 
     // Include Arduino ios
     #include "Arduino.h"
@@ -209,11 +209,6 @@
             uint8_t cursor_pos;                                         // save the last cursor position when a menu element is called
             uint8_t child_cnt;                                          // how many children exists on next layer
             uint8_t layer;                                              // contains the current layer
-
-            // buffer for intern menu values
-            uint8_t layer_save[_LCDML_DISP_cfg_cursor_deep];            // save cursor position for every layer
-            uint8_t scroll_save[_LCDML_DISP_cfg_cursor_deep];           // save cursor position for every layer
-            uint8_t parents[_LCDML_DISP_cfg_cursor_deep];               // save last parent
             
             // variables with bitfields => bit register
             uint8_t REG_button;                                         // control flags for button actions
@@ -239,8 +234,9 @@
             void    MENU_setCursor(void);                               // set the cursor to the current position in the menu
             void    MENU_doScroll(void);                                // scroll the menu
             void    MENU_goMenu(LCDMenuLib2_menu &p_m, uint8_t p_back); // go to a menu element
-            uint8_t MENU_countChilds(void);                             // how many children exists on next layer
+            uint8_t MENU_countChilds(LCDMenuLib2_menu *menu, uint8_t w_hidden);    // how many children exists on next layer
             uint8_t MENU_curlocCorrection(void);                        // correction of the cursor position with hidden button
+            
                      
             // callback function
             void    FUNC_call(void);

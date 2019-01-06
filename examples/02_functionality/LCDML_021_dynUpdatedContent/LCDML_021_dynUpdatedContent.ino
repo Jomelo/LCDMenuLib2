@@ -195,10 +195,3 @@ boolean dyn_menu_is_displayed = false;
     // call the "normaly" menu content
     LCDML.loop_menu();
   }
-
-// *********************************************************************
-// check some errors - do not change here anything
-// *********************************************************************
-# if(_LCDML_DISP_rows > _LCDML_DISP_cfg_max_rows)
-# error change value of _LCDML_DISP_cfg_max_rows in LCDMenuLib2.h
-# endif

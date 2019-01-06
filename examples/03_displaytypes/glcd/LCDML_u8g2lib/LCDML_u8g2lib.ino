@@ -186,10 +186,6 @@
 // *********************************************************************
 // check some errors - do not change here anything
 // *********************************************************************
-# if(_LCDML_DISP_rows > _LCDML_DISP_cfg_max_rows)
-# error change value of _LCDML_DISP_cfg_max_rows in LCDMenuLib2.h
-# endif
-
 # if(_LCDML_glcd_tft_box_x1 > _LCDML_glcd_tft_w)
 # error _LCDML_glcd_tft_box_x1 is to big
 # endif
