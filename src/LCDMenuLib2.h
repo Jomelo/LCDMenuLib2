@@ -49,17 +49,17 @@
     #define _LCDML_cfg_use_ram                   0   // set this to 1 when you will use the ram mode
 
     // enable debug strings (remove comments from this line)
-    //#define LCDML_DBG                          0 
+    //#define LCDML_DBG                          1 
 
     // debug special method groups
     #define LCDML_DBG_function_name_LOOP        0
-    #define LCDML_DBG_function_name_MENU        1
-    #define LCDML_DBG_function_name_FUNC        1
+    #define LCDML_DBG_function_name_MENU        0
+    #define LCDML_DBG_function_name_FUNC        0
     #define LCDML_DBG_function_name_BT          0
     #define LCDML_DBG_function_name_OTHER       1
-    #define LCDML_DBG_function_name_DISP        1
+    #define LCDML_DBG_function_name_DISP        0
     #define LCDML_DBG_function_name_TIMER       0
-    #define LCDML_DBG_function_name_SCREEN      1
+    #define LCDML_DBG_function_name_SCREEN      0
 
     // debug special complex functions
     #define LCDML_DBG_search                    1
@@ -78,7 +78,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v1.3.1 - beta 3"
+    #define _LCDML_VERSION                       "LCDML2 v2.0.0 - beta 4"
 
     // Include Arduino ios
     #include "Arduino.h"
@@ -200,14 +200,14 @@
             uint8_t             jT_param;                               // contains the jumpTo param
             LCDML_FuncPtr_pu8   jT_function;                            // contains the jumpTo function
 
-            // display features
-            uint8_t display_rows;                                       // display rows
-            
             // menu intern values
-            uint8_t curloc;                                             // current cursor position
-            uint8_t scroll;                                             // current scroll position            
-            uint8_t cursor_pos;                                         // save the last cursor position when a menu element is called
-            uint8_t child_cnt;                                          // how many children exists on next layer
+            uint8_t window_rows;                                        // the maximum rows of the current windows  (1 is the minium)
+            uint8_t window_start;                                       // the window start
+            
+            uint8_t cursor_obj_pos;
+            uint8_t cursor_pos;                                        // the current cursor position on the lcd
+            uint8_t cursor_pos_abs;
+
             uint8_t layer;                                              // contains the current layer
             
             // variables with bitfields => bit register
@@ -229,13 +229,12 @@
             unsigned long screensaver_default_time;
 
             // private methods
-            void    MENU_goInto(void);                                  // activate the menu under the cursor
-            void    MENU_goBack(void);                                  // move to the parent menu
-            void    MENU_setCursor(void);                               // set the cursor to the current position in the menu
-            void    MENU_doScroll(void);                                // scroll the menu
-            void    MENU_goMenu(LCDMenuLib2_menu &p_m, uint8_t p_back); // go to a menu element
-            uint8_t MENU_countChilds(LCDMenuLib2_menu *menu, uint8_t w_hidden);    // how many children exists on next layer
-            uint8_t MENU_curlocCorrection(void);                        // correction of the cursor position with hidden button
+            void    MENU_goInto(void);                                              // activate the menu under the cursor
+            void    MENU_goBack(void);                                              // move to the parent menu
+            void    MENU_doScroll(uint8_t state);                                   // scroll the menu
+            void    MENU_goMenu(LCDMenuLib2_menu &p_m, uint8_t p_back);             // go to a menu element
+            uint8_t MENU_countChilds(LCDMenuLib2_menu *menu, uint8_t all=false);    // how many children exists on next layer
+            void    MENU_initFirstElement(void);                                         // set counter to the first object child
             
                      
             // callback function
@@ -249,13 +248,15 @@
             // constructor
             LCDMenuLib2(LCDMenuLib2_menu &p_r ,const uint8_t p_rows, const uint8_t p_cols, LCDML_FuncPtr contentUpdate, LCDML_FuncPtr contentClear, LCDML_FuncPtr menuControl);
 
+            // init method
+            void init(void);                                            // initialisation of the menu / reset the complete menu
+
             // loop methods
             void loop(void);                                            // call the loop_menu and the loop_control function
             void loop_control(void);                                    // call callback function to control the menu 
             void loop_menu(void);                                       // checks if a button or a menu function are needed and call them
 
-            // menu methods
-            LCDMenuLib2_menu * MENU_getObj(void);                       // get the current object
+            // menu methods            
             void    MENU_display(uint8_t update=0);                     // update the current menu structure but do not display it
             void    MENU_goRoot(void);                                  // set the cursor to the root element
             void    MENU_enRollover(void);                              // enable menu rollover (first to last or last to first element on a layer)
@@ -271,7 +272,10 @@
             uint8_t MENU_getChilds(void);                               // get the current number of childs on this layer
             uint8_t MENU_getParentId(void);                             // get parent id of the next higher layer
             uint8_t MENU_getParentId(uint8_t p_layer);                  // get the parent id of a selected higher layer
-            uint8_t MENU_getScroll(void);                               // get the current scroll value  
+            uint8_t MENU_getScroll(void);                               // get the current scroll value
+            
+            LCDMenuLib2_menu * MENU_getDisplayedObj();                  // get the objection with the current conten to display                    
+            LCDMenuLib2_menu * MENU_getCurrentObj();                    // get the current child object
 
             // BT = button methods
             boolean BT_setup(void);                                     // check if the button initialisation was done

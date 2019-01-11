@@ -191,6 +191,7 @@ checkType_dynParam	KEYWORD2
 #######################################
 
 # class methods
+init	KEYWORD2
 loop_menu	KEYWORD2
 loop_control	KEYWORD2
 
@@ -204,7 +205,8 @@ MENU_getChilds	KEYWORD2
 MENU_getCursorPosAbs	KEYWORD2
 MENU_getParentId	KEYWORD2
 MENU_enRollover	KEYWORD2
-MENU_getObj	KEYWORD2
+MENU_getDisplayedObj	KEYWORD2
+MENU_getCurrentObj	KEYWORD2
 MENU_getScroll	KEYWORD2
 MENU_enScroll	KEYWORD2
 MENU_disScroll	KEYWORD2
