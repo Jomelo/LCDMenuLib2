@@ -4,7 +4,7 @@
  *
  * MIT License
  *
- * Copyright (c) [2018] [Nils Feldkämper]
+ * Copyright (c) [2019] [Nils Feldkämper]
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,25 +44,23 @@
     // ####################### //
 
     // you can change this parameters
-    //#define _LCDML_DISP_cfg_cursor_deep          10  // save the last position of the cursor until layer xx
-    //#define _LCDML_DISP_cfg_max_rows             10  // max rows which are supported
     #define _LCDML_cfg_use_ram                   0   // set this to 1 when you will use the ram mode
 
     // enable debug strings (remove comments from this line)
     //#define LCDML_DBG                          1 
 
-    // debug special method groups
+    // debug special method groups          // enable a flag to control the function call order
     #define LCDML_DBG_function_name_LOOP        0
     #define LCDML_DBG_function_name_MENU        0
     #define LCDML_DBG_function_name_FUNC        0
     #define LCDML_DBG_function_name_BT          0
-    #define LCDML_DBG_function_name_OTHER       1
+    #define LCDML_DBG_function_name_OTHER       0
     #define LCDML_DBG_function_name_DISP        0
     #define LCDML_DBG_function_name_TIMER       0
     #define LCDML_DBG_function_name_SCREEN      0
 
     // debug special complex functions
-    #define LCDML_DBG_search                    1
+    #define LCDML_DBG_search                    0
 
     // ####################### //
     // Do nothing change here
@@ -78,7 +76,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.0.0 - beta 4"
+    #define _LCDML_VERSION                       "LCDML2 v2.0.0 - beta 5"
 
     // Include Arduino ios
     #include "Arduino.h"
@@ -109,7 +107,7 @@
     #define _LCDML_REG_control_disable_hidden               0
 
     // screensaver, jump to function, go Root, ...
-    #define _LCDML_REG_special_jumpTo_w_para                7
+    #define _LCDML_REG_special_free_7                       7
     #define _LCDML_REG_special_jumpTo_enabled               6 
     #define _LCDML_REG_special_free_5                       5 
     #define _LCDML_REG_special_free_4                       4 
@@ -176,6 +174,10 @@
 
     // Include macros for this lib
     #include "LCDMenuLib2_macros.h"
+
+
+
+    
 
 
 //# LCD Menu Lib
