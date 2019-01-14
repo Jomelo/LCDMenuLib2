@@ -76,7 +76,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.0.0 - beta 5"
+    #define _LCDML_VERSION                       "LCDML2 v2.0.0 - beta 6"
 
     // Include Arduino ios
     #include "Arduino.h"
@@ -272,8 +272,7 @@
             uint8_t MENU_getCursorPos(void);                            // get the current cursor position (row 0, row 1, row 2, ...)
             uint8_t MENU_getCursorPosAbs(void);                         // get the current cursor postion absolute (..., row 10, row 11, ..) based on the menu structure
             uint8_t MENU_getChilds(void);                               // get the current number of childs on this layer
-            uint8_t MENU_getParentId(void);                             // get parent id of the next higher layer
-            uint8_t MENU_getParentId(uint8_t p_layer);                  // get the parent id of a selected higher layer
+            uint8_t MENU_getParentId(uint8_t p_layer=0);                  // get the parent id of a selected higher layer
             uint8_t MENU_getScroll(void);                               // get the current scroll value
             
             LCDMenuLib2_menu * MENU_getDisplayedObj();                  // get the objection with the current conten to display                    

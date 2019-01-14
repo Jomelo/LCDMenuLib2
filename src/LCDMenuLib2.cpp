@@ -1328,39 +1328,35 @@ uint8_t LCDMenuLib2::MENU_getChilds(void)
 }
 
 
-
-
 /* ******************************************************************** */
-uint8_t LCDMenuLib2::MENU_getParentId(void)
+uint8_t LCDMenuLib2::MENU_getParentID(uint8_t p_layer)
 /* ******************************************************************** */
 {
     // debug information
     DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_getParentId"));
+    LCDMenuLib2_menu *tmp;
 
-    curMenu->getParent()->getID();
-}
-
-/* ******************************************************************** */
-uint8_t LCDMenuLib2::MENU_getParentId(uint8_t p_layer)
-/* ******************************************************************** */
-{
-    // debug information
-    DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_getParentId"));
-    LCDMenuLib2_menu *tmp = curMenu;
-    
-    for(uint8_t i=0; i<p_layer; i++)
+    if((tmp = curMenu->getChild(0)) != NULL)
     {
-        if(tmp->getParent() != NULL)
+        for(uint8_t i=0; i<p_layer; i++)
         {
-            tmp = tmp->getParent();
+            if(tmp->getParent() != NULL)
+            {
+                tmp = tmp->getParent();
+            }
+            else
+            {
+                return _LCDML_NO_FUNC;
+                break;
+            }
         }
-        else
-        {
-            break;
-        }
-    }
 
-    return tmp->getID();
+        return tmp->getParent()->getID();
+    }
+    else
+    {
+        return _LCDML_NO_FUNC;
+    }   
 }
 
 /* ******************************************************************** */
@@ -1529,6 +1525,8 @@ uint8_t    LCDMenuLib2::FUNC_getID(void)
 {
     // debug information
     DBG_println(LCDML_DBG_function_name_FUNC, F("LCDML.FUNC_getID"));
+    
+    LCDMenuLib2_menu *tmp;
 
     if(activMenu != NULL) 
     {
@@ -1536,7 +1534,21 @@ uint8_t    LCDMenuLib2::FUNC_getID(void)
     } 
     else 
     {
-        return _LCDML_NO_FUNC;
+        if((tmp = curMenu->getChild(cursor_obj_pos)) != NULL)
+        {
+            if(tmp->checkType_dynParam() == true)
+            {
+                return tmp->getID();
+            }
+            else
+            {
+                return _LCDML_NO_FUNC;
+            }
+        }
+        else
+        {
+            return _LCDML_NO_FUNC;
+        }
     }
 }
 
