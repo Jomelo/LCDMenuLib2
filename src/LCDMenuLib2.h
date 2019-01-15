@@ -76,7 +76,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.0.0 - beta 6"
+    #define _LCDML_VERSION                       "LCDML2 v2.0.0 - beta 7"
 
     // Include Arduino ios
     #include "Arduino.h"
@@ -272,7 +272,7 @@
             uint8_t MENU_getCursorPos(void);                            // get the current cursor position (row 0, row 1, row 2, ...)
             uint8_t MENU_getCursorPosAbs(void);                         // get the current cursor postion absolute (..., row 10, row 11, ..) based on the menu structure
             uint8_t MENU_getChilds(void);                               // get the current number of childs on this layer
-            uint8_t MENU_getParentId(uint8_t p_layer=0);                  // get the parent id of a selected higher layer
+            uint8_t MENU_getParentID(uint8_t p_layer=0);                // get the parent id of a selected higher layer
             uint8_t MENU_getScroll(void);                               // get the current scroll value
             
             LCDMenuLib2_menu * MENU_getDisplayedObj();                  // get the objection with the current conten to display                    
@@ -318,7 +318,8 @@
             void    FUNC_goBackToMenu(uint8_t e=0);                     // close the current menu function (the FUNC_close check is true when this is set)
             uint8_t FUNC_getID(void);                                   // get the ID of the current menu function
             void    FUNC_setLoopInterval(unsigned long p_t);            // set a loop intervall for the current menu function the default loop intervall is 100000000 ms
-            void    FUNC_disableScreensaver(void);                      // disable the screensaver for the current menu function        
+            void    FUNC_disableScreensaver(void);                      // disable the screensaver for the current menu function  
+                  
 
             // timer methods
             boolean TIMER_ms(unsigned long &p_var, unsigned long p_t);  // a small timer based on the millis() function

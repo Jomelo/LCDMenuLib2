@@ -1333,7 +1333,7 @@ uint8_t LCDMenuLib2::MENU_getParentID(uint8_t p_layer)
 /* ******************************************************************** */
 {
     // debug information
-    DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_getParentId"));
+    DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_getParentID"));
     LCDMenuLib2_menu *tmp;
 
     if((tmp = curMenu->getChild(0)) != NULL)
