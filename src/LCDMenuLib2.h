@@ -76,7 +76,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.0.0"
+    #define _LCDML_VERSION                       "LCDML2 v2.1.0"
 
     // Include Arduino ios
     #include "Arduino.h"
