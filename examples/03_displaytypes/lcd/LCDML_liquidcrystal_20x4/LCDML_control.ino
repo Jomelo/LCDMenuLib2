@@ -249,7 +249,7 @@ void lcdml_menu_control(void)
 
   Encoder ENCODER(encoder_A_pin, encoder_B_pin);
 
-  long  g_LCDML_CONTROL_button_press_time = 0;
+  unsigned long  g_LCDML_CONTROL_button_press_time = 0;
   bool  g_LCDML_CONTROL_button_prev       = HIGH;
 
 // *********************************************************************
