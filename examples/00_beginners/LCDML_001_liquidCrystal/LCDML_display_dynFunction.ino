@@ -66,7 +66,7 @@ void mDyn_para(uint8_t line)
   sprintf (buf, "dynValue: %d", g_dynParam);
 
   // use the line from function parameters
-  lcd.setCursor(1, line);
+  lcd.setCursor(1, (line + _LCDML_DSIP_use_header));
   lcd.print(buf);
 
 }

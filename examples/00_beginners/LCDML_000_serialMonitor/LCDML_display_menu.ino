@@ -39,12 +39,30 @@ void lcdml_menu_display()
     LCDMenuLib2_menu *tmp;
     // some limit values
     uint8_t i = LCDML.MENU_getScroll();
-    uint8_t maxi = _LCDML_DISP_rows + i;
+    uint8_t maxi = (_LCDML_DISP_rows - _LCDML_DSIP_use_header) + i;
     uint8_t n = 0;
 
     // check if this element has children
     if ((tmp = LCDML.MENU_getDisplayedObj()) != NULL)
     {
+      // Display a header with the parent element name
+      if(_LCDML_DSIP_use_header > 0)
+      {
+        // only one line
+        if(LCDML.MENU_getLayer() == 0)
+        {
+          // this text is displayed when no header is available
+          Serial.println(F("Root Menu"));
+        }
+        else
+        {
+          // Display parent name
+          LCDML_getContent(content_text, LCDML.MENU_getParentID());
+          Serial.print(content_text);
+          Serial.println();
+        }        
+      }
+
       // loop to display lines
       do
       {

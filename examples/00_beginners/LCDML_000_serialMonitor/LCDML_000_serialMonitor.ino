@@ -19,6 +19,10 @@
   // settings for LCD
   #define _LCDML_DISP_cols  20
   #define _LCDML_DISP_rows  4
+  
+  // enable this line (set to 1) to show a header above the first menu element
+  // this function can be changed in LCDML_display_menu tab
+  #define _LCDML_DSIP_use_header 0
 
 // *********************************************************************
 // Prototypes
@@ -31,7 +35,7 @@
 // Objects
 // *********************************************************************
   LCDMenuLib2_menu LCDML_0 (255, 0, 0, NULL, NULL); // root menu element (do not change)
-  LCDMenuLib2 LCDML(LCDML_0, _LCDML_DISP_rows, _LCDML_DISP_cols, lcdml_menu_display, lcdml_menu_clear, lcdml_menu_control);
+  LCDMenuLib2 LCDML(LCDML_0, _LCDML_DISP_rows-_LCDML_DSIP_use_header, _LCDML_DISP_cols, lcdml_menu_display, lcdml_menu_clear, lcdml_menu_control);
 
 // *********************************************************************
 // LCDML MENU/DISP
