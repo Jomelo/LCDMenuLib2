@@ -52,8 +52,6 @@ LCDMenuLib2::LCDMenuLib2(LCDMenuLib2_menu &p_r, const uint8_t p_rows, const uint
     callback_contentUpdate  = contentUpdate;  // callback update content
     callback_contentClear   = contentClear;   // callback clear content
     callback_menuControl    = menuControl;    // callback buttons
-
-    init();    
 }
 
 /* ******************************************************************** */
@@ -63,7 +61,7 @@ LCDMenuLib2::LCDMenuLib2(LCDMenuLib2_menu &p_r, const uint8_t p_rows, const uint
 /* ******************************************************************** */
 
 /* ******************************************************************** */
-void LCDMenuLib2::init()
+void LCDMenuLib2::init(uint8_t p_maxElements)
 /* ******************************************************************** */
 {
     // init some variables
@@ -79,6 +77,8 @@ void LCDMenuLib2::init()
     activMenu               = NULL;
     menu_timer              = 0;
     menu_default_time       = 100000000;
+
+    maxElements             = p_maxElements;
 
     // reset all buttons
     BT_resetAll();
@@ -318,7 +318,7 @@ void LCDMenuLib2::loop_menu(void)
 
             // this function called be recursive (only once)
             // set this bit to call the FUNC_close function when the goRoot function is called
-            bitSet(REG_MenuFunction, _LCDML_REG_MenuFunction_end);
+            bitSet(REG_MenuFunction, _LCDML_REG_MenuFunction_end);            
 
             if(bitRead(REG_MenuFunction, _LCDML_REG_MenuFunction_close_active) == false)
             {
@@ -331,7 +331,7 @@ void LCDMenuLib2::loop_menu(void)
 
             BT_resetAll();
 
-            activMenu = NULL;
+            activMenu = NULL;            
             
             bitClear(REG_MenuFunction, _LCDML_REG_MenuFunction_close_active);            
             bitClear(REG_MenuFunction, _LCDML_REG_MenuFunction_end);
@@ -344,12 +344,16 @@ void LCDMenuLib2::loop_menu(void)
             // do nothing            
         }
 
+        // reset the old parameter from the closed function / this parameter is set when a new jumpTo.. function is called
+        jT_paramOld = 0;
+
         // set the menu to root
         MENU_goRoot();
 
         // debug information
         DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpTo.. / LCDML.OTHER_setCursorTo... - searching element"));
 
+        
         // search element
         switch(jT_mode)
         {
@@ -366,7 +370,48 @@ void LCDMenuLib2::loop_menu(void)
             default:
                 // error
                 break;
-        }             
+        } 
+
+        
+
+
+        //maxElements;
+
+        /* 
+
+        New Search function 
+        (only id based)
+
+        */
+
+       //tmp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // check element handling
         if(found == true)
@@ -509,7 +554,7 @@ void LCDMenuLib2::loop_menu(void)
         }
         else
         {
-            // close the running function
+            // close the running function 
 
             // set this bit to call the FUNC_close function when the goRoot function is called
             bitSet(REG_MenuFunction, _LCDML_REG_MenuFunction_end);
@@ -523,7 +568,10 @@ void LCDMenuLib2::loop_menu(void)
                 // do nothing
             }           
 
-            activMenu = NULL;            
+            activMenu = NULL;
+
+            // reset the custom parameter
+            jT_param    = 0;            
             
             bitClear(REG_MenuFunction, _LCDML_REG_MenuFunction_close_active);
             bitClear(REG_special, _LCDML_REG_special_disable_screensaver);
@@ -1583,7 +1631,11 @@ void LCDMenuLib2::FUNC_call(void)
 
     if(activMenu != NULL)
     {
-        if(jT_param > 0)
+        if(jT_paramOld > 0)
+        {
+            activMenu->callback(jT_paramOld);
+        }
+        else if(jT_param > 0)
         {
             activMenu->callback(jT_param);
         }
@@ -2152,6 +2204,7 @@ void LCDMenuLib2::OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t p_para)
         bitSet(REG_special, _LCDML_REG_special_jumpTo_enabled);
         jT_mode     = 0;
         jT_id       = 0;
+        jT_paramOld = jT_param;
         jT_param    = p_para;
         jT_function = p_search;
     }    
@@ -2175,6 +2228,7 @@ void LCDMenuLib2::OTHER_jumpToID(uint8_t p_id, uint8_t p_para)
         bitSet(REG_special, _LCDML_REG_special_jumpTo_enabled);
         jT_mode     = 1;
         jT_id       = p_id;
+        jT_paramOld = jT_param;
         jT_param    = p_para;
         jT_function = NULL;
     }
@@ -2198,6 +2252,7 @@ void LCDMenuLib2::OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search)
         bitSet(REG_special, _LCDML_REG_special_jumpTo_enabled);
         jT_mode     = 2;
         jT_id       = 0;
+        jT_paramOld = jT_param;
         jT_param    = 0;
         jT_function = p_search;
     }
@@ -2221,6 +2276,7 @@ void LCDMenuLib2::OTHER_setCursorToID(uint8_t p_id)
         bitSet(REG_special, _LCDML_REG_special_jumpTo_enabled);
         jT_mode     = 3;
         jT_id       = p_id;
+        jT_paramOld = jT_param;
         jT_param    = 0;
         jT_function = NULL;  
     } 

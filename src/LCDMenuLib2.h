@@ -68,15 +68,17 @@
 
     // create DBG_print makro when debugging is enabled
     #ifdef LCDML_DBG
-        #define DBG_print(enable, str)          if(enable == 1) { Serial.print(str); }
-        #define DBG_println(enable, str)        if(enable == 1) { Serial.println(str); }
+        #define DBG_print(enable, str)                  if(enable == 1) { Serial.print(str); }
+        #define DBG_println(enable, str)                if(enable == 1) { Serial.println(str); }
+        #define DBG_printstrln(enable, str, val, form)  if(enable == 1) { Serial.print(str); Serial.println(val, form);}
     #else
         #define DBG_print(enable, str)
         #define DBG_println(enable, str)
+        #define DBG_printstrln(enable, str, val, form)
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.1.0"
+    #define _LCDML_VERSION                       "LCDML2 v2.1.1"
 
     // Include Arduino ios
     #include "Arduino.h"
@@ -200,7 +202,10 @@
             uint8_t             jT_mode;                                // contains the jumpTo Mode            
             uint8_t             jT_id;                                  // contains the jumpTo id
             uint8_t             jT_param;                               // contains the jumpTo param
+            uint8_t             jT_paramOld;                            // contains the jumpTo param
             LCDML_FuncPtr_pu8   jT_function;                            // contains the jumpTo function
+
+            uint8_t maxElements;
 
             // menu intern values
             uint8_t window_rows;                                        // the maximum rows of the current windows  (1 is the minium)
@@ -251,7 +256,7 @@
             LCDMenuLib2(LCDMenuLib2_menu &p_r ,const uint8_t p_rows, const uint8_t p_cols, LCDML_FuncPtr contentUpdate, LCDML_FuncPtr contentClear, LCDML_FuncPtr menuControl);
 
             // init method
-            void init(void);                                            // initialisation of the menu / reset the complete menu
+            void init(uint8_t);                                         // initialisation of the menu / reset the complete menu
 
             // loop methods
             void loop(void);                                            // call the loop_menu and the loop_control function
