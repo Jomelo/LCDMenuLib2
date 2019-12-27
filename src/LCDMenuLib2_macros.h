@@ -98,17 +98,17 @@
         LCDML_getCustomElementName(lcdml, var, element_id)
 
     #define LCDML_createMenu(N)\
-        LCDML_createCustomLang(N, lcdml)
+        LCDML_createCustomLang(N, lcdml)        
 
     #define LCDML_getContent(var, id) \
-        LCDML_getCustomContent(lcdml, var, id)    
+        LCDML_getCustomContent(lcdml, var, id)
 
     //Menu Item Types
-    #define LCDML_addAdvanced(id, parent, child, condition, content, callback, param, settings) \
-        LCDML_langDef(id, lcdml, content); \
-        LCDMenuLib2_menu parent ## _ ## child(id, param, settings, callback, condition ); \
+    #define LCDML_addAdvanced(id, parent, child, p_condition, p_content, p_callback, p_param, p_settings) \
+        LCDML_langDef(id, lcdml, p_content); \
+        LCDMenuLib2_menu parent ## _ ## child(id, p_param, p_settings, p_callback, p_condition ); \
         void LCDML_DISP_ ## id ## _function() { \
-            parent.addChild(parent ## _ ## child); \
+            parent.addChild(parent ## _ ## child); \            
         }
 
     #define LCDML_add(id, parent, child, content, callback) \
@@ -116,7 +116,7 @@
 
     #define LCDML_setup(N)\
         LCDML_DISP_initFunction(N); \
-        LCDML.init()
+        LCDML.init(N)
         
 
 
@@ -381,6 +381,9 @@
     #define LCDML_DISP_lang_repeat_1(lang)   LCDML_DISP_lang_repeat_0(lang)   LCDML_DISP_lang(1, lang),
     #define LCDML_DISP_lang_repeat_0(lang)   LCDML_DISP_lang(0, lang),
     #define LCDML_DISP_lang_repeat(N, lang)     LCDML_DISP_lang_repeat_##N (lang)
+
+
+
 
 
 
