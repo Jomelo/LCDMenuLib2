@@ -2204,7 +2204,16 @@ void LCDMenuLib2::OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t p_para)
         bitSet(REG_special, _LCDML_REG_special_jumpTo_enabled);
         jT_mode     = 0;
         jT_id       = 0;
-        jT_paramOld = jT_param;
+        
+        if(activMenu != NULL)
+        {
+            jT_paramOld = jT_param;
+        }
+        else
+        {
+            jT_paramOld = 0;
+        } 
+        
         jT_param    = p_para;
         jT_function = p_search;
     }    
@@ -2228,7 +2237,16 @@ void LCDMenuLib2::OTHER_jumpToID(uint8_t p_id, uint8_t p_para)
         bitSet(REG_special, _LCDML_REG_special_jumpTo_enabled);
         jT_mode     = 1;
         jT_id       = p_id;
-        jT_paramOld = jT_param;
+        
+        if(activMenu != NULL)
+        {
+            jT_paramOld = jT_param;
+        }
+        else
+        {
+            jT_paramOld = 0;
+        } 
+
         jT_param    = p_para;
         jT_function = NULL;
     }
@@ -2252,7 +2270,16 @@ void LCDMenuLib2::OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search)
         bitSet(REG_special, _LCDML_REG_special_jumpTo_enabled);
         jT_mode     = 2;
         jT_id       = 0;
-        jT_paramOld = jT_param;
+        
+        if(activMenu != NULL)
+        {
+            jT_paramOld = jT_param;
+        }
+        else
+        {
+            jT_paramOld = 0;
+        } 
+        
         jT_param    = 0;
         jT_function = p_search;
     }
@@ -2276,7 +2303,16 @@ void LCDMenuLib2::OTHER_setCursorToID(uint8_t p_id)
         bitSet(REG_special, _LCDML_REG_special_jumpTo_enabled);
         jT_mode     = 3;
         jT_id       = p_id;
-        jT_paramOld = jT_param;
+        
+        if(activMenu != NULL)
+        {
+            jT_paramOld = jT_param;
+        }
+        else
+        {
+            jT_paramOld = 0;
+        } 
+        
         jT_param    = 0;
         jT_function = NULL;  
     } 
