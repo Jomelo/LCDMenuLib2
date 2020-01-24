@@ -21,12 +21,8 @@ Features:
 
 
 Attention:
-* when you are updaten from LCDMenuLib2 v1.x.x to v2.x.x look on this steps:
-  https://github.com/Jomelo/LCDMenuLib2/releases/tag/v2.0.0
-
 *  when you change from LCDMenuLib v2.3.4 to LCDMenuLib2 v1.0.0 or higher
-** the backend system is removed use instead of this when you need a task system or any other one:
-   https://github.com/arkhipenko/TaskScheduler
+** the backend system is removed from this lib use this when you need a task system: https://github.com/arkhipenko/TaskScheduler
 
 
 Description (German):
@@ -57,7 +53,7 @@ Images:
 
 MIT License
 
-Copyright (c) [2018] [Nils Feldkämper]
+Copyright (c) [2020] [Nils Feldkämper]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

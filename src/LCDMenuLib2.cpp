@@ -188,7 +188,6 @@ void LCDMenuLib2::loop_menu(void)
     uint8_t cnt = 0;
     uint8_t obj_pos = 0;
     LCDMenuLib2_menu *tmp;
-    boolean stop_while_loop = false;
     boolean found = false; 
          
    
@@ -1042,8 +1041,8 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
     uint8_t obj_pos = 0;
     uint8_t last_valid_obj_pos = 0;
     boolean rollover = false;
-    boolean update = false; 
-    uint8_t child_cnt = MENU_countChilds(curMenu);   
+    //boolean update = false; 
+    //uint8_t child_cnt = MENU_countChilds(curMenu);   
 
     //content:
     // 0 = scroll up
@@ -1069,7 +1068,7 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
                             {
                                 cursor_pos_abs--;
                                 cursor_obj_pos = last_valid_obj_pos;
-                                update = true;
+                                //update = true;
                             }
                             else
                             {    
@@ -1084,7 +1083,7 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
                             {
                                 cnt_visible++; 
                                 last_valid_obj_pos = obj_pos; 
-                                update = true;                         
+                                //update = true;                         
                             } 
                             else
                             {
@@ -1118,7 +1117,7 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
                         {
                             cnt_visible++; 
                             last_valid_obj_pos = obj_pos; 
-                            update = true;                         
+                            //update = true;                         
                         } 
                         else
                         {
@@ -1176,7 +1175,7 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
                         cnt_visible++;
                         cursor_pos_abs++;
                         cursor_obj_pos = obj_pos;
-                        update = true;
+                        //update = true;
                         break;
                     }
                     else

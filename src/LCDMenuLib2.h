@@ -78,7 +78,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.1.2"
+    #define _LCDML_VERSION                       "LCDML2 v2.1.3"
 
     // Include Arduino ios
     #include "Arduino.h"
@@ -256,7 +256,7 @@
             LCDMenuLib2(LCDMenuLib2_menu &p_r ,const uint8_t p_rows, const uint8_t p_cols, LCDML_FuncPtr contentUpdate, LCDML_FuncPtr contentClear, LCDML_FuncPtr menuControl);
 
             // init method
-            void init(uint8_t);                                         // initialisation of the menu / reset the complete menu
+            void init(uint8_t p_maxElements = 0);                       // initialisation of the menu / reset the complete menu
 
             // loop methods
             void loop(void);                                            // call the loop_menu and the loop_control function

@@ -108,7 +108,7 @@
         LCDML_langDef(id, lcdml, p_content); \
         LCDMenuLib2_menu parent ## _ ## child(id, p_param, p_settings, p_callback, p_condition ); \
         void LCDML_DISP_ ## id ## _function() { \
-            parent.addChild(parent ## _ ## child); \            
+            parent.addChild(parent ## _ ## child); \
         }
 
     #define LCDML_add(id, parent, child, content, callback) \
