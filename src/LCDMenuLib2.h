@@ -91,7 +91,7 @@
     #endif
 
     // ESP specific settings
-    #if defined( ESP8266 ) || defined( ESP32 ) || (_LCDML_cfg_use_ram == 1)
+    #if defined( ESP8266 ) || defined( ESP32 ) || defined(__SAMD__ ) || (_LCDML_cfg_use_ram == 1)
         #define _LCDML_ESP
     #endif
 
