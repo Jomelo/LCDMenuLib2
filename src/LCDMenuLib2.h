@@ -91,8 +91,8 @@
     #endif
 
     // ESP specific settings
-    #if defined( ESP8266 ) || defined( ESP32 ) || (_LCDML_cfg_use_ram == 1)
-        #define _LCDML_ESP
+    #if defined( ESP8266 ) || defined( ESP32 ) || defined( ARDUINO_ARCH_SAMD) || (_LCDML_cfg_use_ram == 1)
+        #define _LCDML_USE_RAM
     #endif
 
     // No function constant
@@ -156,7 +156,7 @@
     #endif
 
     // Include PGMSPACE
-    #ifndef _LCDML_ESP
+    #ifndef _LCDML_USE_RAM
         #include <avr/pgmspace.h>
     #endif
 
