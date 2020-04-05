@@ -10,6 +10,12 @@
 // This example shows how a dynamic file list can be added
 // Program->Program 1-> Filelist
 // ============================================================
+// *********************************************************************
+// special settings
+// *********************************************************************
+// enable this line when you are not usigng a standard arduino
+// for example when your chip is an ESP or a STM or SAM or something else
+//#define _LCDML_cfg_use_ram 
 
 // *********************************************************************
 // includes

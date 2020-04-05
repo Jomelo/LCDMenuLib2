@@ -243,6 +243,15 @@ BT_resetRight	KEYWORD2
 BT_resetUp	KEYWORD2
 BT_resetDown	KEYWORD2
 
+CE_setup    KEYWORD2
+CE_set  KEYWORD2
+CE_resetAll KEYWORD2
+CE_reset    KEYWORD2
+CE_checkAny KEYWORD2
+CE_check    KEYWORD2
+CE_setOnChangeCbFunction    KEYWORD2
+CE_clearOnChangeCbFunction  KEYWORD2
+
 DISP_update	KEYWORD2
 DISP_menuUpdate	KEYWORD2
 DISP_clear	KEYWORD2
@@ -257,8 +266,9 @@ FUNC_goBackToMenu	KEYWORD2
 FUNC_getID	KEYWORD2
 FUNC_setLoopInterval	KEYWORD2
 FUNC_disableScreensaver	KEYWORD2
-FUNC_setGoBackToLastFunc    KEYWORD2
-FUNC_setGoBackToLastCursorPosition  KEYWORD2
+FUNC_setGBAToLastFunc    KEYWORD2
+FUNC_setGBAToLastCursorPos  KEYWORD2
+FUNC_setGBA KEYWORD2
 
 OTHER_jumpToFunc	KEYWORD2
 OTHER_jumpToID	KEYWORD2

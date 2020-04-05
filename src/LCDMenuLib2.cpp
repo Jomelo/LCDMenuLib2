@@ -69,6 +69,7 @@ void LCDMenuLib2::init(uint8_t p_maxElements)
     REG_control             = 0;            
     REG_MenuFunction        = 0;
     REG_button              = 0;
+    REG_custom_event        = 0;
     REG_special             = 0;
     REG_update              = 0;
     cursor_pos              = 0;
@@ -82,8 +83,15 @@ void LCDMenuLib2::init(uint8_t p_maxElements)
                                 
     maxElements             = p_maxElements;
 
+    // reset custom events
+    for(uint8_t i=0; i<_LCDML_CE_cb_function_cnt; i++)
+    {
+        ce_cb[i] = NULL;
+    }
+
     // reset all buttons
     BT_resetAll();
+    CE_resetAll();
 
     // set the cursor object position to the right postion
     // this is needed when the first and following elements are hidden
@@ -149,7 +157,8 @@ void LCDMenuLib2::loop_control(void)
                     // close the running function 
                     FUNC_goBackToMenu(); 
                     loop_control();
-                    REG_button = 0;
+                    BT_resetAll();
+                    CE_resetAll();                   
                     OTHER_jumpToFunc(cb_screensaver);
                 }
                 else
@@ -169,6 +178,7 @@ void LCDMenuLib2::loop_control(void)
             {
                 // reset all button states
                 BT_resetAll();
+                CE_resetAll();
                 OTHER_jumpToFunc(cb_screensaver);
             }
             else
@@ -177,6 +187,58 @@ void LCDMenuLib2::loop_control(void)
             }
         }
     }
+
+
+    // check custom event handling
+    if(CE_checkAny() == true)
+    {
+        for(uint8_t i=0; i<_LCDML_CE_cb_function_cnt; i++)
+        {
+            // event found
+            if(CE_check(i+1) == true)
+            {
+                Serial.println("z");
+                // callback function found
+                if(ce_cb[i] != NULL)
+                {
+                    Serial.println("zz");
+                    // check if a function is running
+                    if(actMenu_id == _LCDML_NO_FUNC)
+                    {
+                        // no function is active
+                        // switch to new callback function
+                        OTHER_jumpToFunc(ce_cb[i]);
+                    }
+                    else
+                    {
+                        // a function is active
+                        // check if function is running
+                        if(actMenu_cb_function != ce_cb[i])
+                        {
+                            // switch to new callback function
+                            OTHER_jumpToFunc(ce_cb[i]);
+                        }
+                        else
+                        {
+                            // do nothing, function is running
+                        }
+                    }                   
+                }
+                else
+                {
+                    // do nothing
+                }
+            }
+            else
+            {
+                // do nothing
+            }
+        }
+    }
+    else
+    {
+        // do nothing
+    } 
 }
 
 /* ******************************************************************** */
@@ -238,7 +300,7 @@ void LCDMenuLib2::loop_menu(void)
             }
             else
             {   
-                if(BT_checkUp() == true || BT_checkDown())
+                if(BT_checkUp() == true || BT_checkDown() == true)
                 {                   
                     DISP_update();
                 }
@@ -293,6 +355,19 @@ void LCDMenuLib2::loop_menu(void)
             }
         }
     }
+
+    // ============================================
+    // check control activity
+    // ============================================
+    if(CE_checkAny() == true)
+    {     
+        // reset screensaver timer
+        SCREEN_resetTimer();
+
+        // display update
+        //DISP_update();
+        //bitSet(REG_control, _LCDML_REG_control_update_direct);
+    }
     
     // ============================================
     // jump to handling
@@ -330,6 +405,7 @@ void LCDMenuLib2::loop_menu(void)
             }
 
             BT_resetAll();
+            CE_resetAll();
 
             // Reset active menu
             MENU_resetActiveMenu();                                                     
@@ -543,7 +619,7 @@ void LCDMenuLib2::loop_menu(void)
         {
             // => do not close the running function
             // check if a loop time was set or a button was pressed or the function is called the first time
-            if(TIMER_ms(menu_timer, menu_default_time) == true || bitRead(REG_MenuFunction, _LCDML_REG_MenuFunction_setup) == false || REG_button > 0)
+            if(TIMER_ms(menu_timer, menu_default_time) == true || bitRead(REG_MenuFunction, _LCDML_REG_MenuFunction_setup) == false || BT_checkAny() > 0 || CE_checkAny() > 0)
             {
                 // call the current menu function
                 FUNC_call();                
@@ -655,7 +731,9 @@ void LCDMenuLib2::loop_menu(void)
             }
 
             callback_contentUpdate();
+            
             BT_resetAll();
+            CE_resetAll();
         }  
         else
         {            
@@ -669,7 +747,8 @@ void LCDMenuLib2::loop_menu(void)
     else
     {
         // reset all button actions
-        BT_resetAll();        
+        BT_resetAll(); 
+        CE_resetAll();       
     }       
 }
 
@@ -730,6 +809,7 @@ void        LCDMenuLib2::MENU_goRoot(void)
     {
         // check if root position is reached
         BT_resetAll();
+        CE_resetAll();
 
         curMenu         = MENU_getRootObj();
         layer           = 0;
@@ -826,6 +906,7 @@ void    LCDMenuLib2::MENU_goInto(void)
                         if(bitRead(REG_control, _LCDML_REG_control_search_display) == false)
                         {
                             BT_resetAll(); // reset all buttons
+                            CE_resetAll();
                             
                             DISP_update();
                         }                        
@@ -1738,6 +1819,7 @@ boolean LCDMenuLib2::FUNC_setup(void)
             bitSet(REG_MenuFunction, _LCDML_REG_MenuFunction_setup); // run setup
             DISP_clear();
             BT_resetAll();
+            CE_resetAll();
             return true;
         }
         else
@@ -1850,9 +1932,12 @@ void    LCDMenuLib2::FUNC_disableScreensaver(void)
 }
 
 /* ******************************************************************** */
-void    LCDMenuLib2::FUNC_setGoBackToLastCursorPosition(void)
+void    LCDMenuLib2::FUNC_setGBAToLastCursorPos(void)
 /* ******************************************************************** */
 {
+    // debug information
+    DBG_println(LCDML_DBG_function_name_FUNC, F("LCDML.FUNC_setGBAToLastCursorPos"));
+
     // delte other configurations
     bitClear(REG_MenuFunction, _LCDML_REG_MenuFunction_goBackToFuncID);
 
@@ -1861,14 +1946,29 @@ void    LCDMenuLib2::FUNC_setGoBackToLastCursorPosition(void)
 }
 
 /* ******************************************************************** */
-void    LCDMenuLib2::FUNC_setGoBackToLastFunc(void)
+void    LCDMenuLib2::FUNC_setGBAToLastFunc(void)
 /* ******************************************************************** */
 {
+    // debug information
+    DBG_println(LCDML_DBG_function_name_FUNC, F("LCDML.FUNC_setGBAToLastFunc"));
+
     // delete other configurations
     bitClear(REG_MenuFunction, _LCDML_REG_MenuFunction_setCursorToID);
 
     // set new configuration
     bitSet(REG_MenuFunction, _LCDML_REG_MenuFunction_goBackToFuncID);
+}
+
+/* ******************************************************************** */
+void    LCDMenuLib2::FUNC_setGBA(void)
+/* ******************************************************************** */
+{
+    // debug information
+    DBG_println(LCDML_DBG_function_name_FUNC, F("LCDML.FUNC_setGBA"));
+
+    // decide which option is better (to function or to last cursor option)
+    #warning "This FUNC_setGBA function is not implemented yet -> ToDo"
+                
 }
 
 
@@ -1966,7 +2066,7 @@ boolean LCDMenuLib2::BT_checkAny(void)
     // debug information 
     DBG_println(LCDML_DBG_function_name_BT, F("LCDML.BT_checkAny")); 
 
-    if((REG_button > 0)) 
+    if(REG_button > 0) 
     { 
         return true; 
     } 
@@ -2140,14 +2240,165 @@ void LCDMenuLib2::BT_resetRight(void)
 /* ******************************************************************** */
 void LCDMenuLib2::BT_resetQuit(void)        
 /* ******************************************************************** */
-
 { 
     // debug information 
     DBG_println(LCDML_DBG_function_name_BT, F("LCDML.BT_resetQuit"));   
     
     bitClear(REG_button, _LCDML_REG_button_quit);     
 }
+
+
+
+
 /* ******************************************************************** */
+/* ******************************************************************** */
+/* Custom Event Handling                                                */
+/* ******************************************************************** */
+/* ******************************************************************** */
+
+/* ******************************************************************** */
+boolean LCDMenuLib2::CE_setup(void)
+/* ******************************************************************** */
+{
+    // debug information
+    DBG_println(LCDML_DBG_function_name_BT, F("LCDML.CE_setup"));
+
+    // check if the button initialisation was done
+    if(bitRead(REG_control, _LCDML_REG_control_ce_init_setup) == false)
+    {
+        bitSet(REG_control, _LCDML_REG_control_ce_init_setup);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+/* ******************************************************************** */
+void    LCDMenuLib2::CE_set(uint8_t p_event)         
+/* ******************************************************************** */
+{
+    // debug information 
+    DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_set")); 
+
+    switch(p_event)
+    {
+        case 1: bitSet(REG_custom_event, _LCDML_REG_custom_event_1);    break;
+        case 2: bitSet(REG_custom_event, _LCDML_REG_custom_event_2);    break;
+        case 3: bitSet(REG_custom_event, _LCDML_REG_custom_event_3);    break;
+        case 4: bitSet(REG_custom_event, _LCDML_REG_custom_event_4);    break;
+        case 5: bitSet(REG_custom_event, _LCDML_REG_custom_event_5);    break;
+        case 6: bitSet(REG_custom_event, _LCDML_REG_custom_event_6);    break;
+        case 7: bitSet(REG_custom_event, _LCDML_REG_custom_event_7);    break;
+        case 8: bitSet(REG_custom_event, _LCDML_REG_custom_event_8);    break;
+        
+        default: 
+            break;
+    } 
+}
+
+/* ******************************************************************** */
+void    LCDMenuLib2::CE_resetAll(void)
+/* ******************************************************************** */
+{
+    // debug information 
+    DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_resetAll")); 
+    
+    // reset all
+    REG_custom_event = 0;
+}
+
+/* ******************************************************************** */
+void    LCDMenuLib2::CE_reset(uint8_t p_event)         
+/* ******************************************************************** */
+{
+    // debug information 
+    DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_reset")); 
+
+    switch(p_event)
+    {
+        case 1: bitClear(REG_custom_event, _LCDML_REG_custom_event_1);    break;
+        case 2: bitClear(REG_custom_event, _LCDML_REG_custom_event_2);    break;
+        case 3: bitClear(REG_custom_event, _LCDML_REG_custom_event_3);    break;
+        case 4: bitClear(REG_custom_event, _LCDML_REG_custom_event_4);    break;
+        case 5: bitClear(REG_custom_event, _LCDML_REG_custom_event_5);    break;
+        case 6: bitClear(REG_custom_event, _LCDML_REG_custom_event_6);    break;
+        case 7: bitClear(REG_custom_event, _LCDML_REG_custom_event_7);    break;
+        case 8: bitClear(REG_custom_event, _LCDML_REG_custom_event_8);    break;
+        
+        default: 
+            break;
+    } 
+}
+
+/* ******************************************************************** */
+boolean LCDMenuLib2::CE_checkAny(void)
+/* ******************************************************************** */
+{
+    // debug information 
+    DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_checkAny"));
+    
+    if(REG_custom_event > 0)
+    {  
+        Serial.println("2");      
+        return true;
+    } 
+    else
+    {        
+        return false;
+    }
+}
+
+/* ******************************************************************** */
+boolean LCDMenuLib2::CE_check(uint8_t p_event)
+/* ******************************************************************** */
+{
+    // debug information 
+    DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_check"));
+
+    switch(p_event)
+    {
+        case 1: return bitRead(REG_custom_event, _LCDML_REG_custom_event_1);  Serial.println("f");  break;
+        case 2: return bitRead(REG_custom_event, _LCDML_REG_custom_event_2);    break;
+        case 3: return bitRead(REG_custom_event, _LCDML_REG_custom_event_3);    break;
+        case 4: return bitRead(REG_custom_event, _LCDML_REG_custom_event_4);    break;
+        case 5: return bitRead(REG_custom_event, _LCDML_REG_custom_event_5);    break;
+        case 6: return bitRead(REG_custom_event, _LCDML_REG_custom_event_6);    break;
+        case 7: return bitRead(REG_custom_event, _LCDML_REG_custom_event_7);    break;
+        case 8: return bitRead(REG_custom_event, _LCDML_REG_custom_event_8);    break;
+
+        default:
+            return false; 
+            break;
+    }  
+}
+
+/* ******************************************************************** */
+void    LCDMenuLib2::CE_setOnChangeCbFunction(uint8_t p_event, LCDML_FuncPtr_pu8 p_function)
+/* ******************************************************************** */
+{
+    // debug information 
+    DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_setOnChangeCbFunction"));
+    
+    if(p_event > 0 && p_event < _LCDML_CE_cb_function_cnt) 
+    {
+        ce_cb[(p_event-1)] = p_function;
+    }
+}
+
+/* ******************************************************************** */
+void    LCDMenuLib2::CE_clearOnChangeCbFunction(uint8_t p_event)
+/* ******************************************************************** */
+{
+    // debug information 
+    DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_clearOnChangeCbFunction"));
+    
+    if(p_event > 0 && p_event < _LCDML_CE_cb_function_cnt) 
+    {
+        ce_cb[(p_event-1)] = NULL;
+    }
+}
 
 
 /* ******************************************************************** */

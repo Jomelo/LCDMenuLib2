@@ -54,6 +54,7 @@
     #define LCDML_DBG_function_name_MENU        0
     #define LCDML_DBG_function_name_FUNC        0
     #define LCDML_DBG_function_name_BT          0
+    #define LCDML_DBG_function_name_CE          0
     #define LCDML_DBG_function_name_OTHER       0
     #define LCDML_DBG_function_name_DISP        0
     #define LCDML_DBG_function_name_TIMER       0
@@ -96,7 +97,7 @@
     // ESP specific settings
     #if defined( ESP8266 ) || defined( ESP32 )
         #ifndef _LCDML_cfg_use_ram
-            #define _LCDML_cfg_use_ram
+            #define _LCDML_cfg_use_ram           
         #endif
     #endif
 
@@ -105,7 +106,7 @@
 
     // Bit pos control flags
     #define _LCDML_REG_control_dynMenuDisplayed             7
-    #define _LCDML_REG_control_free_6                       6
+    #define _LCDML_REG_control_ce_init_setup                6
     #define _LCDML_REG_control_menu_func_active             5
     #define _LCDML_REG_control_bt_init_setup                4
     #define _LCDML_REG_control_update_direct                3
@@ -142,6 +143,19 @@
     #define _LCDML_REG_button_down                          2
     #define _LCDML_REG_button_left                          1
     #define _LCDML_REG_button_right                         0
+
+    // custom event flags
+    #define _LCDML_REG_custom_event_8                       7
+    #define _LCDML_REG_custom_event_7                       6
+    #define _LCDML_REG_custom_event_6                       5
+    #define _LCDML_REG_custom_event_5                       4
+    #define _LCDML_REG_custom_event_4                       3
+    #define _LCDML_REG_custom_event_3                       2
+    #define _LCDML_REG_custom_event_2                       1
+    #define _LCDML_REG_custom_event_1                       0
+
+    // number of custom event callback functions
+    #define _LCDML_CE_cb_function_cnt                       8
 
     // display update handling
     #define _LCDML_REG_update_content                       7
@@ -197,6 +211,9 @@
             LCDML_FuncPtr       callback_contentClear;                  // a callback function which clears the display
             LCDML_FuncPtr_pu8   cb_screensaver;                         // a callback function as screensaver (a normal menu function, but a defined name)
 
+            LCDML_FuncPtr_pu8   ce_cb[_LCDML_CE_cb_function_cnt]; 
+
+            // activ menu values
             LCDML_FuncPtr_pu8   actMenu_cb_function;                    // Menu Function callback            
             uint8_t             actMenu_id;                             // Name of this menu
             uint8_t             actMenu_param;                          // Parameter this menu
@@ -225,6 +242,7 @@
             
             // variables with bitfields => bit register
             uint8_t REG_button;                                         // control flags for button actions
+            uint8_t REG_custom_event;                                   // control flags for custom event actions
             uint8_t REG_control;                                        // control flags 
             uint8_t REG_MenuFunction;                                   // control flags for menu functions
             uint8_t REG_special;                                        // control flags for special function like screensaver, jumpTo, setCursorTo, goRoot, ..
@@ -301,7 +319,7 @@
             void    BT_left(void);                                      // set button left
             void    BT_right(void);                                     // set button right
             void    BT_quit(void);                                      // set button quit
-
+            //
             void    BT_resetAll(void);                                  // reset all button states
             void    BT_resetEnter(void);                                // reset enter button state
             void    BT_resetUp(void);                                   // reset up button state
@@ -309,7 +327,7 @@
             void    BT_resetLeft(void);                                 // reset left button state
             void    BT_resetRight(void);                                // reset right button state
             void    BT_resetQuit(void);                                 // reset quit button state
-
+            //
             boolean BT_checkAny(void);                                  // check if any button was pressed
             boolean BT_checkEnter(void);                                // check enter button
             boolean BT_checkUp(void);                                   // check up button
@@ -318,6 +336,19 @@
             boolean BT_checkRight(void);                                // check right button
             boolean BT_checkQuit(void);                                 // check quit button
 
+            // CE = custom event
+            boolean CE_setup(void);                                     // check if the button initialisation was done
+            void    CE_set(uint8_t p_event);                            // set button enter           
+            //
+            void    CE_resetAll(void);                                  // reset all button states
+            void    CE_reset(uint8_t p_event);                          // reset enter button state            
+            //
+            boolean CE_checkAny(void);                                  // check if any button was pressed
+            boolean CE_check(uint8_t p_event);                          // check enter button
+            //
+            void    CE_setOnChangeCbFunction(uint8_t p_event, LCDML_FuncPtr_pu8 p_function);    // add callback function
+            void    CE_clearOnChangeCbFunction(uint8_t p_event);                                // remove callback function
+           
             // display methods
             void    DISP_update(void);                                  // display the content and update the menu structure 
             void    DISP_menuUpdate(void);                              // display the content but do not update the menu structure
@@ -333,11 +364,11 @@
             void    FUNC_goBackToMenu(uint8_t p_goBackCnt=0);           // close the current menu function (the FUNC_close check is true when this is set)
             uint8_t FUNC_getID(void);                                   // get the ID of the current menu function
             void    FUNC_setLoopInterval(unsigned long p_t);            // set a loop intervall for the current menu function the default loop intervall is 100000000 ms
-            void    FUNC_setGoBackToLastCursorPosition(void);           // set a special "go back handling" 
-            void    FUNC_setGoBackToLastFunc(void);                     // set a special "go back handling"
-            void    FUNC_disableScreensaver(void);                      // disable the screensaver for the current menu function  
-                  
-
+            void    FUNC_disableScreensaver(void);                      // disable the screensaver for the current menu function 
+            void    FUNC_setGBAToLastCursorPos(void);                   // set a special "go back handling" 
+            void    FUNC_setGBAToLastFunc(void);                        // set a special "go back handling"
+            void    FUNC_setGBA(void);                                  // set a special "go back handling" which decide between the two function above 
+           
             // timer methods
             boolean TIMER_ms(unsigned long &p_var, unsigned long p_t);  // a small timer based on the millis() function
             void    TIMER_msReset(unsigned long &p_var);                // reset the millis timer 
