@@ -208,12 +208,17 @@ MENU_enRollover	KEYWORD2
 MENU_disRollover	KEYWORD2
 MENU_getDisplayedObj	KEYWORD2
 MENU_getCurrentObj	KEYWORD2
+MENU_getRootObj KEYWORD2
 MENU_getScroll	KEYWORD2
 MENU_enScroll	KEYWORD2
 MENU_disScroll	KEYWORD2
 MENU_getScrollDisableStatus	KEYWORD2
 MENU_setDynContent	KEYWORD2
 MENU_checkDynContent	KEYWORD2
+MENU_resetActiveMenu    KEYWORD2
+MENU_getLastActivFunctionID KEYWORD2
+MENU_getLastCursorPositionID    KEYWORD2
+
 
 BT_setup	KEYWORD2
 BT_enter	KEYWORD2
@@ -252,6 +257,8 @@ FUNC_goBackToMenu	KEYWORD2
 FUNC_getID	KEYWORD2
 FUNC_setLoopInterval	KEYWORD2
 FUNC_disableScreensaver	KEYWORD2
+FUNC_setGoBackToLastFunc    KEYWORD2
+FUNC_setGoBackToLastCursorPosition  KEYWORD2
 
 OTHER_jumpToFunc	KEYWORD2
 OTHER_jumpToID	KEYWORD2

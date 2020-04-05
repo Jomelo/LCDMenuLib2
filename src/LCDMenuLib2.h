@@ -44,7 +44,7 @@
     // ####################### //
 
     // you can change this parameters
-    #define _LCDML_cfg_use_ram                   0   // set this to 1 when you will use the ram mode
+    //#define _LCDML_cfg_use_ram                   // enable this line when you want to use the ram mode 
 
     // enable debug strings (remove comments from this line)
     //#define LCDML_DBG                          1 
@@ -78,7 +78,10 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.1.3"
+    #define _LCDML_VERSION                       "LCDML2 v2.2.0 beta 2020_04_05"
+
+    // this makro is for unused variables which exists for compatibility tings ...
+    #define UNUSED(expr) do { (void)(expr); } while (0)
 
     // Include Arduino ios
     #include "Arduino.h"
@@ -91,8 +94,10 @@
     #endif
 
     // ESP specific settings
-    #if defined( ESP8266 ) || defined( ESP32 ) || (_LCDML_cfg_use_ram == 1)
-        #define _LCDML_ESP
+    #if defined( ESP8266 ) || defined( ESP32 )
+        #ifndef _LCDML_cfg_use_ram
+            #define _LCDML_cfg_use_ram
+        #endif
     #endif
 
     // No function constant
@@ -101,7 +106,7 @@
     // Bit pos control flags
     #define _LCDML_REG_control_dynMenuDisplayed             7
     #define _LCDML_REG_control_free_6                       6
-    #define _LCDML_REG_control_free_5                       5
+    #define _LCDML_REG_control_menu_func_active             5
     #define _LCDML_REG_control_bt_init_setup                4
     #define _LCDML_REG_control_update_direct                3
     #define _LCDML_REG_control_search_display               2
@@ -122,8 +127,8 @@
     #define _LCDML_REG_MenuFunction_free_7                  7
     #define _LCDML_REG_MenuFunction_free_6                  6
     #define _LCDML_REG_MenuFunction_free_5                  5
-    #define _LCDML_REG_MenuFunction_free_4                  4
-    #define _LCDML_REG_MenuFunction_free_3                  3
+    #define _LCDML_REG_MenuFunction_goBackToFuncID          4
+    #define _LCDML_REG_MenuFunction_setCursorToID           3
     #define _LCDML_REG_MenuFunction_close_active            2
     #define _LCDML_REG_MenuFunction_setup                   1
     #define _LCDML_REG_MenuFunction_end                     0
@@ -156,7 +161,7 @@
     #endif
 
     // Include PGMSPACE
-    #ifndef _LCDML_ESP
+    #ifndef _LCDML_cfg_use_ram
         #include <avr/pgmspace.h>
     #endif
 
@@ -177,26 +182,27 @@
     // Include macros for this lib
     #include "LCDMenuLib2_macros.h"
 
-
-
-    
-
-
+//# =======================
 //# LCD Menu Lib
 //# =======================
     class LCDMenuLib2
     {
         private:
-            // object pointer
-            LCDMenuLib2_menu *rootMenu;
+            // object pointer            
             LCDMenuLib2_menu *curMenu;
-            LCDMenuLib2_menu *activMenu;
 
             // callback functions
             LCDML_FuncPtr       callback_menuControl;                   // a callback function which checks the input buttons
             LCDML_FuncPtr       callback_contentUpdate;                 // a callback function which contains the menu function content
             LCDML_FuncPtr       callback_contentClear;                  // a callback function which clears the display
             LCDML_FuncPtr_pu8   cb_screensaver;                         // a callback function as screensaver (a normal menu function, but a defined name)
+
+            LCDML_FuncPtr_pu8   actMenu_cb_function;                    // Menu Function callback            
+            uint8_t             actMenu_id;                             // Name of this menu
+            uint8_t             actMenu_param;                          // Parameter this menu
+            uint8_t             actMenu_lastFuncID;                     // History of the last three active menu functions  
+            uint8_t             actMenu_cursorPositionID;               // current cursor position id          
+            uint8_t             actMenu_lastCursorPositionID;           // Save the last Cursor position before a new function was called    
 
             // jump To variables
             uint8_t             jT_mode;                                // contains the jumpTo Mode            
@@ -241,7 +247,8 @@
             void    MENU_doScroll(uint8_t state);                                   // scroll the menu
             void    MENU_goMenu(LCDMenuLib2_menu &p_m, uint8_t p_back);             // go to a menu element
             uint8_t MENU_countChilds(LCDMenuLib2_menu *menu, uint8_t all=false);    // how many children exists on next layer
-            void    MENU_initFirstElement(void);                                         // set counter to the first object child
+            void    MENU_initFirstElement(void);                                    // set counter to the first object child
+            void    MENU_resetActiveMenu(void);                                     // clear all neccessary variables
             
                      
             // callback function
@@ -279,9 +286,12 @@
             uint8_t MENU_getChilds(void);                               // get the current number of childs on this layer
             uint8_t MENU_getParentID(uint8_t p_layer=0);                // get the parent id of a selected higher layer
             uint8_t MENU_getScroll(void);                               // get the current scroll value
+            uint8_t MENU_getLastActivFunctionID(void);                  // returns the id of the last active function
+            uint8_t MENU_getLastCursorPositionID(void);                 // returns the last cursor position function id
             
-            LCDMenuLib2_menu * MENU_getDisplayedObj();                  // get the objection with the current conten to display                    
-            LCDMenuLib2_menu * MENU_getCurrentObj();                    // get the current child object
+            LCDMenuLib2_menu * MENU_getDisplayedObj(void);              // get the objection with the current content to display                    
+            LCDMenuLib2_menu * MENU_getCurrentObj(void);                // get the current menu child object
+            LCDMenuLib2_menu * MENU_getRootObj(void);                   // get the root menu object
 
             // BT = button methods
             boolean BT_setup(void);                                     // check if the button initialisation was done
@@ -320,9 +330,11 @@
             boolean FUNC_setup(void);                                   // check if a menu function is called the first time to init some things
             boolean FUNC_loop(void);                                    // check if a menu function is running in a loop
             boolean FUNC_close(void);                                   // check if a menu function is closed to reach a stable state 
-            void    FUNC_goBackToMenu(uint8_t e=0);                     // close the current menu function (the FUNC_close check is true when this is set)
+            void    FUNC_goBackToMenu(uint8_t p_goBackCnt=0);           // close the current menu function (the FUNC_close check is true when this is set)
             uint8_t FUNC_getID(void);                                   // get the ID of the current menu function
             void    FUNC_setLoopInterval(unsigned long p_t);            // set a loop intervall for the current menu function the default loop intervall is 100000000 ms
+            void    FUNC_setGoBackToLastCursorPosition(void);           // set a special "go back handling" 
+            void    FUNC_setGoBackToLastFunc(void);                     // set a special "go back handling"
             void    FUNC_disableScreensaver(void);                      // disable the screensaver for the current menu function  
                   
 

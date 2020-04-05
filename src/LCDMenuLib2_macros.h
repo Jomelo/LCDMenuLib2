@@ -56,7 +56,7 @@
     // call repeat of function
     #define LCDML_DISP_initFunction(N)      LCDML_DISP_func_repeat(N);
 
-    #ifndef _LCDML_ESP
+    #ifndef _LCDML_cfg_use_ram
         // stored in flash (Arduino)
         #define LCDML_langDef(name, lang, content) \
             const char g_LCDML_DISP_lang_ ## lang ## _ ## name ##_var[] PROGMEM = {content}
@@ -75,7 +75,7 @@
             }
 
     #else
-        // stored in ram (esp)
+        // stored in ram (esp, stm, other controllers)
         #define LCDML_langDef(name, lang, content) \
             char g_LCDML_DISP_lang_ ## lang ## _ ## name ##_var[] = {content}       
 
