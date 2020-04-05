@@ -49,6 +49,11 @@
     // enable debug strings (remove comments from this line)
     //#define LCDML_DBG                          1 
 
+    // set the number of custom events (this could be a button ore something else)
+    #define _LCDML_CE_events_cnt                64  // min 8 / max 64  this is the number of events which are supported
+    #define _LCDML_CE_cb_function_cnt           8   // this is the number of custom event callback functions which are supported
+                                                    // 8 => 
+
     // debug special method groups          // enable a flag to control the function call order
     #define LCDML_DBG_function_name_LOOP        0
     #define LCDML_DBG_function_name_MENU        0
@@ -154,9 +159,6 @@
     #define _LCDML_REG_custom_event_2                       1
     #define _LCDML_REG_custom_event_1                       0
 
-    // number of custom event callback functions
-    #define _LCDML_CE_cb_function_cnt                       8
-
     // display update handling
     #define _LCDML_REG_update_content                       7
     #define _LCDML_REG_update_cursor                        6
@@ -241,12 +243,12 @@
             uint8_t layer;                                              // contains the current layer
             
             // variables with bitfields => bit register
-            uint8_t REG_button;                                         // control flags for button actions
-            uint8_t REG_custom_event;                                   // control flags for custom event actions
-            uint8_t REG_control;                                        // control flags 
-            uint8_t REG_MenuFunction;                                   // control flags for menu functions
-            uint8_t REG_special;                                        // control flags for special function like screensaver, jumpTo, setCursorTo, goRoot, ..
-            uint8_t REG_update;                                         // control flags to update the content
+            uint8_t  REG_button;                                         // control flags for button actions
+            uint64_t REG_custom_event;                                   // control flags for custom event actions
+            uint8_t  REG_control;                                        // control flags 
+            uint8_t  REG_MenuFunction;                                   // control flags for menu functions
+            uint8_t  REG_special;                                        // control flags for special function like screensaver, jumpTo, setCursorTo, goRoot, ..
+            uint8_t  REG_update;                                         // control flags to update the content
 
             // variables for handling with menu function            
             uint8_t goBackCnt;                                          // save the layer to go back

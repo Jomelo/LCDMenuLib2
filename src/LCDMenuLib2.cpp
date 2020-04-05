@@ -2282,20 +2282,10 @@ void    LCDMenuLib2::CE_set(uint8_t p_event)
     // debug information 
     DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_set")); 
 
-    switch(p_event)
+    if(p_event > 0 && p_event < _LCDML_CE_events_cnt)
     {
-        case 1: bitSet(REG_custom_event, _LCDML_REG_custom_event_1);    break;
-        case 2: bitSet(REG_custom_event, _LCDML_REG_custom_event_2);    break;
-        case 3: bitSet(REG_custom_event, _LCDML_REG_custom_event_3);    break;
-        case 4: bitSet(REG_custom_event, _LCDML_REG_custom_event_4);    break;
-        case 5: bitSet(REG_custom_event, _LCDML_REG_custom_event_5);    break;
-        case 6: bitSet(REG_custom_event, _LCDML_REG_custom_event_6);    break;
-        case 7: bitSet(REG_custom_event, _LCDML_REG_custom_event_7);    break;
-        case 8: bitSet(REG_custom_event, _LCDML_REG_custom_event_8);    break;
-        
-        default: 
-            break;
-    } 
+        bitSet(REG_custom_event, p_event-1);
+    }    
 }
 
 /* ******************************************************************** */
@@ -2314,22 +2304,12 @@ void    LCDMenuLib2::CE_reset(uint8_t p_event)
 /* ******************************************************************** */
 {
     // debug information 
-    DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_reset")); 
+    DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_reset"));
 
-    switch(p_event)
+    if(p_event > 0 && p_event < _LCDML_CE_events_cnt)
     {
-        case 1: bitClear(REG_custom_event, _LCDML_REG_custom_event_1);    break;
-        case 2: bitClear(REG_custom_event, _LCDML_REG_custom_event_2);    break;
-        case 3: bitClear(REG_custom_event, _LCDML_REG_custom_event_3);    break;
-        case 4: bitClear(REG_custom_event, _LCDML_REG_custom_event_4);    break;
-        case 5: bitClear(REG_custom_event, _LCDML_REG_custom_event_5);    break;
-        case 6: bitClear(REG_custom_event, _LCDML_REG_custom_event_6);    break;
-        case 7: bitClear(REG_custom_event, _LCDML_REG_custom_event_7);    break;
-        case 8: bitClear(REG_custom_event, _LCDML_REG_custom_event_8);    break;
-        
-        default: 
-            break;
-    } 
+        bitClear(REG_custom_event, p_event-1);
+    }   
 }
 
 /* ******************************************************************** */
@@ -2340,8 +2320,7 @@ boolean LCDMenuLib2::CE_checkAny(void)
     DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_checkAny"));
     
     if(REG_custom_event > 0)
-    {  
-        Serial.println("2");      
+    {              
         return true;
     } 
     else
@@ -2357,20 +2336,13 @@ boolean LCDMenuLib2::CE_check(uint8_t p_event)
     // debug information 
     DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_check"));
 
-    switch(p_event)
+    if(p_event > 0 && p_event < _LCDML_CE_events_cnt)
     {
-        case 1: return bitRead(REG_custom_event, _LCDML_REG_custom_event_1);  Serial.println("f");  break;
-        case 2: return bitRead(REG_custom_event, _LCDML_REG_custom_event_2);    break;
-        case 3: return bitRead(REG_custom_event, _LCDML_REG_custom_event_3);    break;
-        case 4: return bitRead(REG_custom_event, _LCDML_REG_custom_event_4);    break;
-        case 5: return bitRead(REG_custom_event, _LCDML_REG_custom_event_5);    break;
-        case 6: return bitRead(REG_custom_event, _LCDML_REG_custom_event_6);    break;
-        case 7: return bitRead(REG_custom_event, _LCDML_REG_custom_event_7);    break;
-        case 8: return bitRead(REG_custom_event, _LCDML_REG_custom_event_8);    break;
-
-        default:
-            return false; 
-            break;
+        return bitRead(REG_custom_event, p_event-1);
+    }
+    else
+    {
+        return false;
     }  
 }
 
