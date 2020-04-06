@@ -9,7 +9,7 @@ Features:
 *  based on a tree model (parent, child, sibling)
 *  min 3 buttons needed up, down, enter
 *  support for 6 defined buttons up, down, left, right, back/quit, enter
-*  support for 8 custom events it could be a button click or something else. This events could be combined with a special handling to open a defined menu function when the status is changed. 
+*  support for 64 custom events it could be a button click or something else. This events could be combined with a special handling to open a defined menu function when the status is changed. 
 *  separation of structural and functional level
 *  support for screensaver which is shown after x seconds
 *  display a scrollbar when more menu elements in a layer then display rows
