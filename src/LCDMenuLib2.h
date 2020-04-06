@@ -51,8 +51,8 @@
 
     // set the number of custom events (this could be a button ore something else)
     #define _LCDML_CE_events_cnt                64  // min 8 / max 64  this is the number of events which are supported
-    #define _LCDML_CE_cb_function_cnt           8   // this is the number of custom event callback functions which are supported
-                                                    // 8 => 
+    #define _LCDML_CE_cb_function_cnt           4   // this is the number of custom event callback functions which are supported
+                                                    // 4 = default 
 
     // debug special method groups          // enable a flag to control the function call order
     #define LCDML_DBG_function_name_LOOP        0
@@ -84,7 +84,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.2.0 beta 2020_04_05"
+    #define _LCDML_VERSION                       "LCDML2 v2.2.0"
 
     // this makro is for unused variables which exists for compatibility tings ...
     #define UNUSED(expr) do { (void)(expr); } while (0)

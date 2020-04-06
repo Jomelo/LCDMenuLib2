@@ -188,20 +188,17 @@ void LCDMenuLib2::loop_control(void)
         }
     }
 
-
     // check custom event handling
     if(CE_checkAny() == true)
     {
         for(uint8_t i=0; i<_LCDML_CE_cb_function_cnt; i++)
         {
             // event found
-            if(CE_check(i+1) == true)
-            {
-                Serial.println("z");
+            if(CE_check(i) == true)
+            {               
                 // callback function found
                 if(ce_cb[i] != NULL)
-                {
-                    Serial.println("zz");
+                {                   
                     // check if a function is running
                     if(actMenu_id == _LCDML_NO_FUNC)
                     {
@@ -2282,9 +2279,9 @@ void    LCDMenuLib2::CE_set(uint8_t p_event)
     // debug information 
     DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_set")); 
 
-    if(p_event > 0 && p_event < _LCDML_CE_events_cnt)
+    if(p_event < _LCDML_CE_events_cnt)
     {
-        bitSet(REG_custom_event, p_event-1);
+        bitSet(REG_custom_event, p_event);
     }    
 }
 
@@ -2306,9 +2303,9 @@ void    LCDMenuLib2::CE_reset(uint8_t p_event)
     // debug information 
     DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_reset"));
 
-    if(p_event > 0 && p_event < _LCDML_CE_events_cnt)
+    if(p_event < _LCDML_CE_events_cnt)
     {
-        bitClear(REG_custom_event, p_event-1);
+        bitClear(REG_custom_event, p_event);
     }   
 }
 
@@ -2336,9 +2333,9 @@ boolean LCDMenuLib2::CE_check(uint8_t p_event)
     // debug information 
     DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_check"));
 
-    if(p_event > 0 && p_event < _LCDML_CE_events_cnt)
+    if(p_event < _LCDML_CE_events_cnt)
     {
-        return bitRead(REG_custom_event, p_event-1);
+        return bitRead(REG_custom_event, p_event);
     }
     else
     {
@@ -2353,9 +2350,9 @@ void    LCDMenuLib2::CE_setOnChangeCbFunction(uint8_t p_event, LCDML_FuncPtr_pu8
     // debug information 
     DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_setOnChangeCbFunction"));
     
-    if(p_event > 0 && p_event < _LCDML_CE_cb_function_cnt) 
+    if(p_event < _LCDML_CE_cb_function_cnt) 
     {
-        ce_cb[(p_event-1)] = p_function;
+        ce_cb[p_event] = p_function;
     }
 }
 
@@ -2366,9 +2363,9 @@ void    LCDMenuLib2::CE_clearOnChangeCbFunction(uint8_t p_event)
     // debug information 
     DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_clearOnChangeCbFunction"));
     
-    if(p_event > 0 && p_event < _LCDML_CE_cb_function_cnt) 
+    if(p_event < _LCDML_CE_cb_function_cnt) 
     {
-        ce_cb[(p_event-1)] = NULL;
+        ce_cb[p_event] = NULL;
     }
 }
 

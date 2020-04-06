@@ -208,16 +208,16 @@ MENU_enRollover	KEYWORD2
 MENU_disRollover	KEYWORD2
 MENU_getDisplayedObj	KEYWORD2
 MENU_getCurrentObj	KEYWORD2
-MENU_getRootObj KEYWORD2
+MENU_getRootObj	KEYWORD2
 MENU_getScroll	KEYWORD2
 MENU_enScroll	KEYWORD2
 MENU_disScroll	KEYWORD2
 MENU_getScrollDisableStatus	KEYWORD2
 MENU_setDynContent	KEYWORD2
 MENU_checkDynContent	KEYWORD2
-MENU_resetActiveMenu    KEYWORD2
-MENU_getLastActivFunctionID KEYWORD2
-MENU_getLastCursorPositionID    KEYWORD2
+MENU_resetActiveMenu	KEYWORD2
+MENU_getLastActivFunctionID	KEYWORD2
+MENU_getLastCursorPositionID	KEYWORD2
 
 
 BT_setup	KEYWORD2
@@ -243,14 +243,14 @@ BT_resetRight	KEYWORD2
 BT_resetUp	KEYWORD2
 BT_resetDown	KEYWORD2
 
-CE_setup    KEYWORD2
-CE_set  KEYWORD2
-CE_resetAll KEYWORD2
-CE_reset    KEYWORD2
-CE_checkAny KEYWORD2
-CE_check    KEYWORD2
-CE_setOnChangeCbFunction    KEYWORD2
-CE_clearOnChangeCbFunction  KEYWORD2
+CE_setup	KEYWORD2
+CE_set	KEYWORD2
+CE_resetAll	KEYWORD2
+CE_reset	KEYWORD2
+CE_checkAny	KEYWORD2
+CE_check	KEYWORD2
+CE_setOnChangeCbFunction	KEYWORD2
+CE_clearOnChangeCbFunction	KEYWORD2
 
 DISP_update	KEYWORD2
 DISP_menuUpdate	KEYWORD2
@@ -266,9 +266,9 @@ FUNC_goBackToMenu	KEYWORD2
 FUNC_getID	KEYWORD2
 FUNC_setLoopInterval	KEYWORD2
 FUNC_disableScreensaver	KEYWORD2
-FUNC_setGBAToLastFunc    KEYWORD2
-FUNC_setGBAToLastCursorPos  KEYWORD2
-FUNC_setGBA KEYWORD2
+FUNC_setGBAToLastFunc	KEYWORD2
+FUNC_setGBAToLastCursorPos	KEYWORD2
+FUNC_setGBA	KEYWORD2
 
 OTHER_jumpToFunc	KEYWORD2
 OTHER_jumpToID	KEYWORD2
