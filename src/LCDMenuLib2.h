@@ -293,6 +293,7 @@
             uint8_t             MENU_getScroll(void);                   // get the current scroll value
             uint8_t             MENU_getLastActivFunctionID(void);      // returns the id of the last active function
             uint8_t             MENU_getLastCursorPositionID(void);     // returns the last cursor position function id
+            uint8_t             MENU_getElementIDFromCursorPos(void);   // returns the menu element id from current cursor position
             
             
             LCDMenuLib2_menu *  MENU_getDisplayedObj(void);             // get the objection with the current content to display                    

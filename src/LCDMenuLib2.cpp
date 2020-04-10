@@ -1641,6 +1641,9 @@ boolean LCDMenuLib2::MENU_getScrollDisableStatus(void)
 uint8_t LCDMenuLib2::MENU_getLastActivFunctionID(void)
 /* ******************************************************************** */
 {
+    // debug information
+    DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_getLastActivFunctionID"));
+
     return actMenu_lastFuncID;
 }                   
 
@@ -1648,7 +1651,27 @@ uint8_t LCDMenuLib2::MENU_getLastActivFunctionID(void)
 uint8_t LCDMenuLib2::MENU_getLastCursorPositionID(void)                    
 /* ******************************************************************** */
 {
+    // debug information
+    DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_getLastCursorPositionID"));
+
     return actMenu_lastCursorPositionID;
+}
+
+/* ******************************************************************** */
+uint8_t LCDMenuLib2::MENU_getElementIDFromCursorPos(void)
+/* ******************************************************************** */
+{
+    // debug information
+    DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_getElementIDFromCursorPosition"));
+
+    if(curMenu->getChild(cursor_obj_pos) != NULL)
+    {
+        return curMenu->getChild(cursor_obj_pos)->getID();
+    }
+    else
+    {
+        return _LCDML_NO_FUNC;
+    }    
 }
 
 

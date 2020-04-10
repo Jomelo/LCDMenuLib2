@@ -218,7 +218,7 @@ MENU_checkDynContent	KEYWORD2
 MENU_resetActiveMenu	KEYWORD2
 MENU_getLastActivFunctionID	KEYWORD2
 MENU_getLastCursorPositionID	KEYWORD2
-
+MENU_getElementIDFromCursorPos	KEYWORD2
 
 BT_setup	KEYWORD2
 BT_enter	KEYWORD2
