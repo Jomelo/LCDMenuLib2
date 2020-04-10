@@ -131,7 +131,7 @@ LCDMenuLib2_menu * LCDMenuLib2_menu::getParent()
         return parent;
     }
     else
-    { // root menu
+    {   // root menu       
         return this;
     }
 }
@@ -146,7 +146,7 @@ uint8_t LCDMenuLib2_menu::getID()
 /* ******************************************************************** */
 boolean LCDMenuLib2_menu::checkCondition()
 /* ******************************************************************** */
-{
+{    
     if(cb_condition != NULL)
     {
         return cb_condition();
@@ -154,7 +154,7 @@ boolean LCDMenuLib2_menu::checkCondition()
     else
     {
         return true;
-    }
+    }  
 }
 
 /* ******************************************************************** */

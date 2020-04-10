@@ -116,7 +116,7 @@
 
     #define LCDML_setup(N)\
         LCDML_DISP_initFunction(N); \
-        LCDML.init(N)
+        LCDML.init()
         
 
 

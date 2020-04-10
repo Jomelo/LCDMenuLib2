@@ -49,8 +49,7 @@
     // enable debug strings (remove comments from this line)
     //#define LCDML_DBG                          1 
 
-    // set the number of custom events (this could be a button ore something else)
-    #define _LCDML_CE_events_cnt                64  // min 8 / max 64  this is the number of events which are supported
+    // set the number of custom events (this could be a button ore something else)    
     #define _LCDML_CE_cb_function_cnt           4   // this is the number of custom event callback functions which are supported
                                                     // 4 = default 
 
@@ -84,10 +83,10 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.2.0"
+    #define _LCDML_VERSION                       "LCDML2 v2.2.0 beta 10.04.2020"
 
     // this makro is for unused variables which exists for compatibility tings ...
-    #define UNUSED(expr) do { (void)(expr); } while (0)
+    #define LCDML_UNUSED(expr) do { (void)(expr); } while (0)
 
     // Include Arduino ios
     #include "Arduino.h"
@@ -106,6 +105,9 @@
         #endif
     #endif
 
+    // 64 this is the number of events which are supported
+    #define _LCDML_CE_events_cnt                            64  
+
     // No function constant
     #define _LCDML_NO_FUNC                                  255
 
@@ -115,12 +117,12 @@
     #define _LCDML_REG_control_menu_func_active             5
     #define _LCDML_REG_control_bt_init_setup                4
     #define _LCDML_REG_control_update_direct                3
-    #define _LCDML_REG_control_search_display               2
+    #define _LCDML_REG_control_free_2                       2
     #define _LCDML_REG_control_rollover                     1
     #define _LCDML_REG_control_disable_hidden               0
 
     // screensaver, jump to function, go Root, ...
-    #define _LCDML_REG_special_free_7                       7
+    #define _LCDML_REG_special_setCursorTo                  7
     #define _LCDML_REG_special_jumpTo_enabled               6 
     #define _LCDML_REG_special_free_5                       5 
     #define _LCDML_REG_special_free_4                       4 
@@ -148,16 +150,6 @@
     #define _LCDML_REG_button_down                          2
     #define _LCDML_REG_button_left                          1
     #define _LCDML_REG_button_right                         0
-
-    // custom event flags
-    #define _LCDML_REG_custom_event_8                       7
-    #define _LCDML_REG_custom_event_7                       6
-    #define _LCDML_REG_custom_event_6                       5
-    #define _LCDML_REG_custom_event_5                       4
-    #define _LCDML_REG_custom_event_4                       3
-    #define _LCDML_REG_custom_event_3                       2
-    #define _LCDML_REG_custom_event_2                       1
-    #define _LCDML_REG_custom_event_1                       0
 
     // display update handling
     #define _LCDML_REG_update_content                       7
@@ -213,7 +205,7 @@
             LCDML_FuncPtr       callback_contentClear;                  // a callback function which clears the display
             LCDML_FuncPtr_pu8   cb_screensaver;                         // a callback function as screensaver (a normal menu function, but a defined name)
 
-            LCDML_FuncPtr_pu8   ce_cb[_LCDML_CE_cb_function_cnt]; 
+            LCDML_FuncPtr_pu8   ce_cb[_LCDML_CE_cb_function_cnt];       // callback functions for custom events
 
             // activ menu values
             LCDML_FuncPtr_pu8   actMenu_cb_function;                    // Menu Function callback            
@@ -221,61 +213,54 @@
             uint8_t             actMenu_param;                          // Parameter this menu
             uint8_t             actMenu_lastFuncID;                     // History of the last three active menu functions  
             uint8_t             actMenu_cursorPositionID;               // current cursor position id          
-            uint8_t             actMenu_lastCursorPositionID;           // Save the last Cursor position before a new function was called    
+            uint8_t             actMenu_lastCursorPositionID;           // Save the last Cursor position before a new function was called
+            unsigned long       actMenu_default_time;    
 
-            // jump To variables
-            uint8_t             jT_mode;                                // contains the jumpTo Mode            
+            // jump To variables          
             uint8_t             jT_id;                                  // contains the jumpTo id
             uint8_t             jT_param;                               // contains the jumpTo param
             uint8_t             jT_paramOld;                            // contains the jumpTo param
             LCDML_FuncPtr_pu8   jT_function;                            // contains the jumpTo function
 
-            uint8_t maxElements;
-
             // menu intern values
-            uint8_t window_rows;                                        // the maximum rows of the current windows  (1 is the minium)
-            uint8_t window_start;                                       // the window start
+            uint8_t             window_rows;                            // the maximum rows of the current windows  (1 is the minium)
+            uint8_t             window_start;                           // the window start
             
-            uint8_t cursor_obj_pos;
-            uint8_t cursor_pos;                                        // the current cursor position on the lcd
-            uint8_t cursor_pos_abs;
+            uint8_t             cursor_obj_pos;
+            uint8_t             cursor_pos;                             // the current cursor position on the lcd
+            uint8_t             cursor_pos_abs;
 
-            uint8_t layer;                                              // contains the current layer
+            uint8_t             layer;                                  // contains the current layer
             
             // variables with bitfields => bit register
-            uint8_t  REG_button;                                         // control flags for button actions
-            uint64_t REG_custom_event;                                   // control flags for custom event actions
-            uint8_t  REG_control;                                        // control flags 
-            uint8_t  REG_MenuFunction;                                   // control flags for menu functions
-            uint8_t  REG_special;                                        // control flags for special function like screensaver, jumpTo, setCursorTo, goRoot, ..
-            uint8_t  REG_update;                                         // control flags to update the content
+            uint8_t             REG_button;                             // control flags for button actions            
+            uint8_t             REG_control;                            // control flags 
+            uint8_t             REG_MenuFunction;                       // control flags for menu functions
+            uint8_t             REG_special;                            // control flags for special function like screensaver, jumpTo, setCursorTo, goRoot, ..
+            uint8_t             REG_update;                             // control flags to update the content
+            uint64_t            REG_custom_event;                       // control flags for custom event actions
 
             // variables for handling with menu function            
-            uint8_t goBackCnt;                                          // save the layer to go back
+            uint8_t             goBackCnt;                              // save the layer to go back
 
             // timer variable for the loop time of a menu function
-            unsigned long menu_timer;                       
-            unsigned long menu_default_time;
+            unsigned long       menu_timer;
 
             // timer variable for the screensaver
-            unsigned long screensaver_timer;
-            unsigned long screensaver_default_time;
+            unsigned long       screensaver_timer;
+            unsigned long       screensaver_default_time;
 
             // private methods
-            void    MENU_goInto(void);                                              // activate the menu under the cursor
-            void    MENU_goBack(void);                                              // move to the parent menu
-            void    MENU_doScroll(uint8_t state);                                   // scroll the menu
-            void    MENU_goMenu(LCDMenuLib2_menu &p_m, uint8_t p_back);             // go to a menu element
-            uint8_t MENU_countChilds(LCDMenuLib2_menu *menu, uint8_t all=false);    // how many children exists on next layer
-            void    MENU_initFirstElement(void);                                    // set counter to the first object child
-            void    MENU_resetActiveMenu(void);                                     // clear all neccessary variables
-            
-                     
+            void                MENU_goInto(void);                                              // activate the menu under the cursor
+            void                MENU_goBack(void);                                              // move to the parent menu
+            void                MENU_doScroll(uint8_t state);                                   // scroll the menu
+            void                MENU_goMenu(LCDMenuLib2_menu &p_m, uint8_t p_back);             // go to a menu element
+            uint8_t             MENU_countChilds(LCDMenuLib2_menu *menu, uint8_t all=false);    // how many children exists on next layer
+            void                MENU_initFirstElement(void);                                    // set counter to the first object child
+            void                MENU_resetActiveMenu(void);                                     // clear all neccessary variables
+                                 
             // callback function
-            void    FUNC_call(void);
-
-            // help function to search special elements
-            boolean OTHER_searchFunction(LCDMenuLib2_menu &p_m, uint8_t mode, LCDML_FuncPtr_pu8 p_search, uint8_t p_id);
+            void    FUNC_call(void);            
 
         public:
 
@@ -283,110 +268,113 @@
             LCDMenuLib2(LCDMenuLib2_menu &p_r ,const uint8_t p_rows, const uint8_t p_cols, LCDML_FuncPtr contentUpdate, LCDML_FuncPtr contentClear, LCDML_FuncPtr menuControl);
 
             // init method
-            void init(uint8_t p_maxElements = 0);                       // initialisation of the menu / reset the complete menu
+            void                init();                                 // initialisation of the menu / reset the complete menu
 
             // loop methods
-            void loop(void);                                            // call the loop_menu and the loop_control function
-            void loop_control(void);                                    // call callback function to control the menu 
-            void loop_menu(void);                                       // checks if a button or a menu function are needed and call them
+            void                loop(void);                             // call the loop_menu and the loop_control function
+            void                loop_control(void);                     // call callback function to control the menu 
+            void                loop_menu(void);                        // checks if a button or a menu function are needed and call them
 
             // menu methods            
-            void    MENU_display(uint8_t update=0);                     // update the current menu structure but do not display it
-            void    MENU_goRoot(void);                                  // set the cursor to the root element
-            void    MENU_enRollover(void);                              // enable menu rollover (first to last or last to first element on a layer)
-            void    MENU_disRollover(void);                             // disable the menu rollover function
-            void    MENU_enScroll(void);                                // enable the scroll function (this function can be disabled on dyn content elements and when a encoder is used)
-            void    MENU_disScroll(void);                               // disable the scroll function to catch the cursor to an dyn content element when a encoder is used
-            void    MENU_setDynContent(void);                           // set this value when dyn content is shown on the current windows of the display                          
-            uint8_t MENU_checkDynContent(void);                         // check if dyn content is displayed 
-            boolean MENU_getScrollDisableStatus(void);                  // check if the scroll function is disabled
-            uint8_t MENU_getLayer(void);                                // get the current layer of the menu
-            uint8_t MENU_getCursorPos(void);                            // get the current cursor position (row 0, row 1, row 2, ...)
-            uint8_t MENU_getCursorPosAbs(void);                         // get the current cursor postion absolute (..., row 10, row 11, ..) based on the menu structure
-            uint8_t MENU_getChilds(void);                               // get the current number of childs on this layer
-            uint8_t MENU_getParentID(uint8_t p_layer=0);                // get the parent id of a selected higher layer
-            uint8_t MENU_getScroll(void);                               // get the current scroll value
-            uint8_t MENU_getLastActivFunctionID(void);                  // returns the id of the last active function
-            uint8_t MENU_getLastCursorPositionID(void);                 // returns the last cursor position function id
+            void                MENU_display(uint8_t update=0);         // update the current menu structure but do not display it
+            void                MENU_goRoot(void);                      // set the cursor to the root element
+            void                MENU_enRollover(void);                  // enable menu rollover (first to last or last to first element on a layer)
+            void                MENU_disRollover(void);                 // disable the menu rollover function
+            void                MENU_enScroll(void);                    // enable the scroll function (this function can be disabled on dyn content elements and when a encoder is used)
+            void                MENU_disScroll(void);                   // disable the scroll function to catch the cursor to an dyn content element when a encoder is used
+            void                MENU_setDynContent(void);               // set this value when dyn content is shown on the current windows of the display                          
+            uint8_t             MENU_checkDynContent(void);             // check if dyn content is displayed 
+            boolean             MENU_getScrollDisableStatus(void);      // check if the scroll function is disabled
+            uint8_t             MENU_getLayer(void);                    // get the current layer of the menu
+            uint8_t             MENU_getCursorPos(void);                // get the current cursor position (row 0, row 1, row 2, ...)
+            uint8_t             MENU_getCursorPosAbs(void);             // get the current cursor postion absolute (..., row 10, row 11, ..) based on the menu structure
+            uint8_t             MENU_getChilds(void);                   // get the current number of childs on this layer
+            uint8_t             MENU_getParentID(uint8_t p_layer=0);    // get the parent id of a selected higher layer
+            uint8_t             MENU_getScroll(void);                   // get the current scroll value
+            uint8_t             MENU_getLastActivFunctionID(void);      // returns the id of the last active function
+            uint8_t             MENU_getLastCursorPositionID(void);     // returns the last cursor position function id
             
-            LCDMenuLib2_menu * MENU_getDisplayedObj(void);              // get the objection with the current content to display                    
-            LCDMenuLib2_menu * MENU_getCurrentObj(void);                // get the current menu child object
-            LCDMenuLib2_menu * MENU_getRootObj(void);                   // get the root menu object
+            
+            LCDMenuLib2_menu *  MENU_getDisplayedObj(void);             // get the objection with the current content to display                    
+            LCDMenuLib2_menu *  MENU_getCurrentObj(void);               // get the current menu child object
+            LCDMenuLib2_menu *  MENU_getRootObj(void);                  // get the root menu object
 
             // BT = button methods
-            boolean BT_setup(void);                                     // check if the button initialisation was done
-            void    BT_enter(void);                                     // set button enter
-            void    BT_up(void);                                        // set button up
-            void    BT_down(void);                                      // set button down
-            void    BT_left(void);                                      // set button left
-            void    BT_right(void);                                     // set button right
-            void    BT_quit(void);                                      // set button quit
+            boolean             BT_setup(void);                         // check if the button initialisation was done
+            void                BT_enter(void);                         // set button enter
+            void                BT_up(void);                            // set button up
+            void                BT_down(void);                          // set button down
+            void                BT_left(void);                          // set button left
+            void                BT_right(void);                         // set button right
+            void                BT_quit(void);                          // set button quit
             //
-            void    BT_resetAll(void);                                  // reset all button states
-            void    BT_resetEnter(void);                                // reset enter button state
-            void    BT_resetUp(void);                                   // reset up button state
-            void    BT_resetDown(void);                                 // reset down button state
-            void    BT_resetLeft(void);                                 // reset left button state
-            void    BT_resetRight(void);                                // reset right button state
-            void    BT_resetQuit(void);                                 // reset quit button state
+            void                BT_resetAll(void);                      // reset all button states
+            void                BT_resetEnter(void);                    // reset enter button state
+            void                BT_resetUp(void);                       // reset up button state
+            void                BT_resetDown(void);                     // reset down button state
+            void                BT_resetLeft(void);                     // reset left button state
+            void                BT_resetRight(void);                    // reset right button state
+            void                BT_resetQuit(void);                     // reset quit button state
             //
-            boolean BT_checkAny(void);                                  // check if any button was pressed
-            boolean BT_checkEnter(void);                                // check enter button
-            boolean BT_checkUp(void);                                   // check up button
-            boolean BT_checkDown(void);                                 // check down button
-            boolean BT_checkLeft(void);                                 // check left button
-            boolean BT_checkRight(void);                                // check right button
-            boolean BT_checkQuit(void);                                 // check quit button
+            boolean             BT_checkAny(void);                      // check if any button was pressed
+            boolean             BT_checkEnter(void);                    // check enter button
+            boolean             BT_checkUp(void);                       // check up button
+            boolean             BT_checkDown(void);                     // check down button
+            boolean             BT_checkLeft(void);                     // check left button
+            boolean             BT_checkRight(void);                    // check right button
+            boolean             BT_checkQuit(void);                     // check quit button
 
             // CE = custom event
-            boolean CE_setup(void);                                     // check if the button initialisation was done
-            void    CE_set(uint8_t p_event);                            // set button enter           
+            boolean             CE_setup(void);                         // check if the button initialisation was done
+            void                CE_set(uint8_t p_event);                // set button enter           
             //
-            void    CE_resetAll(void);                                  // reset all button states
-            void    CE_reset(uint8_t p_event);                          // reset enter button state            
+            void                CE_resetAll(void);                      // reset all button states
+            void                CE_reset(uint8_t p_event);              // reset enter button state            
             //
-            boolean CE_checkAny(void);                                  // check if any button was pressed
-            boolean CE_check(uint8_t p_event);                          // check enter button
+            boolean             CE_checkAny(void);                      // check if any button was pressed
+            boolean             CE_check(uint8_t p_event);              // check enter button
             //
-            void    CE_setOnChangeCbFunction(uint8_t p_event, LCDML_FuncPtr_pu8 p_function);    // add callback function
-            void    CE_clearOnChangeCbFunction(uint8_t p_event);                                // remove callback function
+            void                CE_setOnChangeCbFunction(uint8_t p_event, LCDML_FuncPtr_pu8 p_function);    // add callback function
+            void                CE_clearOnChangeCbFunction(uint8_t p_event);                                // remove callback function
            
             // display methods
-            void    DISP_update(void);                                  // display the content and update the menu structure 
-            void    DISP_menuUpdate(void);                              // display the content but do not update the menu structure
-            void    DISP_clear(void);                                   // calls the callback function to clear the display
-            boolean DISP_checkMenuUpdate(void);                         // check if there is new content to display
-            boolean DISP_checkMenuCursorUpdate(void);                   // check if the cursor was moved
-            uint8_t DISP_getMenuContentId(uint8_t n);                   // get the id`s from a contentelement for a special line 
+            void                DISP_update(void);                                  // display the content and update the menu structure 
+            void                DISP_menuUpdate(void);                              // display the content but do not update the menu structure
+            void                DISP_clear(void);                                   // calls the callback function to clear the display
+            boolean             DISP_checkMenuUpdate(void);                         // check if there is new content to display
+            boolean             DISP_checkMenuCursorUpdate(void);                   // check if the cursor was moved
+            uint8_t             DISP_getMenuContentId(uint8_t n);                   // get the id`s from a contentelement for a special line 
 
             // menu function methods
-            boolean FUNC_setup(void);                                   // check if a menu function is called the first time to init some things
-            boolean FUNC_loop(void);                                    // check if a menu function is running in a loop
-            boolean FUNC_close(void);                                   // check if a menu function is closed to reach a stable state 
-            void    FUNC_goBackToMenu(uint8_t p_goBackCnt=0);           // close the current menu function (the FUNC_close check is true when this is set)
-            uint8_t FUNC_getID(void);                                   // get the ID of the current menu function
-            void    FUNC_setLoopInterval(unsigned long p_t);            // set a loop intervall for the current menu function the default loop intervall is 100000000 ms
-            void    FUNC_disableScreensaver(void);                      // disable the screensaver for the current menu function 
-            void    FUNC_setGBAToLastCursorPos(void);                   // set a special "go back handling" 
-            void    FUNC_setGBAToLastFunc(void);                        // set a special "go back handling"
-            void    FUNC_setGBA(void);                                  // set a special "go back handling" which decide between the two function above 
+            boolean             FUNC_setup(void);                                   // check if a menu function is called the first time to init some things
+            boolean             FUNC_loop(void);                                    // check if a menu function is running in a loop
+            boolean             FUNC_close(void);                                   // check if a menu function is closed to reach a stable state 
+            void                FUNC_goBackToMenu(uint8_t p_goBackCnt=0);           // close the current menu function (the FUNC_close check is true when this is set)
+            uint8_t             FUNC_getID(void);                                   // get the ID of the current menu function
+            void                FUNC_setLoopInterval(unsigned long p_t);            // set a loop intervall for the current menu function the default loop intervall is 100000000 ms
+            void                FUNC_disableScreensaver(void);                      // disable the screensaver for the current menu function 
+            void                FUNC_setGBAToLastCursorPos(void);                   // set a special "go back handling" 
+            void                FUNC_setGBAToLastFunc(void);                        // set a special "go back handling"
+            void                FUNC_setGBA(void);                                  // set a special "go back handling" which decide between the two function above 
            
             // timer methods
-            boolean TIMER_ms(unsigned long &p_var, unsigned long p_t);  // a small timer based on the millis() function
-            void    TIMER_msReset(unsigned long &p_var);                // reset the millis timer 
-            boolean TIMER_us(unsigned long &p_var, unsigned long p_t);  // a small timer based on the micros() function
-            void    TIMER_usReset(unsigned long &p_var);                // reset the micros timer
+            boolean             TIMER_ms(unsigned long &p_var, unsigned long p_t);  // a small timer based on the millis() function
+            void                TIMER_msReset(unsigned long &p_var);                // reset the millis timer 
+            boolean             TIMER_us(unsigned long &p_var, unsigned long p_t);  // a small timer based on the micros() function
+            void                TIMER_usReset(unsigned long &p_var);                // reset the micros timer
 
             // other methods
-            void    OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t p_para = 0);   // jumpTo a defined function based on the function name 
-            void    OTHER_jumpToID(uint8_t p_search, uint8_t p_para = 0);               // jumpTo a defined function based on the function id
-            void    OTHER_setCursorToID(uint8_t p_search);                              // set the cursor to a defined function based on the id
-            void    OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search);                  // set the cursor to a defined function based on the function name
+            void                OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t p_para = 0);   // jumpTo a defined function based on the function name 
+            void                OTHER_jumpToID(uint8_t p_search, uint8_t p_para = 0);               // jumpTo a defined function based on the function id
+            void                OTHER_setCursorToID(uint8_t p_search);                              // set the cursor to a defined function based on the id
+            void                OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search);                  // set the cursor to a defined function based on the function name
+            uint8_t             OTHER_getIDFromFunction(LCDML_FuncPtr_pu8 p_search);                // get the menu element id from a menu element function name
+            LCDML_FuncPtr_pu8   OTHER_getFunctionFromID(uint8_t p_element_id);                      // get the menu element function name from a menu element id
 
             // screensaver methods
-            void    SCREEN_enable(LCDML_FuncPtr_pu8 p_function, unsigned long p_t);     // enable the screensaver feature 
-            void    SCREEN_disable(void);                                               // disable the screensaver feature
-            void    SCREEN_resetTimer(void);                                            // reset the screensaver timer 
-            void    SCREEN_start(void);                                                 // start the screensaver directly
+            void                SCREEN_enable(LCDML_FuncPtr_pu8 p_function, unsigned long p_t);     // enable the screensaver feature 
+            void                SCREEN_disable(void);                                               // disable the screensaver feature
+            void                SCREEN_resetTimer(void);                                            // reset the screensaver timer 
+            void                SCREEN_start(void);                                                 // start the screensaver directly
     };
 #endif
