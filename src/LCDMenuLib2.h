@@ -132,7 +132,7 @@
     #define _LCDML_REG_special_disable_screensaver          0   
 
     // menu function flags
-    #define _LCDML_REG_MenuFunction_free_7                  7
+    #define _LCDML_REG_MenuFunction_called_from_menu        7
     #define _LCDML_REG_MenuFunction_free_6                  6
     #define _LCDML_REG_MenuFunction_free_5                  5
     #define _LCDML_REG_MenuFunction_goBackToFuncID          4
@@ -197,7 +197,7 @@
     {
         private:
             // object pointer            
-            LCDMenuLib2_menu *curMenu;
+            LCDMenuLib2_menu *curMenu;                                  // currrent menu structure
 
             // callback functions
             LCDML_FuncPtr       callback_menuControl;                   // a callback function which checks the input buttons
@@ -244,7 +244,7 @@
             uint8_t             goBackCnt;                              // save the layer to go back
 
             // timer variable for the loop time of a menu function
-            unsigned long       menu_timer;
+            unsigned long       menuFunction_loopTimer;
 
             // timer variable for the screensaver
             unsigned long       screensaver_timer;
