@@ -431,12 +431,21 @@ void LCDMenuLib2::loop_menu(void)
         // Check if this Menu have childs
         if((curMenu = curMenu->getChild(0)) != NULL)
         {
+            DBG_print(LCDML_DBG_function_name_OTHER, F("Step: "));
+            DBG_println(LCDML_DBG_function_name_OTHER, step);
+
             // found childs            
             while(step != _LCDML_NO_FUNC)
             {
+                DBG_print(LCDML_DBG_function_name_OTHER, F("ID: "));
+                DBG_println(LCDML_DBG_function_name_OTHER, curMenu->getID());
+               
+
                 // check if something is found:
                 if(jT_function != NULL)
                 {
+                    DBG_println(LCDML_DBG_function_name_OTHER, F("check function"));
+                           
                     if(curMenu->getCbFunction() == jT_function)
                     {
                         // something found                                               
@@ -446,6 +455,8 @@ void LCDMenuLib2::loop_menu(void)
                 }
                 else
                 {
+                    DBG_println(LCDML_DBG_function_name_OTHER, F("check id"));
+
                     if(curMenu->getID() == jT_id)
                     {
                         // something found                       
@@ -475,27 +486,41 @@ void LCDMenuLib2::loop_menu(void)
                         if(curMenu->getParent()->getID() == _LCDML_NO_FUNC)
                         {
                             // no parent element found, stop this here
-                            break;                          
+                            DBG_print(LCDML_DBG_function_name_OTHER, F("nothing found: point (A) / ID: "));
+                            DBG_println(LCDML_DBG_function_name_OTHER, curMenu->getID());
+                            //break;                          
                         }
                         else
                         {
-                            // set next parent for check
-                            curMenu = curMenu->getParent(); 
+                            do
+                            {
+                                // set next parent for check
+                                curMenu = curMenu->getParent(); 
 
-                            // -- GO Back --
-                            layer--;
-                            
-                            // check if the parent element have siblings
-                            if(curMenu->getSibling(1) != NULL)
-                            {
-                                // set next sibling
-                                curMenu = curMenu->getSibling(1);                                
-                            }
-                            else
-                            {
-                                // no parent sibling found, stop this here
-                                break;
-                            }
+                                // -- GO Back --
+                                layer--;  
+
+                                DBG_println(LCDML_DBG_function_name_OTHER, F("go to parent element"));                          
+                                
+                                // check if the parent element have siblings
+                                if(curMenu->getSibling(1) != NULL)
+                                {
+                                    // set next sibling
+                                    curMenu = curMenu->getSibling(1);
+                                    break;                                
+                                }
+                                else
+                                {
+                                    if(curMenu->getParent()->getID() == _LCDML_NO_FUNC)
+                                    {
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        // continue                                        
+                                    }                                    
+                                }
+                            } while (1);                            
                         }
                     }
                 }            
@@ -508,8 +533,13 @@ void LCDMenuLib2::loop_menu(void)
             curMenu = curMenu->getParent();
         } 
 
-        Serial.println("Layer");
-        Serial.println(layer);
+        // 
+        if(found == _LCDML_NO_FUNC)
+        {
+
+        }
+
+
 
         // check element handling
         if(found != _LCDML_NO_FUNC)
@@ -889,45 +919,36 @@ void    LCDMenuLib2::MENU_goInto(void)
     // debug information
     DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_goInto"));
 
-    // declaration
-    LCDMenuLib2_menu *tmp;   
-
     // check if a menu function is not active
     if (bitRead(REG_control, _LCDML_REG_control_menu_func_active) == false)
-    {
-        // get element to to open
-        tmp = curMenu->getChild(cursor_obj_pos);
+    {   
 
         // check if element is a menu function
-        if(tmp->checkCallback() == true && tmp->checkType_menu() == true)
+        if(curMenu->getChild(cursor_obj_pos)->checkCallback() == true && curMenu->getChild(cursor_obj_pos)->checkType_menu() == true)
         {
             // Menu function found
-            actMenu_cb_function     = tmp->getCbFunction(); 
-            actMenu_id              = tmp->getID();                             
-            actMenu_param           = tmp->getParam();
+            actMenu_cb_function     = curMenu->getChild(cursor_obj_pos)->getCbFunction(); 
+            actMenu_id              = curMenu->getChild(cursor_obj_pos)->getID();                             
+            actMenu_param           = curMenu->getChild(cursor_obj_pos)->getParam();
             bitSet(REG_control, _LCDML_REG_control_menu_func_active); 
         }
         else
         {
-            if(tmp->checkType_dynParam() == true)
+            if(curMenu->getChild(cursor_obj_pos)->checkType_dynParam() == true)
             {               
                 DISP_update();
             }
             else
             {               
-                if(tmp->getChild(0) != NULL)
+                if(curMenu->getChild(cursor_obj_pos)->getChild(0) != NULL)
                 {
                     //check if element has visible children 
-                    if(MENU_countChilds(tmp) > 0)
+                    if(MENU_countChilds(curMenu->getChild(cursor_obj_pos)) > 0)
                     {   
                         // Menu found, goInto
-                        MENU_goMenu(*curMenu->getChild(cursor_obj_pos), false);
-
-                        
-                        BT_resetAll(); // reset all buttons
-                            
-                        DISP_update();
-                                               
+                        MENU_goMenu(*curMenu->getChild(cursor_obj_pos), false);                        
+                        BT_resetAll(); // reset all buttons                            
+                        DISP_update();                                               
                     }
                     else
                     {
@@ -1767,20 +1788,18 @@ uint8_t    LCDMenuLib2::FUNC_getID(void)
 {
     // debug information
     DBG_println(LCDML_DBG_function_name_FUNC, F("LCDML.FUNC_getID"));
-    
-    LCDMenuLib2_menu *tmp;
- 
+     
     if(bitRead(REG_control, _LCDML_REG_control_menu_func_active) == true) 
     {
         return actMenu_id;
     } 
     else 
     {
-        if((tmp = curMenu->getChild(cursor_obj_pos)) != NULL)
+        if(curMenu->getChild(cursor_obj_pos) != NULL)
         {
-            if(tmp->checkType_dynParam() == true)
+            if(curMenu->getChild(cursor_obj_pos)->checkType_dynParam() == true)
             {
-                return tmp->getID();
+                return curMenu->getChild(cursor_obj_pos)->getID();
             }
             else
             {

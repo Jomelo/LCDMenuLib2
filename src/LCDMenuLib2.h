@@ -47,7 +47,7 @@
     //#define _LCDML_cfg_use_ram                   // enable this line when you want to use the ram mode 
 
     // enable debug strings (remove comments from this line)
-    //#define LCDML_DBG                          1 
+    //#define LCDML_DBG                          1
 
     // set the number of custom events (this could be a button ore something else)    
     #define _LCDML_CE_cb_function_cnt           4   // this is the number of custom event callback functions which are supported
@@ -83,7 +83,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.2.0 beta 10.04.2020"
+    #define _LCDML_VERSION                       "LCDML2 v2.2.0 beta 18.04.2020"
 
     // this makro is for unused variables which exists for compatibility tings ...
     #define LCDML_UNUSED(expr) do { (void)(expr); } while (0)
@@ -293,8 +293,7 @@
             uint8_t             MENU_getScroll(void);                   // get the current scroll value
             uint8_t             MENU_getLastActivFunctionID(void);      // returns the id of the last active function
             uint8_t             MENU_getLastCursorPositionID(void);     // returns the last cursor position function id
-            uint8_t             MENU_getElementIDFromCursorPos(void);   // returns the menu element id from current cursor position
-            
+            uint8_t             MENU_getElementIDFromCursorPos(void);   // returns the menu element id from current cursor position            
             
             LCDMenuLib2_menu *  MENU_getDisplayedObj(void);             // get the objection with the current content to display                    
             LCDMenuLib2_menu *  MENU_getCurrentObj(void);               // get the current menu child object

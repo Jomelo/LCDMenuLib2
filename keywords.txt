@@ -171,6 +171,8 @@ _LCDML_DISP_cnt	LITERAL1
 _LCDML_TYPE_dynParam	LITERAL1
 _LCDML_TYPE_default	LITERAL1
 
+LCDML_UNUSED	LITERAL1
+
 
 #######################################
 # MENU
