@@ -1657,11 +1657,11 @@ boolean LCDMenuLib2::MENU_getScrollDisableStatus(void)
 }
 
 /* ******************************************************************** */
-uint8_t LCDMenuLib2::MENU_getLastActivFunctionID(void)
+uint8_t LCDMenuLib2::MENU_getLastActiveFunctionID(void)
 /* ******************************************************************** */
 {
     // debug information
-    DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_getLastActivFunctionID"));
+    DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_getLastActiveFunctionID"));
 
     return actMenu_lastFuncID;
 }                   

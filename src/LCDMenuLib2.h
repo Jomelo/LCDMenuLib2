@@ -83,7 +83,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.2.0"
+    #define _LCDML_VERSION                       "LCDML2 v2.2.1"
 
     // this makro is for unused variables which exists for compatibility tings ...
     #define LCDML_UNUSED(expr) do { (void)(expr); } while (0)
@@ -289,7 +289,7 @@
             uint8_t             MENU_getChilds(void);                   // get the current number of childs on this layer
             uint8_t             MENU_getParentID(uint8_t p_layer=0);    // get the parent id of a selected higher layer
             uint8_t             MENU_getScroll(void);                   // get the current scroll value
-            uint8_t             MENU_getLastActivFunctionID(void);      // returns the id of the last active function
+            uint8_t             MENU_getLastActiveFunctionID(void);     // returns the id of the last active function
             uint8_t             MENU_getLastCursorPositionID(void);     // returns the last cursor position function id
             uint8_t             MENU_getElementIDFromCursorPos(void);   // returns the menu element id from current cursor position            
             
