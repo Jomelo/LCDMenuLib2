@@ -1,9 +1,19 @@
 // =====================================================================
 //
-// CONTROL
+// CONTROL v2.2.0
 //
 // =====================================================================
 // *********************************************************************
+// Features 
+// - max 6 Buttons with special names (enter, quit, up, down, left, right)
+// new Features on v2.2.0
+// - max 64 Events, this could be a button ore something (Counter 0 - 63) 
+// - standard buttons and events can be used at the same time
+// - Event 0 - 3 can be used with a menu callback function (when set this event, the function is called)
+// - The range from 0 - 3 can be changed in LCDMenuLib2.h
+// Attention!!
+// - events have to be reset manual over LCDML.CE_reset(number) ore LCDML.CE_resetAll();
+// - they will not be reseted from the menu library
 // *********************************************************************
 // content:
 // (0) Control over serial interface  with asdw_e_q
@@ -11,7 +21,7 @@
 // (2) Control over 4 - 6 digital input pins (internal pullups enabled)
 // (3) Control over encoder [third party lib] (Download: https://github.com/PaulStoffregen/Encoder)
 // (4) Control with Keypad  [third party lib] (Download: http://playground.arduino.cc/Main/KeypadTutorial )
-// (5) Control with an IR remote [third party lib] (Download: https://github.com/z3t0/Arduino-IRremote )
+// (5) Control with an IRMP remote [third party lib] (Download: https://github.com/ukw100/IRMP )
 // (6) Control with a joystick
 // (7) Control over I2C PCF8574
 // *********************************************************************
@@ -22,7 +32,6 @@
 // "#if" is a preprocessor directive and no error, look here:
 // (English) https://en.wikipedia.org/wiki/C_preprocessor
 // (German)  https://de.wikipedia.org/wiki/C-Pr%C3%A4prozessor
-
 
 // *********************************************************************
 // *************** (0) CONTROL OVER SERIAL INTERFACE *******************
@@ -35,17 +44,37 @@
   # define _LCDML_CONTROL_serial_left            'a'
   # define _LCDML_CONTROL_serial_right           'd'
   # define _LCDML_CONTROL_serial_quit            'q'
+
+  // example for the useage of events (not needed everywhere)
+  // this defines are only for examples and can be renamed
+  # define _LCDML_EVENT_command                'c'
+  # define _LCDML_EVENT_char_0                 '0'
+  # define _LCDML_EVENT_char_1                 '1'
+  # define _LCDML_EVENT_char_2                 '2'
+  # define _LCDML_EVENT_char_3                 '3'
+  # define _LCDML_EVENT_char_4                 '4'
+  # define _LCDML_EVENT_char_5                 '5'
+  # define _LCDML_EVENT_char_6                 '6'
+  # define _LCDML_EVENT_char_7                 '7'
+  # define _LCDML_EVENT_char_8                 '8'
+  # define _LCDML_EVENT_char_9                 '9'
 // *********************************************************************
+
 void lcdml_menu_control(void)
 {
   // If something must init, put in in the setup condition
   if(LCDML.BT_setup()) {
+    // runs only once 
+  }
+
+  if(LCDML.CE_setup()) {
     // runs only once
+    Serial.println("CE_setup()");
   }
 
   // check if new serial input is available
   if (Serial.available()) {
-    // read one char from input buffer
+    // read one char from input buffer    
     switch (Serial.read())
     {
       case _LCDML_CONTROL_serial_enter:  LCDML.BT_enter(); break;
@@ -54,6 +83,22 @@ void lcdml_menu_control(void)
       case _LCDML_CONTROL_serial_left:   LCDML.BT_left();  break;
       case _LCDML_CONTROL_serial_right:  LCDML.BT_right(); break;
       case _LCDML_CONTROL_serial_quit:   LCDML.BT_quit();  break;
+      // example for event handling 
+      // custom event handling
+      // is is also possible to enable more the one event on the same time
+      // but when more then one events with callback functions are active 
+      // only the first callback function is called. (first = by number)
+      case _LCDML_EVENT_command:  LCDML.CE_set(0);   break;
+      case _LCDML_EVENT_char_0:   LCDML.CE_set(1);   break;
+      case _LCDML_EVENT_char_1:   LCDML.CE_set(2);   break;
+      case _LCDML_EVENT_char_2:   LCDML.CE_set(3);   break;
+      case _LCDML_EVENT_char_3:   LCDML.CE_set(4);   break;
+      case _LCDML_EVENT_char_4:   LCDML.CE_set(5);   break;
+      case _LCDML_EVENT_char_5:   LCDML.CE_set(6);   break;
+      case _LCDML_EVENT_char_6:   LCDML.CE_set(7);   break;
+      case _LCDML_EVENT_char_7:   LCDML.CE_set(8);   break;
+      case _LCDML_EVENT_char_8:   LCDML.CE_set(9);   break;
+      case _LCDML_EVENT_char_9:   LCDML.CE_set(10);  break;
       default: break;
     }
   }
@@ -368,12 +413,31 @@ void lcdml_menu_control(void)
   {
     switch (key)
     {
+      // this is the default configuration 
       case '#': LCDML.BT_enter(); break;
       case '2': LCDML.BT_up();    break;
       case '8': LCDML.BT_down();  break;
       case '4': LCDML.BT_left();  break;
       case '6': LCDML.BT_right(); break;
       case '*': LCDML.BT_quit();  break;
+
+      // when you want to use all characters you have to use the CE_ functionality
+      // CE stands for "custom event" and you can define 64 evetns
+      // the following code is only an example      
+      /*
+      case '1': LCDML.CE_set(2); break;
+      case '2': LCDML.CE_set(3); LCDML.BT_up();    break;
+      case '3': LCDML.CE_set(4); break; 
+      case '4': LCDML.CE_set(5); LCDML.BT_left();  break;
+      case '5': LCDML.CE_set(6); break; 
+      case '6': LCDML.CE_set(7); LCDML.BT_right(); break;
+      case '7': LCDML.CE_set(8); break; 
+      case '8': LCDML.CE_set(9); LCDML.BT_down();  break;
+      case '9': LCDML.CE_set(10); break; 
+      case '0': LCDML.CE_set(1); break; 
+      case '#': LCDML.CE_set(12); LCDML.BT_enter(); break;
+      case '*': LCDML.CE_set(11); LCDML.BT_quit();  break;
+      */      
       default: break;
     }
   }
@@ -388,12 +452,19 @@ void lcdml_menu_control(void)
 // *********************************************************************
 #elif(_LCDML_CONTROL_cfg == 5)
     // IR include (this lib have to be installed)
-    #include <IRremote.h>
-    // IR global vars
-    int RECV_PIN = 11;
-    // IR objects
-    IRrecv irrecv(RECV_PIN);
-    decode_results results;
+    // Download path: https://github.com/ukw100/IRMP
+    #define IRMP_INPUT_PIN PA0
+    #define IRMP_PROTOCOL_NAMES 1 // Enable protocol number mapping to protocol strings - needs some FLASH. Must before #include <irmp*>
+    #include <irmpSelectMain15Protocols.h> // This enables 15 main protocols
+
+    #include <irmp.c.h>
+
+    IRMP_DATA irmp_data[1];
+
+    #define STR_HELPER(x) #x
+    #define STR(x) STR_HELPER(x)
+
+    void handleReceivedIRData();
 
 // *********************************************************************
 // change in this function the IR values to your values
@@ -402,26 +473,25 @@ void lcdml_menu_control(void)
   // If something must init, put in in the setup condition
   if(LCDML.BT_setup()) {
     // runs only once
-    irrecv.enableIRIn(); // Start the receiver
+    irmp_init();
   }
 
-  if (irrecv.decode(&results))
+  if (irmp_get_data(&irmp_data[0]))
   {
-      // comment this line out, to check the correct code
-      //Serial.println(results.value, HEX);
+    // comment this line out, to check the correct code
+    //Serial.println(results.value, HEX);
 
-      // in this switch case you have to change the value 0x...1 to the correct IR code
-      switch (results.value)
-      {
-          case 0x00000001: LCDML.BT_enter(); break;
-          case 0x00000002: LCDML.BT_up();    break;
-          case 0x00000003: LCDML.BT_down();  break;
-          case 0x00000004: LCDML.BT_left();  break;
-          case 0x00000005: LCDML.BT_right(); break;
-          case 0x00000006: LCDML.BT_quit();  break;
-          default: break;
-      }
-      irrecv.resume(); // Receive the next value
+    // in this switch case you have to change the value 0x...1 to the correct IR code
+    switch (irmp_data[0].command)
+    {
+      case 0x52: LCDML.BT_enter(); break;
+      case 0x50: LCDML.BT_up();    break;
+      case 0x51: LCDML.BT_down();  break;
+      case 0x55: LCDML.BT_left();  break;
+      case 0x56: LCDML.BT_right(); break;
+      case 0x23: LCDML.BT_quit();  break;
+      default: break;
+    }
   }
 }
 // *********************************************************************

@@ -8,10 +8,11 @@
 // This example is for the author to test the complete functionality
 // ============================================================
 // *********************************************************************
-// special settings
+// special settings for non arduino basic controllers
 // *********************************************************************
 // enable this line when you are not usigng a standard arduino
 // for example when your chip is an ESP or a STM or SAM or something else
+
 //#define _LCDML_cfg_use_ram 
 
 // *********************************************************************
@@ -105,11 +106,15 @@
   // LCDMenuLib_add(id, prev_layer,     new_num, condition,   lang_char_array, callback_function, parameter (0-255), menu function type  )
   LCDML_addAdvanced (22 , LCDML_0         , 7  , COND_hide,  "screensaver"        , mFunc_screensaver,        0,   _LCDML_TYPE_default);       // this menu function can be found on "LCDML_display_menuFunction" tab
 
+  // Example function for event handling (only serial output in this example)  
+  LCDML_add         (23 , LCDML_0         , 8  , "Event Handling"                 , mFunc_exampleEventHandling);  // this menu function can be found on "LCDML_display_menuFunction" tab
+
+
   // ***TIP*** Try to update _LCDML_DISP_cnt when you add a menu element.
 
   // menu element count - last element id
   // this value must be the same as the last menu element
-  #define _LCDML_DISP_cnt    22
+  #define _LCDML_DISP_cnt    23
 
   // create menu
   LCDML_createMenu(_LCDML_DISP_cnt);
@@ -139,6 +144,14 @@
 
     // You can jump to a menu function from anywhere with
     //LCDML.OTHER_jumpToFunc(mFunc_p2); // the parameter is the function name
+
+    // In the following line the new event handling system ins configured
+    // you can use 0 - 3 special events when calling the LCDML.CE_set(id) function
+    // when you need more events you can change in LCDMenuLib.h the number until 0-63
+    LCDML.CE_setOnChangeCbFunction(0, mFunc_exampleEventHandling);
+    //LCDML.CE_setOnChangeCbFunction(1, your_special_menu_function);
+    //...
+
   }
 
 // *********************************************************************

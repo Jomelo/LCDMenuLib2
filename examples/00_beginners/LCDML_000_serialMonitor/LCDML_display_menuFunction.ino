@@ -12,11 +12,20 @@ void your_function_name(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    //LCDML_UNUSED(param);
     // setup
     // is called only if it is started
 
     // starts a trigger event for the loop function every 100 milliseconds
     LCDML.FUNC_setLoopInterval(100);
+
+    // uncomment this line when the menu should go back to the last called position
+    // this could be a cursor position or the an active menu function
+    // GBA means => go back advanced
+    //LCDML.FUNC_setGBA() 
+
+    //
   }
 
   if(LCDML.FUNC_loop())           // ****** LOOP *********
@@ -24,7 +33,11 @@ void your_function_name(uint8_t param)
     // loop
     // is called when it is triggered
     // - with LCDML_DISP_triggerMenu( milliseconds )
-    // - with every button status change
+    // - with every button or event status change
+
+    // uncomment this line when the screensaver should not be called when this function is running
+    // reset screensaver timer
+    //LCDML.SCREEN_resetTimer();
 
     // check if any button is pressed (enter, up, down, left, right)
     if(LCDML.BT_checkAny()) {
@@ -36,6 +49,9 @@ void your_function_name(uint8_t param)
   {
     // loop end
     // you can here reset some global vars or delete it
+    // this function is always called when the functions ends.
+    // this means when you are calling a jumpTo ore a goRoot function
+    // that this part is called before a function is closed
   }
 }
 
@@ -293,5 +309,85 @@ void mFunc_para(uint8_t param)
   if(LCDML.FUNC_close())        // ****** STABLE END *********
   {
     // you can here reset some global vars or do nothing
+  }
+}
+
+
+// *********************************************************************
+void mFunc_exampleEventHandling(uint8_t param)
+// *********************************************************************
+{
+  if(LCDML.FUNC_setup())          // ****** SETUP *********
+  {
+    LCDML_UNUSED(param);
+    
+    // setup
+    // is called only if it is started
+
+    // starts a trigger event for the loop function every 100 milliseconds
+    //LCDML.FUNC_setLoopInterval(100);
+
+    // uncomment this line when the menu should go back to the last called position
+    // this could be a cursor position or the an active menu function
+    // GBA means => go back advanced
+    LCDML.FUNC_setGBA(); 
+
+    // display content
+    Serial.println("Event handling function is active");
+  }
+
+  if(LCDML.FUNC_loop())           // ****** LOOP *********
+  {
+    // loop
+    // is called when it is triggered
+    // - with LCDML_DISP_triggerMenu( milliseconds )
+    // - with every button status change
+
+    // uncomment this line when the screensaver should not be called when this function is running
+    // reset screensaver timer
+    // this function is only working when a loop timer is set
+    //LCDML.SCREEN_resetTimer();
+
+    // check if any button is pressed (enter, up, down, left, right)
+    if(LCDML.BT_checkAny()) {
+      LCDML.FUNC_goBackToMenu();
+    }   
+
+    // check if any event is active  
+    if(LCDML.CE_checkAny())
+    { 
+      // check if the defined command char is pressed 
+      if(LCDML.CE_check(0))
+      {
+        Serial.println(F("The defined command char is enabled"));         
+      }
+      
+      // check if a special char was pressed
+      // there are 10 defined special chars in control tab
+      for(uint8_t i=1; i<=10; i++)
+      {
+        if(LCDML.CE_check(i))
+        {
+          Serial.print(F("The command number: "));
+          Serial.print(i-1);
+          Serial.println(F(" is pressed"));
+        }
+      }        
+    }
+    else
+    {
+      Serial.println(F("This function is called by menu, not over the callback function")); 
+      Serial.println(F("Press 'c' or a number to display the content"));
+    }
+    LCDML.CE_resetAll();
+  }
+
+  if(LCDML.FUNC_close())      // ****** STABLE END *********
+  {
+    // loop end
+    // you can here reset some global vars or delete it
+
+    // reset all events 
+    LCDML.CE_resetAll();
   }
 }

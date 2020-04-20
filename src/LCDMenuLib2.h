@@ -83,7 +83,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.2.0 beta 18.04.2020"
+    #define _LCDML_VERSION                       "LCDML2 v2.2.0"
 
     // this makro is for unused variables which exists for compatibility tings ...
     #define LCDML_UNUSED(expr) do { (void)(expr); } while (0)
@@ -160,8 +160,6 @@
     #define _LCDML_REG_update_free_2                        2
     #define _LCDML_REG_update_free_1                        1
     #define _LCDML_REG_update_free_0                        0
-
-
 
     // Configure Arduino flash lib and load it*/
     #ifndef __PROG_TYPES_COMPAT__
