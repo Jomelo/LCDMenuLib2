@@ -214,7 +214,7 @@
             uint8_t             actMenu_cursorPositionID;               // current cursor position id          
             uint8_t             actMenu_lastCursorPositionID;           // Save the last Cursor position before a new function was called
             unsigned long       actMenu_default_time;                   // default loop time 
-            unsigned long       actMenu_ce_mask;                        // ce mask          
+            uint64_t            actMenu_ce_mask;                        // ce mask          
 
             // jump To variables          
             uint8_t             jT_id;                                  // contains the jumpTo id

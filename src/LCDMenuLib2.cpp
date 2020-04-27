@@ -899,8 +899,8 @@ void    LCDMenuLib2::MENU_resetActiveMenu(void)
     // reset variables                                   
     actMenu_id              = _LCDML_NO_FUNC;                             
     actMenu_param           = 0; 
-    actMenu_default_time    = 0xFFFFFFFFFFFFFFFF;
-    actMenu_ce_mask         = 0xFFFFFFFFFFFFFFFF; 
+    actMenu_default_time    = 0xFFFFFFFF; // 32 Bit
+    actMenu_ce_mask         = 0xFFFFFFFFFFFFFFFF; // 64 Bit
     bitClear(REG_control, _LCDML_REG_control_menu_func_active);
 }
 
