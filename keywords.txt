@@ -4,7 +4,7 @@
 #
 # MIT License
 #
-# Copyright (c) [2018] [Nils Feldkämper]
+# Copyright (c) [2020] [Nils Feldkämper]
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -58,6 +58,9 @@ _LCDML_CONTROL_cfg	LITERAL1
 _LCDML_DISP_cfg_scrollbar	LITERAL1
 
 _LCDML_VERSION	LITERAL1
+
+_LCDML_NO_FUNC	LITERAL1
+_LCDML_FIRST_ELEMENT_ID	LITERAL1
 
 _LCDML_CONTROL_serial_enter	LITERAL1
 _LCDML_CONTROL_serial_up	LITERAL1
@@ -271,11 +274,14 @@ FUNC_disableScreensaver	KEYWORD2
 FUNC_setGBAToLastFunc	KEYWORD2
 FUNC_setGBAToLastCursorPos	KEYWORD2
 FUNC_setGBA	KEYWORD2
+FUNC_setCEMask	KEYWORD2
 
 OTHER_jumpToFunc	KEYWORD2
 OTHER_jumpToID	KEYWORD2
 OTHER_setCursorToFunc	KEYWORD2
 OTHER_setCursorToID	KEYWORD2
+OTHER_getIDFromFunction	KEYWORD2
+OTHER_updateFunc	KEYWORD2
 
 TIMER_ms	KEYWORD2
 TIMER_msReset	KEYWORD2

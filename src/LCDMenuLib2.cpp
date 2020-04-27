@@ -145,7 +145,7 @@ void LCDMenuLib2::loop_control(void)
     // check if a "jumpTo - setCursoTo" function is active
     // this check is necessary because there can be a bad timing between a timebased function call or a event and
     // another OTHER_...() function.
-    if(bitRead(REG_special, _LCDML_REG_special_jumpTo_enabled) == false)
+    if(bitRead(REG_special, _LCDML_REG_special_OTHER_function_active) == false)
     {
         // screensaver handling
         // check if the screensaver is enabled and a callback function is defined
@@ -256,7 +256,7 @@ void LCDMenuLib2::loop_menu(void)
 
     // local declaration
     uint8_t cnt     = 0;   
-    uint8_t found   = _LCDML_NO_FUNC; 
+    uint8_t found   = _LCDML_FIRST_ELEMENT_ID; 
     LCDMenuLib2_menu *tmp;
 
     // ============================================
@@ -372,17 +372,15 @@ void LCDMenuLib2::loop_menu(void)
     // ============================================
     // jump to handling
     // ============================================
-    if(bitRead(REG_special, _LCDML_REG_special_jumpTo_enabled))
+    if(bitRead(REG_special, _LCDML_REG_special_OTHER_function_active))
     {
         // debug information
         DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpTo.. / LCDML.OTHER_setCursorTo... - is active"));
 
         MENU_enScroll();
 
-        bitClear(REG_special, _LCDML_REG_special_jumpTo_enabled); 
-        bitClear(REG_control, _LCDML_REG_control_dynMenuDisplayed);
-
-        bitSet(REG_control, _LCDML_REG_control_disable_hidden);              
+        bitClear(REG_special, _LCDML_REG_special_OTHER_function_active); 
+        bitClear(REG_control, _LCDML_REG_control_dynMenuDisplayed);        
  
         // got to root
         if(bitRead(REG_control, _LCDML_REG_control_menu_func_active) == true)
@@ -471,7 +469,7 @@ void LCDMenuLib2::loop_menu(void)
                 } 
 
                 // check if the last item is reached
-                if(curMenu->getParent()->getID() == _LCDML_NO_FUNC && curMenu->getSibling(1) == NULL)
+                if(curMenu->getParent()->getID() == _LCDML_FIRST_ELEMENT_ID && curMenu->getSibling(1) == NULL)
                 {
                     break;
                 }
@@ -483,6 +481,9 @@ void LCDMenuLib2::loop_menu(void)
                 // check childs for childs
                 if(curMenu->getChild(0) != NULL)
                 {
+                    // Debug information 
+                    DBG_println(LCDML_DBG_function_name_OTHER, F("gointo an element"));
+
                     // -- GO INTO --
                     layer++;                    
 
@@ -499,10 +500,10 @@ void LCDMenuLib2::loop_menu(void)
                     else
                     { 
                         // check parent element
-                        if(curMenu->getParent()->getID() == _LCDML_NO_FUNC)
+                        if(curMenu->getParent()->getID() == _LCDML_FIRST_ELEMENT_ID)
                         { 
                             // Debug information                           
-                            DBG_print(LCDML_DBG_function_name_OTHER, F("nothing found: point (A) / ID: "));
+                            DBG_print(LCDML_DBG_function_name_OTHER, F("nothing found: endpoint (A) / ID: "));
                             DBG_println(LCDML_DBG_function_name_OTHER, curMenu->getID());                                                    
                         }
                         else
@@ -516,7 +517,7 @@ void LCDMenuLib2::loop_menu(void)
                                 layer--;  
 
                                 // Debug information 
-                                DBG_println(LCDML_DBG_function_name_OTHER, F("go to parent element"));                          
+                                DBG_println(LCDML_DBG_function_name_OTHER, F("goback to parent element"));                          
                                 
                                 // check if the parent element have siblings
                                 if(curMenu->getSibling(1) != NULL)
@@ -527,7 +528,7 @@ void LCDMenuLib2::loop_menu(void)
                                 }
                                 else
                                 {                                    
-                                    if(curMenu->getParent()->getID() == _LCDML_NO_FUNC)
+                                    if(curMenu->getParent()->getID() == _LCDML_FIRST_ELEMENT_ID)
                                     {
                                         break;
                                     }
@@ -547,20 +548,17 @@ void LCDMenuLib2::loop_menu(void)
         }
 
         // check element handling
-        if(found != _LCDML_NO_FUNC)
+        if(found != _LCDML_FIRST_ELEMENT_ID)
         { 
             // debug information
             DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpTo.. / LCDML.OTHER_setCursorTo... - element found"));
-
              
             tmp = curMenu->getChild(0);
             // get the current obj position in this layer             
             do
             {                            
                 if(tmp->getID() == found)
-                {
-                    cursor_pos_abs =  cnt;
-                    cursor_obj_pos =  cnt;                                                                                                            
+                {                                                                                                                               
                     break; 
                 }
                 else
@@ -572,7 +570,11 @@ void LCDMenuLib2::loop_menu(void)
                 cnt++;       
             }
             while((tmp = tmp->getSibling(1)) != NULL); 
-            // tmp have here the pointer to the right position            
+            
+            // tmp have here the pointer to the right position
+            //tmp = --pointer_position--
+            cursor_pos_abs =  cnt;
+            cursor_obj_pos =  cnt;             
             
             if(bitRead(REG_special, _LCDML_REG_special_setCursorTo) == false)
             {
@@ -598,7 +600,6 @@ void LCDMenuLib2::loop_menu(void)
                     // Debug information                 
                     DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_helpFunction - callbackfunction is hidden, the cursor cannot be set to this possition: go back to root menu")); 
                     
-                    bitClear(REG_control, _LCDML_REG_control_disable_hidden);
                     MENU_goRoot();                       
                 } 
                 else
@@ -610,8 +611,6 @@ void LCDMenuLib2::loop_menu(void)
             // update the menu
             DISP_update();
 
-            bitClear(REG_control, _LCDML_REG_control_disable_hidden); 
-
             // set current cursor possition with hidden elements
             tmp = curMenu->getChild(0);            
             cnt = 0;
@@ -619,8 +618,7 @@ void LCDMenuLib2::loop_menu(void)
             do
             {   
                 if(tmp->checkCondition())
-                {             
-                    //if(obj_pos == cursor_obj_pos)
+                {
                     if(tmp->getID() == found)
                     {
                         cursor_pos_abs =  cnt;                           
@@ -655,8 +653,6 @@ void LCDMenuLib2::loop_menu(void)
             // debug information
             DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpTo.. / LCDML.OTHER_setCursorTo... - nothing found"));
         }
-        
-        bitClear(REG_control, _LCDML_REG_control_disable_hidden);
     }
     else
     {
@@ -674,8 +670,16 @@ void LCDMenuLib2::loop_menu(void)
         {
             // => do not close the running function
             // check if a loop time was set or a button was pressed or the function is called the first time
-            if(TIMER_ms(menuFunction_loopTimer, actMenu_default_time) == true || bitRead(REG_MenuFunction, _LCDML_REG_MenuFunction_setup) == false || BT_checkAny() > 0 || CE_checkAny() > 0)
+            if( TIMER_ms(menuFunction_loopTimer, actMenu_default_time) == true || 
+                bitRead(REG_MenuFunction, _LCDML_REG_MenuFunction_setup) == false || 
+                BT_checkAny() > 0 || 
+                CE_checkAny() > 0 ||
+                bitRead(REG_update, _LCDML_REG_update_menu_function_content)
+              )
             {
+                // reset update flag
+                bitClear(REG_update, _LCDML_REG_update_menu_function_content);
+
                 // call the current menu function
                 FUNC_call();                
             }
@@ -880,6 +884,9 @@ void        LCDMenuLib2::MENU_goRoot(void)
 void    LCDMenuLib2::MENU_resetActiveMenu(void)
 /* ******************************************************************** */
 {
+    // debug information
+    DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_resetActiveMenu"));
+
     // reset callback function
     actMenu_cb_function = NULL;
 
@@ -892,7 +899,8 @@ void    LCDMenuLib2::MENU_resetActiveMenu(void)
     // reset variables                                   
     actMenu_id              = _LCDML_NO_FUNC;                             
     actMenu_param           = 0; 
-    actMenu_default_time    = 100000000; 
+    actMenu_default_time    = 0xFFFFFFFFFFFFFFFF;
+    actMenu_ce_mask         = 0xFFFFFFFFFFFFFFFF; 
     bitClear(REG_control, _LCDML_REG_control_menu_func_active);
 }
 
@@ -903,15 +911,87 @@ void    LCDMenuLib2::MENU_goBack(void)
     // debug information
     DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_goBack"));
 
-    if(curMenu->getParent() != NULL)
-    {        
-        //set current menu object
-        MENU_goMenu(*curMenu->getParent(), true); 
+    //declare variables
+    LCDMenuLib2_menu *tmp;    
+    uint8_t old_id = 0;
+    uint8_t j = 0;
+    uint8_t obj_pos = 0;
+    bool found_visible = false;
+
+    old_id  = curMenu->getID();
+    tmp     = curMenu->getParent();
+    
+    // set the curMenu pointer to a other menu element
+    curMenu = curMenu->getParent();   
+    
+    // update the layer counter
+    if(layer > 0)
+    {
+        layer--;
     }
     else
     {
         // do nothing
+    }       
+
+    // init the cursor_position variables to 0
+    cursor_obj_pos = 0;
+    cursor_pos_abs = 0;
+
+    // get childs from the current menu element
+    if((tmp = curMenu->getChild(0)) != NULL)
+    {
+        // search the current possition of the cursor
+        do
+        {             
+            // check conditions
+            if (tmp->checkCondition())
+            {                    
+                // when the current element id is the same as the old_id the current cursor position is found
+                if(tmp->getID() == old_id)
+                {
+                    cursor_pos_abs =  j;
+                    cursor_obj_pos =  obj_pos;
+                    if(cursor_pos_abs - (window_rows-1) > 0)
+                    {
+                        window_start = cursor_pos_abs-(window_rows-1);
+                    }
+                    else
+                    {
+                        window_start = 0;
+                    }                        
+
+                    MENU_doScroll(10);
+                    found_visible = true;                                                
+                    break; 
+                }
+                else
+                {
+                    // do nothing
+                }
+
+                // count all visible elements
+                j++;
+            }
+            else
+            {
+                // do nothing
+            }
+
+            obj_pos++;
+        // select the next sibling when it exists                
+        } while ((tmp = tmp->getSibling(1)) != NULL);
+
+        if(found_visible == false)
+        {
+            MENU_goRoot();
+        }
     }
+    else
+    {
+        // Something is wrong, go to a stable state (root menu)
+        MENU_goRoot();
+    }    
 }
 
 /* ******************************************************************** */
@@ -946,9 +1026,20 @@ void    LCDMenuLib2::MENU_goInto(void)
                 {
                     //check if element has visible children 
                     if(MENU_countChilds(curMenu->getChild(cursor_obj_pos)) > 0)
-                    {   
-                        // Menu found, goInto
-                        MENU_goMenu(*curMenu->getChild(cursor_obj_pos), false);                        
+                    { 
+                        // set the curMenu pointer to a other menu element
+                        curMenu = curMenu->getChild(cursor_obj_pos);
+                        
+                        // new layer
+                        window_start = 0;        
+                        cursor_obj_pos = 0;
+                        cursor_pos_abs = 0;
+
+                        MENU_initFirstElement();
+
+                        // update the layer counter
+                        layer++;                        
+
                         BT_resetAll(); // reset all buttons                            
                         DISP_update();                                               
                     }
@@ -968,121 +1059,6 @@ void    LCDMenuLib2::MENU_goInto(void)
     {
         // do nothing
     }
-}
-
-/* ******************************************************************** */
-void    LCDMenuLib2::MENU_goMenu(LCDMenuLib2_menu &p_m, uint8_t p_back)
-/* ******************************************************************** */
-{
-    // debug information
-    DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_goMenu"));
-
-    //declare variables
-    LCDMenuLib2_menu *tmp;    
-    uint8_t old_id = curMenu->getID();
-    uint8_t j = 0;
-    uint8_t obj_pos = 0; 
-    boolean found_visible = false;  
-    
-    // check if the menu is opening or closing
-    if(p_back == false)
-    {
-        // set the curMenu pointer to a other menu element
-        curMenu = &p_m;
-
-        // only update the contet when the layer is smaller then 254
-        if(layer < (_LCDML_NO_FUNC-1))
-        {
-            // new layer
-            window_start = 0;        
-            cursor_obj_pos = 0;
-            cursor_pos_abs = 0;
-
-            MENU_initFirstElement();
-
-            // update the layer counter
-            layer++;
-        }
-        else
-        {
-            // do nothing
-        }
-    }
-    else
-    {
-        // update the layer counter
-        if(layer > 0)
-        {
-            layer--;
-        }
-        else
-        {
-            // do nothing
-        }
-
-        // set the curMenu pointer to a other menu element
-        curMenu = &p_m;
-
-        // init the cursor_position variables to 0
-        cursor_obj_pos = 0;
-        cursor_pos_abs = 0;
-
-        // get childs from the current menu element
-        if((tmp = curMenu->getChild(0)) != NULL)
-        {
-            // search the current possition of the cursor
-            do
-            {             
-                // check conditions
-                if (tmp->checkCondition() || bitRead(REG_control, _LCDML_REG_control_disable_hidden))
-                {                    
-                    // when the current element id is the same as the old_id the current cursor position is found
-                    if(tmp->getID() == old_id)
-                    {
-                        cursor_pos_abs =  j;
-                        cursor_obj_pos =  obj_pos;
-                        if(cursor_pos_abs - (window_rows-1) > 0)
-                        {
-                            window_start = cursor_pos_abs-(window_rows-1);
-                        }
-                        else
-                        {
-                            window_start = 0;
-                        }                        
-
-                        MENU_doScroll(10);
-                        found_visible = true;                                                
-                        break; 
-                    }
-                    else
-                    {
-                        // do nothing
-                    }
-
-                    // count all visible elements
-                    j++;
-                }
-                else
-                {
-                    // do nothing
-                }
-
-                obj_pos++;
-            // select the next sibling when it exists                
-            } while ((tmp = tmp->getSibling(1)) != NULL);
-
-            if(found_visible == false)
-            {
-                MENU_goRoot();
-            }
-        }
-        else
-        {
-            // Something is wrong, go to a stable state (root menu)
-            MENU_goRoot();
-        }             
-             
-    }    
 }
 
 
@@ -1106,14 +1082,18 @@ LCDMenuLib2_menu * LCDMenuLib2::MENU_getRootObj(void)
     
     LCDMenuLib2_menu *tmp;
 
-    if(curMenu->getID() != _LCDML_NO_FUNC)
+    if(curMenu->getID() != _LCDML_FIRST_ELEMENT_ID)
     {  
         tmp = curMenu;         
             
-        while((tmp = tmp->getParent()) != NULL)
+        while(true)
         {
-            if(tmp->getID() == _LCDML_NO_FUNC)
-            {                
+            if(tmp->getID() != _LCDML_FIRST_ELEMENT_ID)
+            {   
+                tmp = tmp->getParent();             
+            }
+            else
+            {            
                 return tmp;
             }            
         }
@@ -1218,7 +1198,7 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
     uint8_t cnt_visible = 0;
     uint8_t obj_pos = 0;
     uint8_t last_valid_obj_pos = 0;
-    boolean rollover = false;   
+    bool rollover = false;   
 
     //content:
     // 0 = scroll up
@@ -1526,7 +1506,7 @@ uint8_t LCDMenuLib2::MENU_countChilds(LCDMenuLib2_menu *menu, uint8_t all)
         {
             do
             { 
-                if (tmp->checkCondition() || bitRead(REG_control, _LCDML_REG_control_disable_hidden) || all == true)
+                if (tmp->checkCondition() || all == true)
                 {
                     j++;
                 }
@@ -1573,13 +1553,13 @@ uint8_t LCDMenuLib2::MENU_getParentID(uint8_t p_layer)
     {
         for(uint8_t i=0; i<p_layer; i++)
         {
-            if(tmp->getParent() != NULL)
+            if(tmp->getParent()->getID() != _LCDML_FIRST_ELEMENT_ID)
             {
                 tmp = tmp->getParent();
             }
             else
             {
-                return _LCDML_NO_FUNC;
+                return _LCDML_FIRST_ELEMENT_ID;
                 break;
             }
         }
@@ -1588,7 +1568,7 @@ uint8_t LCDMenuLib2::MENU_getParentID(uint8_t p_layer)
     }
     else
     {
-        return _LCDML_NO_FUNC;
+        return _LCDML_FIRST_ELEMENT_ID;
     }   
 }
 
@@ -1647,7 +1627,7 @@ void    LCDMenuLib2::MENU_disScroll(void)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::MENU_getScrollDisableStatus(void)
+bool LCDMenuLib2::MENU_getScrollDisableStatus(void)
 /* ******************************************************************** */
 {
     // debug information
@@ -1689,7 +1669,7 @@ uint8_t LCDMenuLib2::MENU_getElementIDFromCursorPos(void)
     }
     else
     {
-        return _LCDML_NO_FUNC;
+        return _LCDML_FIRST_ELEMENT_ID;
     }    
 }
 
@@ -1723,7 +1703,7 @@ void LCDMenuLib2::DISP_clear(void)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::DISP_checkMenuUpdate(void)
+bool LCDMenuLib2::DISP_checkMenuUpdate(void)
 /* ******************************************************************** */
 {
     // debug information
@@ -1742,7 +1722,7 @@ boolean LCDMenuLib2::DISP_checkMenuUpdate(void)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::DISP_checkMenuCursorUpdate(void)
+bool LCDMenuLib2::DISP_checkMenuCursorUpdate(void)
 /* ******************************************************************** */
 {
     // debug information
@@ -1850,7 +1830,7 @@ void LCDMenuLib2::FUNC_call(void)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::FUNC_setup(void)
+bool LCDMenuLib2::FUNC_setup(void)
 /* ******************************************************************** */
 {
     // debug information
@@ -1879,7 +1859,7 @@ boolean LCDMenuLib2::FUNC_setup(void)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::FUNC_loop(void)
+bool LCDMenuLib2::FUNC_loop(void)
 /* ******************************************************************** */
 {
     // debug information
@@ -1905,7 +1885,7 @@ boolean LCDMenuLib2::FUNC_loop(void)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::FUNC_close(void)
+bool LCDMenuLib2::FUNC_close(void)
 /* ******************************************************************** */
 {
     // debug information
@@ -2020,6 +2000,23 @@ void    LCDMenuLib2::FUNC_setGBA(void)
     }           
 }
 
+/* ******************************************************************** */
+void    LCDMenuLib2::FUNC_setCEMask(unsigned long p_mask)
+/* ******************************************************************** */
+{
+    // debug information
+    DBG_println(LCDML_DBG_function_name_FUNC, F("LCDML.FUNC_setCEMask"));
+
+    if(bitRead(REG_control, _LCDML_REG_control_menu_func_active) == true)
+    {
+        actMenu_ce_mask = p_mask;
+    }
+    else
+    {
+        actMenu_ce_mask = 0xFFFFFFFFFFFFFFFF;
+    }
+}
+
 
 /* ******************************************************************** */
 /* ******************************************************************** */
@@ -2029,7 +2026,7 @@ void    LCDMenuLib2::FUNC_setGBA(void)
 
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::BT_setup(void)
+bool LCDMenuLib2::BT_setup(void)
 /* ******************************************************************** */
 {
     // debug information
@@ -2109,7 +2106,7 @@ void LCDMenuLib2::BT_quit(void)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::BT_checkAny(void)      
+bool LCDMenuLib2::BT_checkAny(void)      
 /* ******************************************************************** */
 { 
     // debug information 
@@ -2126,7 +2123,7 @@ boolean LCDMenuLib2::BT_checkAny(void)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::BT_checkEnter(void)    
+bool LCDMenuLib2::BT_checkEnter(void)    
 /* ******************************************************************** */
 { 
     // debug information 
@@ -2143,7 +2140,7 @@ boolean LCDMenuLib2::BT_checkEnter(void)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::BT_checkUp(void)       
+bool LCDMenuLib2::BT_checkUp(void)       
 /* ******************************************************************** */
 { 
     // debug information 
@@ -2160,7 +2157,7 @@ boolean LCDMenuLib2::BT_checkUp(void)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::BT_checkDown(void) 
+bool LCDMenuLib2::BT_checkDown(void) 
 /* ******************************************************************** */    
 { 
     // debug information 
@@ -2177,7 +2174,7 @@ boolean LCDMenuLib2::BT_checkDown(void)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::BT_checkLeft(void)     
+bool LCDMenuLib2::BT_checkLeft(void)     
 /* ******************************************************************** */
 { 
     // debug information 
@@ -2194,7 +2191,7 @@ boolean LCDMenuLib2::BT_checkLeft(void)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::BT_checkRight(void)  
+bool LCDMenuLib2::BT_checkRight(void)  
 /* ******************************************************************** */  
 { 
     // debug information 
@@ -2211,7 +2208,7 @@ boolean LCDMenuLib2::BT_checkRight(void)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::BT_checkQuit(void)     
+bool LCDMenuLib2::BT_checkQuit(void)     
 /* ******************************************************************** */
 { 
     // debug information     
@@ -2306,7 +2303,7 @@ void LCDMenuLib2::BT_resetQuit(void)
 /* ******************************************************************** */
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::CE_setup(void)
+bool LCDMenuLib2::CE_setup(void)
 /* ******************************************************************** */
 {
     // debug information
@@ -2362,13 +2359,13 @@ void    LCDMenuLib2::CE_reset(uint8_t p_event)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::CE_checkAny(void)
+bool LCDMenuLib2::CE_checkAny(void)
 /* ******************************************************************** */
 {
     // debug information 
     DBG_println(LCDML_DBG_function_name_CE, F("LCDML.CE_checkAny"));
     
-    if(REG_custom_event > 0)
+    if((REG_custom_event & actMenu_ce_mask) > 0)
     {              
         return true;
     } 
@@ -2379,7 +2376,7 @@ boolean LCDMenuLib2::CE_checkAny(void)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::CE_check(uint8_t p_event)
+bool LCDMenuLib2::CE_check(uint8_t p_event)
 /* ******************************************************************** */
 {
     // debug information 
@@ -2440,7 +2437,7 @@ void    LCDMenuLib2::TIMER_msReset(unsigned long &p_var)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::TIMER_ms(unsigned long &p_var, unsigned long p_t)
+bool LCDMenuLib2::TIMER_ms(unsigned long &p_var, unsigned long p_t)
 /* ******************************************************************** */
 {
     // debug information
@@ -2468,7 +2465,7 @@ void    LCDMenuLib2::TIMER_usReset(unsigned long &p_var)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2::TIMER_us(unsigned long &p_var, unsigned long p_t)
+bool LCDMenuLib2::TIMER_us(unsigned long &p_var, unsigned long p_t)
 /* ******************************************************************** */
 {
     // debug information
@@ -2499,43 +2496,52 @@ void LCDMenuLib2::OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t p_para)
     // debug information
     DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc"));
 
-    if(bitRead(REG_special, _LCDML_REG_special_jumpTo_enabled) == true)
+    if(bitRead(REG_special, _LCDML_REG_special_OTHER_function_active) == true)
     {
         // debug information
         DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc - is still activ"));
     } 
     else 
     {
-        // debug information
-        DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc - start"));
-
-        // enable jump to Func
-        bitSet(REG_special, _LCDML_REG_special_jumpTo_enabled);
-        bitClear(REG_special, _LCDML_REG_special_setCursorTo);
-        jT_id       = 0;
-
-        // Save last active Menu ID           
-        actMenu_lastFuncID = actMenu_id;
-
-        if(bitRead(REG_control, _LCDML_REG_control_menu_func_active) == true)
+        // check if this menu function is active - do nothing   
+        if(p_search == actMenu_cb_function)
         {
-            // handle parameters            
-            jT_paramOld = jT_param;
-            bitClear(REG_MenuFunction, _LCDML_REG_MenuFunction_called_from_menu);
-        }
+            // debug information
+            DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc - function is still running")); 
+        }   
         else
-        {
-            // handle parameters
-            jT_paramOld = 0;
-            bitSet(REG_MenuFunction, _LCDML_REG_MenuFunction_called_from_menu);
+        { 
+            // debug information
+            DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc - start"));
 
-            // Save last cursor position
-            actMenu_lastCursorPositionID = actMenu_cursorPositionID;
-            actMenu_cursorPositionID = curMenu->getChild(MENU_getCursorPosAbs())->getID();            
-        } 
-        
-        jT_param    = p_para;
-        jT_function = p_search;
+            bitSet(REG_special, _LCDML_REG_special_OTHER_function_active);
+            bitClear(REG_special, _LCDML_REG_special_setCursorTo); 
+            
+            // Save last active Menu ID
+            actMenu_lastFuncID = actMenu_id;
+
+            if(bitRead(REG_control, _LCDML_REG_control_menu_func_active) == true)
+            {
+                // handle parameters            
+                jT_paramOld = jT_param;
+                bitClear(REG_MenuFunction, _LCDML_REG_MenuFunction_called_from_menu);
+            }
+            else
+            {
+                // handle parameters
+                jT_paramOld = 0;
+                bitSet(REG_MenuFunction, _LCDML_REG_MenuFunction_called_from_menu);
+
+                // Save last cursor position
+                actMenu_lastCursorPositionID = actMenu_cursorPositionID;
+                actMenu_cursorPositionID = curMenu->getChild(MENU_getCursorPosAbs())->getID();            
+            }
+
+            // enable jump to Func
+            jT_id       = 0;        
+            jT_param    = p_para;
+            jT_function = p_search;
+        }
     }    
 }
 
@@ -2548,45 +2554,54 @@ void LCDMenuLib2::OTHER_jumpToID(uint8_t p_id, uint8_t p_para)
 
     if(p_id != _LCDML_NO_FUNC)
     {
-        if(bitRead(REG_special, _LCDML_REG_special_jumpTo_enabled) == true)
+        if(bitRead(REG_special, _LCDML_REG_special_OTHER_function_active) == true)
         {
             // debug information
             DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToID - is still activ"));
         } 
         else 
         {
-            // debug information
-            DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToID - start"));
-
-            // enable jump to ID
-            bitSet(REG_special, _LCDML_REG_special_jumpTo_enabled);
-            bitClear(REG_special, _LCDML_REG_special_setCursorTo);
-            jT_id       = p_id;
-
-            // Save last active Menu ID           
-            actMenu_lastFuncID = actMenu_id;
-            
-            if(bitRead(REG_control, _LCDML_REG_control_menu_func_active) == true)
+            // check if this menu function is active - do nothing  
+            if(p_id == actMenu_id)
             {
-                // handle parameters
-                jT_paramOld = jT_param;
-                bitClear(REG_MenuFunction, _LCDML_REG_MenuFunction_called_from_menu);
+                // debug information
+                DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc - function is still running"));
             }
             else
             {
-                // handle parameters
-                jT_paramOld = 0;
+                // debug information
+                DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToID - start"));
 
-                bitSet(REG_MenuFunction, _LCDML_REG_MenuFunction_called_from_menu);
+                bitSet(REG_special, _LCDML_REG_special_OTHER_function_active);                
+                bitClear(REG_special, _LCDML_REG_special_setCursorTo);               
 
-                // Save last cursor position
-                actMenu_lastCursorPositionID = actMenu_cursorPositionID;
-                actMenu_cursorPositionID = curMenu->getChild(MENU_getCursorPosAbs())->getID();
+                // Save last active Menu ID           
+                actMenu_lastFuncID = actMenu_id;
                 
-            } 
+                if(bitRead(REG_control, _LCDML_REG_control_menu_func_active) == true)
+                {
+                    // handle parameters
+                    jT_paramOld = jT_param;
+                    bitClear(REG_MenuFunction, _LCDML_REG_MenuFunction_called_from_menu);
+                }
+                else
+                {
+                    // handle parameters
+                    jT_paramOld = 0;
 
-            jT_param    = p_para;
-            jT_function = NULL;
+                    bitSet(REG_MenuFunction, _LCDML_REG_MenuFunction_called_from_menu);
+
+                    // Save last cursor position
+                    actMenu_lastCursorPositionID = actMenu_cursorPositionID;
+                    actMenu_cursorPositionID = curMenu->getChild(MENU_getCursorPosAbs())->getID();
+                    
+                }
+
+                // enable jump to ID 
+                jT_id       = p_id;
+                jT_param    = p_para;
+                jT_function = NULL;
+            }
         }
     }
     else
@@ -2602,7 +2617,7 @@ void LCDMenuLib2::OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search)
     // debug information
     DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_setCursorToFunc"));
 
-    if(bitRead(REG_special, _LCDML_REG_special_jumpTo_enabled) == true)
+    if(bitRead(REG_special, _LCDML_REG_special_OTHER_function_active) == true)
     {
         // debug information
         DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_setCursorToFunc - is still activ"));
@@ -2613,7 +2628,7 @@ void LCDMenuLib2::OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search)
         DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_setCursorToFunc - start"));
 
         // enable jump to Func
-        bitSet(REG_special, _LCDML_REG_special_jumpTo_enabled);
+        bitSet(REG_special, _LCDML_REG_special_OTHER_function_active);
         bitSet(REG_special, _LCDML_REG_special_setCursorTo);
         jT_id       = 0;
 
@@ -2652,7 +2667,7 @@ void LCDMenuLib2::OTHER_setCursorToID(uint8_t p_id)
 
     if(p_id != _LCDML_NO_FUNC)
     {
-        if(bitRead(REG_special, _LCDML_REG_special_jumpTo_enabled) == true)
+        if(bitRead(REG_special, _LCDML_REG_special_OTHER_function_active) == true)
         {
             // debug information
             DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_setCursorToID - is still activ"));
@@ -2663,7 +2678,7 @@ void LCDMenuLib2::OTHER_setCursorToID(uint8_t p_id)
             DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_setCursorToID - start"));
 
             // enable jump to Func
-            bitSet(REG_special, _LCDML_REG_special_jumpTo_enabled);
+            bitSet(REG_special, _LCDML_REG_special_OTHER_function_active);
             bitSet(REG_special, _LCDML_REG_special_setCursorTo);
             jT_id       = p_id;
 
@@ -2707,28 +2722,65 @@ uint8_t LCDMenuLib2::OTHER_getIDFromFunction(LCDML_FuncPtr_pu8 p_function_name)
     DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_getIDFromFunction"));
     
     // define local variables
-    uint8_t step = 0;
     LCDMenuLib2_menu *tmp;
-    
+
     // set object
     tmp = MENU_getRootObj();     
 
     // Check if this Menu have childs
     if((tmp = tmp->getChild(0)) != NULL)
-    {
-        // found childs        
-        while(step != _LCDML_NO_FUNC)
+    {  
+        // This loop runs through the menu structure and stops after checking the last element
+        while(true)
         { 
-            // check if searched function is equal
+            // Debug information
+            DBG_print(LCDML_DBG_function_name_OTHER, F("ID: "));
+            DBG_println(LCDML_DBG_function_name_OTHER, tmp->getID());               
+
+            // ***
+            // check loop end condetions
+            // ***
+
+            // check if something is found:
+            
+            // Debug information
+            DBG_println(LCDML_DBG_function_name_OTHER, F("check function"));
+                    
             if(tmp->getCbFunction() == p_function_name)
             {
-                return tmp->getID();
+                // something found                                               
+                return tmp->getID();                
+            }
+
+            /*
+            // Debug Information
+            DBG_println(LCDML_DBG_function_name_OTHER, F("check id"));
+
+            if(tmp->getID() == jT_id)
+            {
+                // something found                       
+                return tmp->getCbFunction();                
+            }
+            */           
+
+            // check if the last item is reached
+            if(tmp->getParent()->getID() == _LCDML_FIRST_ELEMENT_ID && tmp->getSibling(1) == NULL)
+            {
                 break;
             }
+
+            // ***
+            // set the next item
+            // ***
 
             // check childs for childs
             if(tmp->getChild(0) != NULL)
             {
+                // Debug information 
+                DBG_println(LCDML_DBG_function_name_OTHER, F("gointo an element"));
+
+                // -- GO INTO --
+
                 // set next child for check
                 tmp = tmp->getChild(0);
             }
@@ -2737,116 +2789,74 @@ uint8_t LCDMenuLib2::OTHER_getIDFromFunction(LCDML_FuncPtr_pu8 p_function_name)
                 if(tmp->getSibling(1) != NULL)
                 {
                     // set next sibling for check
-                    tmp = tmp->getSibling(1);
+                    tmp = tmp->getSibling(1); 
                 }
                 else
                 { 
-                    if(tmp->getParent()->getID() == _LCDML_NO_FUNC)
-                    {
-                        // no parent element found, stop this here
-                        break;                          
+                    // check parent element
+                    if(tmp->getParent()->getID() == _LCDML_FIRST_ELEMENT_ID)
+                    { 
+                        // Debug information                           
+                        DBG_print(LCDML_DBG_function_name_OTHER, F("end point: (A) / ID: "));
+                        DBG_println(LCDML_DBG_function_name_OTHER, tmp->getID());                                                    
                     }
                     else
                     {
-                        // set next parent for check
-                        tmp = tmp->getParent(); 
-                        
-                        // check if the parent element have siblings
-                        if(tmp->getSibling(1) != NULL)
+                        do
                         {
-                            // set next sibling
-                            tmp = tmp->getSibling(1);                           
-                        }
-                        else
-                        {
-                            // no parent sibling found, stop this here
-                            break;
-                        }
+                            // set next parent for check
+                            tmp = tmp->getParent(); 
+
+                            // -- GO Back --                          
+
+                            // Debug information 
+                            DBG_println(LCDML_DBG_function_name_OTHER, F("goback to parent element"));                          
+                            
+                            // check if the parent element have siblings
+                            if(tmp->getSibling(1) != NULL)
+                            {
+                                // set next sibling
+                                tmp = tmp->getSibling(1);
+                                break;                                
+                            }
+                            else
+                            {                                    
+                                if(tmp->getParent()->getID() == _LCDML_FIRST_ELEMENT_ID)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    // continue
+                                }     
+                            }
+                        } while (true);                            
                     }
                 }
-            }            
-            
-            step++;
-        }
+            }
+        }        
     }
 
     // nothing found
     return _LCDML_NO_FUNC;
 }
 
+
 /* ******************************************************************** */
-LCDML_FuncPtr_pu8 LCDMenuLib2::OTHER_getFunctionFromID(uint8_t p_element_id)
+void    LCDMenuLib2::OTHER_updateFunc(void)                               
 /* ******************************************************************** */
 {
     // debug information
-    DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_getFunctionFromID"));
+    DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_updateFunc"));
 
-    // define local variables
-    uint8_t step = 0;
-    LCDMenuLib2_menu *tmp;
-    
-    // set object
-    tmp = MENU_getRootObj();     
-
-    // Check if this Menu have childs
-    if((tmp = tmp->getChild(0)) != NULL)
+    if(bitRead(REG_control, _LCDML_REG_control_menu_func_active) == true)
     {
-        // found childs        
-        while(step != _LCDML_NO_FUNC)
-        { 
-            // check if searched function is equal
-            if(tmp->getID() == p_element_id)
-            {
-                return tmp->getCbFunction();
-                break;
-            }
-
-            // check childs for childs
-            if(tmp->getChild(0) != NULL)
-            {
-                // set next child for check
-                tmp = tmp->getChild(0);
-            }
-            else
-            {
-                if(tmp->getSibling(1) != NULL)
-                {
-                    // set next sibling for check
-                    tmp = tmp->getSibling(1);
-                }
-                else
-                { 
-                    if(tmp->getParent()->getID() == _LCDML_NO_FUNC)
-                    {
-                        // no parent element found, stop this here
-                        break;                          
-                    }
-                    else
-                    {
-                        // set next parent for check
-                        tmp = tmp->getParent(); 
-                        
-                        // check if the parent element have siblings
-                        if(tmp->getSibling(1) != NULL)
-                        {
-                            // set next sibling
-                            tmp = tmp->getSibling(1);                           
-                        }
-                        else
-                        {
-                            // no parent sibling found, stop this here
-                            break;
-                        }
-                    }
-                }
-            }            
-            
-            step++;
-        }
+        bitSet(REG_update, _LCDML_REG_update_menu_function_content);
     }
-
-    // nothing found
-    return NULL;
+    else
+    {
+        // do nothing
+    }
 }
 
 

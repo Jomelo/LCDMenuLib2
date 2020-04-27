@@ -4,7 +4,7 @@
  *
  * MIT License
  *
- * Copyright (c) [2019] [Nils Feldkämper]
+ * Copyright (c) [2020] [Nils Feldkämper]
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -81,12 +81,12 @@
             LCDMenuLib2_menu * getParent();                          // Returns this menu's parent menu.  If no parent, returns itself
 
             uint8_t getID();                                        // return the id of a menu element
-            boolean checkCondition();                                 // check menu display condition
+            bool checkCondition();                                 // check menu display condition
             uint8_t getParam();                                     // return a parameter which is set on the initialization
-            boolean checkType_menu();
-            boolean checkType_dynParam();
+            bool checkType_menu();
+            bool checkType_dynParam();
 
             void callback(uint8_t p);                                        // call menu callback
-            boolean checkCallback();                                  // check if callback can called
+            bool checkCallback();                                  // check if callback can called
     };
 #endif

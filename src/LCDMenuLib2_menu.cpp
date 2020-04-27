@@ -4,7 +4,7 @@
  *
  * MIT License
  *
- * Copyright (c) [2019] [Nils Feldkämper]
+ * Copyright (c) [2020] [Nils Feldkämper]
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -144,7 +144,7 @@ uint8_t LCDMenuLib2_menu::getID()
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2_menu::checkCondition()
+bool LCDMenuLib2_menu::checkCondition()
 /* ******************************************************************** */
 {    
     if(cb_condition != NULL)
@@ -182,7 +182,7 @@ void LCDMenuLib2_menu::callback(uint8_t p)
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2_menu::checkCallback()
+bool LCDMenuLib2_menu::checkCallback()
 /* ******************************************************************** */
 {
     if(cb_function == NULL)
@@ -196,7 +196,7 @@ boolean LCDMenuLib2_menu::checkCallback()
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2_menu::checkType_menu()
+bool LCDMenuLib2_menu::checkType_menu()
 /* ******************************************************************** */
 {
     if(bitRead(configuration, _LCDML_menu_default))
@@ -210,7 +210,7 @@ boolean LCDMenuLib2_menu::checkType_menu()
 }
 
 /* ******************************************************************** */
-boolean LCDMenuLib2_menu::checkType_dynParam()
+bool LCDMenuLib2_menu::checkType_dynParam()
 /* ******************************************************************** */
 {
     if(bitRead(configuration, _LCDML_menu_dynParam))

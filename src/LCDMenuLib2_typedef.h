@@ -4,7 +4,7 @@
  *
  * MIT License
  *
- * Copyright (c) [2019] [Nils Feldkämper]
+ * Copyright (c) [2020] [Nils Feldkämper]
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,6 +40,6 @@
 
     typedef void    (* LCDML_FuncPtr)       ();
     typedef void    (* LCDML_FuncPtr_pu8)   (uint8_t);  // with parameter u8
-    typedef boolean (* LCDML_FuncPtr_rb)    ();         // with return value boolean
+    typedef bool    (* LCDML_FuncPtr_rb)    ();         // with return value bool
 
 #endif
