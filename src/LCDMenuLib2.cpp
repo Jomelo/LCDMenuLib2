@@ -467,7 +467,7 @@ void LCDMenuLib2::loop_menu(void)
                         break;
                     }  
                 } 
-
+                
                 // check if the last item is reached
                 if(curMenu->getParent()->getID() == _LCDML_FIRST_ELEMENT_ID && curMenu->getSibling(1) == NULL)
                 {

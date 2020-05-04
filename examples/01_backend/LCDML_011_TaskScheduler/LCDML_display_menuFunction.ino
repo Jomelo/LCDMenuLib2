@@ -65,6 +65,9 @@ void mFunc_thread_start(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // setup
     // start thread 
     if(t2.isEnabled() == false)
@@ -73,7 +76,7 @@ void mFunc_thread_start(uint8_t param)
     }
     else
     {
-      Serial.println("is enabled");
+      Serial.println(F("is enabled"));
     }
     
 
@@ -89,6 +92,9 @@ void mFunc_thread_stop(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // setup
     // stop thread
     if(t2.isEnabled() == true)
@@ -97,7 +103,7 @@ void mFunc_thread_stop(uint8_t param)
     }
     else
     {
-      Serial.println("is disabled");
+      Serial.println(F("is disabled"));
     }
 
     // end function and go an layer back
@@ -111,6 +117,9 @@ void mFunc_information(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // setup function
     Serial.println(F("==========================================="));
     Serial.println(F("================  FUNC ===================="));
@@ -147,6 +156,9 @@ void mFunc_timer_info(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     Serial.println(F("==========================================="));
     Serial.println(F("================  FUNC ===================="));
     Serial.println(F("==========================================="));
@@ -197,6 +209,9 @@ void mFunc_p2(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // setup function
     // print LCD content
     Serial.println(F("==========================================="));
@@ -249,6 +264,9 @@ void mFunc_back(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // end function and go an layer back
     LCDML.FUNC_goBackToMenu(1);      // leave this function
   }
@@ -261,8 +279,11 @@ void mFunc_screensaver(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
-    Serial.println("start screensaver");
-    Serial.println("press any key to quit");
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
+    Serial.println(F("start screensaver"));
+    Serial.println(F("press any key to quit"));
     LCDML.FUNC_setLoopInterval(100);  // starts a trigger event for the loop function every 100 milliseconds
   }
 
@@ -287,6 +308,9 @@ void mFunc_goToRootMenu(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // go to root and display menu
     LCDML.MENU_goRoot();
   }
@@ -299,6 +323,9 @@ void mFunc_jumpTo_timer_info(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+    
     // Jump to main screen
     LCDML.OTHER_jumpToFunc(mFunc_timer_info);
   }

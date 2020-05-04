@@ -66,6 +66,9 @@ void mFunc_information(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // setup function
     Serial.println(F("==========================================="));
     Serial.println(F("================  FUNC ===================="));
@@ -114,6 +117,9 @@ void mFunc_switch_language(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     if(g_lcdml_lang_select == LANG_DE)
     {
       g_lcdml_lang_select = LANG_DEFAULT;
@@ -122,7 +128,6 @@ void mFunc_switch_language(uint8_t param)
     {
       g_lcdml_lang_select = LANG_DE;
     } 
-
     
     switch(g_lcdml_lang_select)
     {

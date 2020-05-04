@@ -83,7 +83,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.2.2 - 27.04.2020"
+    #define _LCDML_VERSION                       "LCDML2 v2.2.2"
 
     // this makro is for unused variables which exists for compatibility tings ...
     #define LCDML_UNUSED(expr) do { (void)(expr); } while (0)

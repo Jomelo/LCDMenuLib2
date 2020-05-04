@@ -65,6 +65,9 @@ void mFunc_information(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // setup function
     // clear lcd
     display.fillScreen(_LCDML_ADAFRUIT_BACKGROUND_COLOR);
@@ -109,7 +112,10 @@ void mFunc_timer_info(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
-     g_func_timer_info = 20;       // reset and set timer
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
+    g_func_timer_info = 20;       // reset and set timer
 
     char buf[20];
     sprintf (buf, "wait %d seconds", g_func_timer_info);
@@ -185,6 +191,9 @@ void mFunc_p2(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // setup function
     // print LCD content
     char buf[17];
@@ -260,6 +269,9 @@ void mFunc_screensaver(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // setup function
 
     // clear lcd
@@ -302,6 +314,9 @@ void mFunc_back(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // end function and go an layer back
     LCDML.FUNC_goBackToMenu(1);      // leave this function and go a layer back
   }
@@ -314,6 +329,9 @@ void mFunc_goToRootMenu(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // go to root and display menu
     LCDML.MENU_goRoot();
   }
@@ -326,6 +344,9 @@ void mFunc_jumpTo_timer_info(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // Jump to main screen
     LCDML.OTHER_jumpToFunc(mFunc_timer_info);
   }

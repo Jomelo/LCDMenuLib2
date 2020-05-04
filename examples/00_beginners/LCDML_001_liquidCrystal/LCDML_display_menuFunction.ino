@@ -66,6 +66,9 @@ void mFunc_information(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // setup function
     lcd.setCursor(0, 0);
     lcd.print(F("To close this"));
@@ -102,6 +105,9 @@ void mFunc_timer_info(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     lcd.print(F("20 sec wait")); // print some content on first row
     g_func_timer_info = 20;       // reset and set timer
     LCDML.FUNC_setLoopInterval(100);  // starts a trigger event for the loop function every 100 milliseconds
@@ -152,6 +158,9 @@ void mFunc_p2(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // setup function
     // print LCD content
     // print LCD content
@@ -205,13 +214,16 @@ void mFunc_screensaver(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // update LCD content
     lcd.setCursor(0, 0); // set cursor
-    lcd.print("screensaver"); // print change content
+    lcd.print(F("screensaver")); // print change content
     lcd.setCursor(0, 1); // set cursor
-    lcd.print("press any key");
+    lcd.print(F("press any key"));
     lcd.setCursor(0, 2); // set cursor
-    lcd.print("to leave it");
+    lcd.print(F("to leave it"));
     LCDML.FUNC_setLoopInterval(100);  // starts a trigger event for the loop function every 100 milliseconds
   }
 
@@ -219,6 +231,9 @@ void mFunc_screensaver(uint8_t param)
   {
     if (LCDML.BT_checkAny()) // check if any button is pressed (enter, up, down, left, right)
     {
+      // remmove compiler warnings when the param variable is not used:
+      LCDML_UNUSED(param);
+
       LCDML.FUNC_goBackToMenu();  // leave this function
     }
   }
@@ -238,6 +253,9 @@ void mFunc_back(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // end function and go an layer back
     LCDML.FUNC_goBackToMenu(1);      // leave this function and go a layer back
   }
@@ -250,6 +268,9 @@ void mFunc_goToRootMenu(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+
     // go to root and display menu
     LCDML.MENU_goRoot();
   }
@@ -261,6 +282,9 @@ void mFunc_jumpTo_timer_info(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
+    // remmove compiler warnings when the param variable is not used:
+    LCDML_UNUSED(param);
+    
     // Jump to main screen
     LCDML.OTHER_jumpToFunc(mFunc_timer_info);
   }
