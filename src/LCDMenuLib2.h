@@ -51,12 +51,12 @@
                                                     // 4 = default 
 
     // enable debug strings (remove comments from this line)
-    //#define LCDML_DBG                          1
+    #define LCDML_DBG                          1
 
     // debug special method groups          // enable a flag to control the function call order
     #define LCDML_DBG_function_name_LOOP        0
-    #define LCDML_DBG_function_name_MENU        0
-    #define LCDML_DBG_function_name_FUNC        0
+    #define LCDML_DBG_function_name_MENU        1
+    #define LCDML_DBG_function_name_FUNC        1
     #define LCDML_DBG_function_name_BT          0
     #define LCDML_DBG_function_name_CE          0
     #define LCDML_DBG_function_name_OTHER       1
@@ -83,7 +83,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.2.2"
+    #define _LCDML_VERSION                       "LCDML2 v2.2.3"
 
     // this makro is for unused variables which exists for compatibility tings ...
     #define LCDML_UNUSED(expr) do { (void)(expr); } while (0)
@@ -223,6 +223,7 @@
             LCDML_FuncPtr_pu8   jT_function;                            // contains the jumpTo function
 
             // menu intern values
+            uint8_t             last_element_id;                        // the id of the last element
             uint8_t             window_rows;                            // the maximum rows of the current windows  (1 is the minium)
             uint8_t             window_start;                           // the window start
             
@@ -267,7 +268,7 @@
             LCDMenuLib2(LCDMenuLib2_menu &p_r ,const uint8_t p_rows, const uint8_t p_cols, LCDML_FuncPtr contentUpdate, LCDML_FuncPtr contentClear, LCDML_FuncPtr menuControl);
 
             // init method
-            void                init();                                 // initialisation of the menu / reset the complete menu
+            void                init(uint8_t);                          // initialisation of the menu / reset the complete menu
 
             // loop methods
             void                loop(void);                             // call the loop_menu and the loop_control function
