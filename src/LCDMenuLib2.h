@@ -51,21 +51,18 @@
                                                     // 4 = default 
 
     // enable debug strings (remove comments from this line)
-    #define LCDML_DBG                          1
+    //#define LCDML_DBG                          1
 
     // debug special method groups          // enable a flag to control the function call order
     #define LCDML_DBG_function_name_LOOP        0
-    #define LCDML_DBG_function_name_MENU        1
-    #define LCDML_DBG_function_name_FUNC        1
+    #define LCDML_DBG_function_name_MENU        0
+    #define LCDML_DBG_function_name_FUNC        0
     #define LCDML_DBG_function_name_BT          0
     #define LCDML_DBG_function_name_CE          0
-    #define LCDML_DBG_function_name_OTHER       1
+    #define LCDML_DBG_function_name_OTHER       0
     #define LCDML_DBG_function_name_DISP        0
     #define LCDML_DBG_function_name_TIMER       0
     #define LCDML_DBG_function_name_SCREEN      0
-
-    // debug special complex functions
-    #define LCDML_DBG_search                    0
 
     // ####################### //
     // Do nothing change here
