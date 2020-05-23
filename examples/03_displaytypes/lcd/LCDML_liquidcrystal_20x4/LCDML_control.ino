@@ -571,12 +571,13 @@ void lcdml_menu_control(void)
   // Specify the PCF8574 pins here
   #define _LCDML_CONTROL_PCF8574_enable_quit    0
   #define _LCDML_CONTROL_PCF8574_enable_lr      0
-  #define _LCDML_CONTROL_PCF8574_enter          PCF8574_Pin1
-  #define _LCDML_CONTROL_PCF8574_up             PCF8574_Pin2
-  #define _LCDML_CONTROL_PCF8574_down           PCF8574_Pin0
-  #define _LCDML_CONTROL_PCF8574_left           PCF8574_Pin2
-  #define _LCDML_CONTROL_PCF8574l_right         PCF8574_Pin2
-  #define _LCDML_CONTROL_PCF8574_quit           PCF8574_Pin2
+  
+  #define _LCDML_CONTROL_PCF8574_enter          PCF8574_Pin0
+  #define _LCDML_CONTROL_PCF8574_up             PCF8574_Pin1
+  #define _LCDML_CONTROL_PCF8574_down           PCF8574_Pin2
+  #define _LCDML_CONTROL_PCF8574_left           PCF8574_Pin3
+  #define _LCDML_CONTROL_PCF8574_right          PCF8574_Pin4
+  #define _LCDML_CONTROL_PCF8574_quit           PCF8574_Pin5
 // **********************************************************
 void lcdml_menu_control(void)
 {
@@ -596,13 +597,15 @@ void lcdml_menu_control(void)
       case _LCDML_CONTROL_PCF8574_enter:  LCDML.BT_enter(); break;
       case _LCDML_CONTROL_PCF8574_up:     LCDML.BT_up();    break;
       case _LCDML_CONTROL_PCF8574_down:   LCDML.BT_down();  break;
-       #if(_LCDML_CONTROL_PCF8574_enable_quit == 1)
-      case _LCDML_CONTROL_PCF8574_left:   LCDML.BT_left();  break;
-    #endif
-       #if(_LCDML_CONTROL_PCF8574_enable_lr   == 1)
-      case _LCDML_CONTROL_PCF8574l_right: LCDML.BT_right(); break;
+    #if(_LCDML_CONTROL_PCF8574_enable_quit == 1)
       case _LCDML_CONTROL_PCF8574_quit:   LCDML.BT_quit();  break;
     #endif
+    
+    #if(_LCDML_CONTROL_PCF8574_enable_lr   == 1)
+      case _LCDML_CONTROL_PCF8574_left: LCDML.BT_left(); break;
+      case _LCDML_CONTROL_PCF8574_right:   LCDML.BT_right();  break;
+    #endif
+    
       default: break;
     }
   }

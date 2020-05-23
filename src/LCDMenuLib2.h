@@ -80,7 +80,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.2.3"
+    #define _LCDML_VERSION                       "LCDML2 v2.2.4 beta"
 
     // this makro is for unused variables which exists for compatibility tings ...
     #define LCDML_UNUSED(expr) do { (void)(expr); } while (0)
@@ -112,7 +112,7 @@
     // Bit pos control flags
     #define _LCDML_REG_control_dynMenuDisplayed             7
     #define _LCDML_REG_control_ce_init_setup                6
-    #define _LCDML_REG_control_menu_func_active             5
+    #define _LCDML_REG_control_autoQuitDisabled             5
     #define _LCDML_REG_control_bt_init_setup                4
     #define _LCDML_REG_control_update_direct                3
     #define _LCDML_REG_control_free_2                       2
@@ -321,6 +321,9 @@
             bool                BT_checkRight(void);                    // check right button
             bool                BT_checkQuit(void);                     // check quit button
 
+            void                BT_config_enAutoQuit(void);             // disable the auto quit function when this is set
+            void                BT_config_disAutoQuit(void);            // enable the auto quit handling (default)
+
             // CE = custom event
             bool                CE_setup(void);                         // check if the button initialisation was done
             void                CE_set(uint8_t p_event);                // set button enter           
@@ -354,7 +357,7 @@
             void                FUNC_setGBAToLastFunc(void);                        // set a special "go back handling"
             void                FUNC_setGBA(void);                                  // set a special "go back handling" which decide between the two function above 
             void                FUNC_setCEMask(unsigned long p_mask);               // set a mask to enable only special events for a menu function
-
+            
             // timer methods
             bool                TIMER_ms(unsigned long &p_var, unsigned long p_t);  // a small timer based on the millis() function
             void                TIMER_msReset(unsigned long &p_var);                // reset the millis timer 

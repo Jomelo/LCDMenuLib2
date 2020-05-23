@@ -104,12 +104,21 @@
         LCDML_getCustomContent(lcdml, var, id)
 
     //Menu Item Types
+    #ifndef _LCDML_cfg_not_use_arduino_ide
     #define LCDML_addAdvanced(id, parent, child, p_condition, p_content, p_callback, p_param, p_settings) \
         LCDML_langDef(id, lcdml, p_content); \
         LCDMenuLib2_menu parent ## _ ## child(id, p_param, p_settings, p_callback, p_condition ); \
         void LCDML_DISP_ ## id ## _function() { \
             parent.addChild(parent ## _ ## child); \
         }
+    #else
+    #define LCDML_addAdvanced(id, parent, child, p_condition, p_content, p_callback, p_param, p_settings) \
+        LCDML_langDef(id, lcdml, p_content); \
+        static LCDMenuLib2_menu parent ## _ ## child(id, p_param, p_settings, p_callback, p_condition ); \
+        static void LCDML_DISP_ ## id ## _function() { \
+            parent.addChild(parent ## _ ## child); \
+        }
+    #endif
 
     #define LCDML_add(id, parent, child, content, callback) \
         LCDML_addAdvanced(id, parent, child, NULL, content, callback, 0, _LCDML_TYPE_default)
