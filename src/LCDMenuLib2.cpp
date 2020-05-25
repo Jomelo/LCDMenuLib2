@@ -89,9 +89,6 @@ void LCDMenuLib2::init(uint8_t p_last_element_id)
     // enable called from menu
     bitSet(REG_MenuFunction, _LCDML_REG_MenuFunction_called_from_menu);
 
-    // enable auto quit function
-    BT_config_enAutoQuit();
-
     // reset all buttons
     BT_resetAll();
 
@@ -2107,20 +2104,6 @@ bool LCDMenuLib2::BT_setup(void)
 }
 
 /* ******************************************************************** */
-void    LCDMenuLib2::BT_config_enAutoQuit(void)
-/* ******************************************************************** */
-{
-    bitSet(REG_control, _LCDML_REG_control_autoQuitDisabled);
-}
-
-/* ******************************************************************** */
-void    LCDMenuLib2::BT_config_disAutoQuit(void)
-/* ******************************************************************** */
-{
-    bitClear(REG_control, _LCDML_REG_control_autoQuitDisabled);
-}
-
-/* ******************************************************************** */
 void LCDMenuLib2::BT_enter(void)            
 /* ******************************************************************** */
 {
@@ -2900,16 +2883,7 @@ uint8_t LCDMenuLib2::OTHER_getIDFromFunction(LCDML_FuncPtr_pu8 p_function_name)
                                     // continue
                                 }     
                             }
-                        } while (true);  
-
-                        // check if next sibling exits, stop the loop
-                        if(curMenu->getSibling(1) == NULL)
-                        {
-                            DBG_print(LCDML_DBG_function_name_OTHER, F("nothing found: endpoint (B) / ID: "));
-                            DBG_println(LCDML_DBG_function_name_OTHER, curMenu->getID());
-
-                            break;
-                        }                          
+                        } while (true);                                                
                     }
                 }
             }

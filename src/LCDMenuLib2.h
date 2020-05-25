@@ -80,7 +80,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.2.4 beta"
+    #define _LCDML_VERSION                       "LCDML2 v2.2.4"
 
     // this makro is for unused variables which exists for compatibility tings ...
     #define LCDML_UNUSED(expr) do { (void)(expr); } while (0)
@@ -112,7 +112,7 @@
     // Bit pos control flags
     #define _LCDML_REG_control_dynMenuDisplayed             7
     #define _LCDML_REG_control_ce_init_setup                6
-    #define _LCDML_REG_control_autoQuitDisabled             5
+    #define _LCDML_REG_control_free_5                       5
     #define _LCDML_REG_control_bt_init_setup                4
     #define _LCDML_REG_control_update_direct                3
     #define _LCDML_REG_control_free_2                       2
@@ -319,10 +319,7 @@
             bool                BT_checkDown(void);                     // check down button
             bool                BT_checkLeft(void);                     // check left button
             bool                BT_checkRight(void);                    // check right button
-            bool                BT_checkQuit(void);                     // check quit button
-
-            void                BT_config_enAutoQuit(void);             // disable the auto quit function when this is set
-            void                BT_config_disAutoQuit(void);            // enable the auto quit handling (default)
+            bool                BT_checkQuit(void);                     // check quit button        
 
             // CE = custom event
             bool                CE_setup(void);                         // check if the button initialisation was done
