@@ -80,7 +80,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.2.4"
+    #define _LCDML_VERSION                       "LCDML2 v2.2.5"
 
     // this makro is for unused variables which exists for compatibility tings ...
     #define LCDML_UNUSED(expr) do { (void)(expr); } while (0)
@@ -140,24 +140,30 @@
     #define _LCDML_REG_MenuFunction_end                     0
 
     // button flags
-    #define _LCDML_REG_button_do_not_use_1                  7
-    #define _LCDML_REG_button_do_not_use_2                  6
+    #define _LCDML_REG_button_custom_2                      7
+    #define _LCDML_REG_button_custom_1                      6
     #define _LCDML_REG_button_quit                          5
-    #define _LCDML_REG_button_enter                         4
-    #define _LCDML_REG_button_up                            3
+    #define _LCDML_REG_button_right                         4
+    #define _LCDML_REG_button_left                          3
     #define _LCDML_REG_button_down                          2
-    #define _LCDML_REG_button_left                          1
-    #define _LCDML_REG_button_right                         0
+    #define _LCDML_REG_button_up                            1
+    #define _LCDML_REG_button_enter                         0
 
     // display update handling
     #define _LCDML_REG_update_content                       7
     #define _LCDML_REG_update_cursor                        6
     #define _LCDML_REG_update_menu                          5
     #define _LCDML_REG_update_menu_function_content         4
-    #define _LCDML_REG_update_free_3                        3
+    #define _LCDML_REG_update_update_dyn_content            3
     #define _LCDML_REG_update_free_2                        2
     #define _LCDML_REG_update_free_1                        1
     #define _LCDML_REG_update_free_0                        0
+
+
+    // reg control
+    #define _LCDML_REG_CTRL__button                         0
+    #define _LCDML_REG_CTRL__events                         1
+
 
     // Configure Arduino flash lib and load it*/
     #ifndef __PROG_TYPES_COMPAT__
@@ -171,20 +177,11 @@
 
     // Include menu class
     #include "LCDMenuLib2_typedef.h"
-    #include "LCDMenuLib2_menu.h"
-  
-    // types for advanced menu function (this types are used by the menu element initialisation)
-    #define _LCDML_TYPE_f7                      128
-    #define _LCDML_TYPE_f6                      64
-    #define _LCDML_TYPE_f5                      32
-    #define _LCDML_TYPE_f4                      16
-    #define _LCDML_TYPE_f3                      8
-    #define _LCDML_TYPE_f2                      4
-    #define _LCDML_TYPE_dynParam                2
-    #define _LCDML_TYPE_default                 1
+    #include "LCDMenuLib2_menu.h"    
 
     // Include macros for this lib
     #include "LCDMenuLib2_macros.h"
+
 
 //# =======================
 //# LCD Menu Lib
@@ -230,14 +227,14 @@
 
             uint8_t             layer;                                  // contains the current layer
             
-            // variables with bitfields => bit register
-            uint8_t             REG_button;                             // control flags for button actions            
-            uint8_t             REG_control;                            // control flags 
+            // variables with bitfields => bit register                       
+            uint8_t             REG_control;                            // control flags
+            uint8_t             REG_button;
             uint8_t             REG_MenuFunction;                       // control flags for menu functions
             uint8_t             REG_special;                            // control flags for special function like screensaver, jumpTo, setCursorTo, goRoot, ..
-            uint8_t             REG_update;                             // control flags to update the content
-            uint64_t            REG_custom_event;                       // control flags for custom event actions
-
+            uint8_t             REG_update;                             // control flags to update the content 
+            uint64_t            REG_custom_event;                       // control flags for custom event actions             
+        
             // variables for handling with menu function            
             uint8_t             goBackCnt;                              // save the layer to go back
 
@@ -262,8 +259,8 @@
         public:
 
             // constructor
-            LCDMenuLib2(LCDMenuLib2_menu &p_r ,const uint8_t p_rows, const uint8_t p_cols, LCDML_FuncPtr contentUpdate, LCDML_FuncPtr contentClear, LCDML_FuncPtr menuControl);
-
+            LCDMenuLib2(LCDMenuLib2_menu &p_r ,const uint8_t p_rows, const uint8_t p_cols, LCDML_FuncPtr contentUpdate, LCDML_FuncPtr contentClear, LCDML_FuncPtr menuControl);            
+ 
             // init method
             void                init(uint8_t);                          // initialisation of the menu / reset the complete menu
 
@@ -290,50 +287,28 @@
             uint8_t             MENU_getScroll(void);                   // get the current scroll value
             uint8_t             MENU_getLastActiveFunctionID(void);     // returns the id of the last active function
             uint8_t             MENU_getLastCursorPositionID(void);     // returns the last cursor position function id
-            uint8_t             MENU_getElementIDFromCursorPos(void);   // returns the menu element id from current cursor position            
-            
+            uint8_t             MENU_getElementIDFromCursorPos(void);   // returns the menu element id from current cursor position  
+            void                MENU_updateAllCondetions(void);         // update all menu element condetions
+            void                MENU_setDynFunctionContentUpdate(void);       // this is a special function for dynamic content to update the dynamic content again
+            void                MENU_clearDynFunctionContentUpdate(void);     // this is a special function to clear the dynamic content update. this function is called internally        
+
             LCDMenuLib2_menu *  MENU_getDisplayedObj(void);             // get the objection with the current content to display                    
             LCDMenuLib2_menu *  MENU_getCurrentObj(void);               // get the current menu child object
             LCDMenuLib2_menu *  MENU_getRootObj(void);                  // get the root menu object
 
-            // BT = button methods
-            bool                BT_setup(void);                         // check if the button initialisation was done
-            void                BT_enter(void);                         // set button enter
-            void                BT_up(void);                            // set button up
-            void                BT_down(void);                          // set button down
-            void                BT_left(void);                          // set button left
-            void                BT_right(void);                         // set button right
-            void                BT_quit(void);                          // set button quit
-            //
-            void                BT_resetAll(void);                      // reset all button states
-            void                BT_resetEnter(void);                    // reset enter button state
-            void                BT_resetUp(void);                       // reset up button state
-            void                BT_resetDown(void);                     // reset down button state
-            void                BT_resetLeft(void);                     // reset left button state
-            void                BT_resetRight(void);                    // reset right button state
-            void                BT_resetQuit(void);                     // reset quit button state
-            //
-            bool                BT_checkAny(void);                      // check if any button was pressed
-            bool                BT_checkEnter(void);                    // check enter button
-            bool                BT_checkUp(void);                       // check up button
-            bool                BT_checkDown(void);                     // check down button
-            bool                BT_checkLeft(void);                     // check left button
-            bool                BT_checkRight(void);                    // check right button
-            bool                BT_checkQuit(void);                     // check quit button        
-
-            // CE = custom event
+            // button / event / reg methods
+            bool                BT_setup(void);                         // check if the button initialisation was done                     
             bool                CE_setup(void);                         // check if the button initialisation was done
-            void                CE_set(uint8_t p_event);                // set button enter           
-            //
-            void                CE_resetAll(void);                      // reset all button states
-            void                CE_reset(uint8_t p_event);              // reset enter button state            
-            //
-            bool                CE_checkAny(void);                      // check if any button was pressed
-            bool                CE_check(uint8_t p_event);              // check enter button
             //
             void                CE_setOnChangeCbFunction(uint8_t p_event, LCDML_FuncPtr_pu8 p_function);    // add callback function
             void                CE_clearOnChangeCbFunction(uint8_t p_event);                                // remove callback function
-           
+            //
+            void                REG_set(uint8_t p_reg, uint8_t p_val);
+            void                REG_reset(uint8_t p_reg, uint8_t p_val);
+            void                REG_resetAll(uint8_t p_reg);
+            bool                REG_check(uint8_t p_reg, uint8_t p_val);
+            bool                REG_checkAny(uint8_t p_reg);           
+
             // display methods
             void                DISP_update(void);                                  // display the content and update the menu structure 
             void                DISP_menuUpdate(void);                              // display the content but do not update the menu structure
@@ -350,11 +325,11 @@
             uint8_t             FUNC_getID(void);                                   // get the ID of the current menu function
             void                FUNC_setLoopInterval(unsigned long p_t);            // set a loop intervall for the current menu function the default loop intervall is 100000000 ms
             void                FUNC_disableScreensaver(void);                      // disable the screensaver for the current menu function 
-            void                FUNC_setGBAToLastCursorPos(void);                   // set a special "go back handling" 
-            void                FUNC_setGBAToLastFunc(void);                        // set a special "go back handling"
+            void                FUNC_setGBAToLastCursorPos(void);                   // set a special "go back handling" - only to last cursor position
+            void                FUNC_setGBAToLastFunc(void);                        // set a special "go back handling" - only to last function
             void                FUNC_setGBA(void);                                  // set a special "go back handling" which decide between the two function above 
             void                FUNC_setCEMask(unsigned long p_mask);               // set a mask to enable only special events for a menu function
-            
+
             // timer methods
             bool                TIMER_ms(unsigned long &p_var, unsigned long p_t);  // a small timer based on the millis() function
             void                TIMER_msReset(unsigned long &p_var);                // reset the millis timer 

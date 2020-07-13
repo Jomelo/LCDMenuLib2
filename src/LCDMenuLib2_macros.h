@@ -44,6 +44,40 @@
      */
     #include <Arduino.h>
 
+    /* ------------------
+     * compatible to old versions
+     * ------------------
+     */ 
+    // new on v2.2.5 (other button handling)
+
+    #define BT_enter()        REG_set(_LCDML_REG_CTRL__button, _LCDML_REG_button_enter)
+    #define BT_up()           REG_set(_LCDML_REG_CTRL__button, _LCDML_REG_button_up)
+    #define BT_down()         REG_set(_LCDML_REG_CTRL__button, _LCDML_REG_button_down)
+    #define BT_left()         REG_set(_LCDML_REG_CTRL__button, _LCDML_REG_button_left)
+    #define BT_right()        REG_set(_LCDML_REG_CTRL__button, _LCDML_REG_button_right)
+    #define BT_quit()         REG_set(_LCDML_REG_CTRL__button, _LCDML_REG_button_quit)
+
+    #define BT_resetEnter()   REG_reset(_LCDML_REG_CTRL__button, _LCDML_REG_button_enter)
+    #define BT_resetUp()      REG_reset(_LCDML_REG_CTRL__button,  _LCDML_REG_button_up)
+    #define BT_resetDown()    REG_reset(_LCDML_REG_CTRL__button, _LCDML_REG_button_down)
+    #define BT_resetLeft()    REG_reset(_LCDML_REG_CTRL__button, _LCDML_REG_button_left)
+    #define BT_resetRight()   REG_reset(_LCDML_REG_CTRL__button, _LCDML_REG_button_right)
+    #define BT_resetQuit()    REG_reset(_LCDML_REG_CTRL__button, _LCDML_REG_button_quit)
+    #define BT_resetAll()     REG_resetAll(_LCDML_REG_CTRL__button)
+
+    #define BT_checkEnter()   REG_check(_LCDML_REG_CTRL__button, _LCDML_REG_button_enter)
+    #define BT_checkUp()      REG_check(_LCDML_REG_CTRL__button, _LCDML_REG_button_up)
+    #define BT_checkDown()    REG_check(_LCDML_REG_CTRL__button, _LCDML_REG_button_down)
+    #define BT_checkLeft()    REG_check(_LCDML_REG_CTRL__button, _LCDML_REG_button_left)
+    #define BT_checkRight()   REG_check(_LCDML_REG_CTRL__button, _LCDML_REG_button_right)
+    #define BT_checkQuit()    REG_check(_LCDML_REG_CTRL__button, _LCDML_REG_button_quit)
+    #define BT_checkAny()     REG_checkAny(_LCDML_REG_CTRL__button)
+
+    #define CE_set(val)       REG_set(_LCDML_REG_CTRL__events, val)
+    #define CE_reset(val)     REG_reset(_LCDML_REG_CTRL__events, val)
+    #define CE_resetAll()     REG_resetAll(_LCDML_REG_CTRL__events)
+    #define CE_check(val)     REG_check(_LCDML_REG_CTRL__events, val)
+    #define CE_checkAny()     REG_checkAny(_LCDML_REG_CTRL__events)
 
     /* ------------------
      * DISP / MENU
