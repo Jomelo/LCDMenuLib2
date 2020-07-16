@@ -831,7 +831,7 @@ void LCDMenuLib2::loop_menu(void)
             if(bitRead(REG_update, _LCDML_REG_update_update_dyn_content) == true)
             {   
                 // update content without button handling
-                callback_contentUpdate();      
+                // callback_contentUpdate();  // remove this line because it works not correctly    
                 // clear this flag    
                 MENU_clearDynFunctionContentUpdate();
             }
