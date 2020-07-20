@@ -152,7 +152,7 @@ void LCDMenuLib2::loop_control(void)
 
         // screensaver handling
         // check if the screensaver is enabled and a callback function is defined
-        if(bitRead(REG_special, _LCDML_REG_special_disable_screensaver) == false)
+        if(bitRead(REG_special, _LCDML_REG_special_disable_screensaver) == false && cb_screensaver != NULL)
         {
             // check the state when menu is active do another handling as when a function is active
             if(actMenu_id != _LCDML_NO_FUNC)
@@ -166,7 +166,7 @@ void LCDMenuLib2::loop_control(void)
                         // close the running function 
                         FUNC_goBackToMenu(); 
                         loop_control();
-                        REG_button              = 0;
+                        REG_button = 0;
 
                         // debug information
                         DBG_println(LCDML_DBG_function_name_LOOP, F("LCDML.loop_control - jump to screensaver"));
@@ -2361,53 +2361,61 @@ void LCDMenuLib2::OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t p_para)
     // debug information
     DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc"));
 
-    if(bitRead(REG_special, _LCDML_REG_special_OTHER_function_active) == true)
+    if(p_search == NULL)
     {
         // debug information
-        DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc - is still activ"));
-    } 
-    else 
+        DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc - no function selected"));
+    }
+    else
     {
-        // check if this menu function is active - do nothing   
-        if(p_search == actMenu_cb_function)
+        if(bitRead(REG_special, _LCDML_REG_special_OTHER_function_active) == true)
         {
             // debug information
-            DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc - function is still running")); 
-        }   
-        else
-        { 
-            // debug information
-            DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc - start"));
-
-            bitSet(REG_special, _LCDML_REG_special_OTHER_function_active);
-            bitClear(REG_special, _LCDML_REG_special_setCursorTo); 
-            
-            // Save last active Menu ID
-            actMenu_lastFuncID = actMenu_id;
-
-            if(actMenu_id != _LCDML_NO_FUNC)
+            DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc - is still activ"));
+        } 
+        else 
+        {
+            // check if this menu function is active - do nothing   
+            if(p_search == actMenu_cb_function)
             {
-                // handle parameters            
-                jT_paramOld = jT_param;
-                bitClear(REG_MenuFunction, _LCDML_REG_MenuFunction_called_from_menu);
-            }
+                // debug information
+                DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc - function is still running")); 
+            }   
             else
-            {
-                // handle parameters
-                jT_paramOld = 0;
-                bitSet(REG_MenuFunction, _LCDML_REG_MenuFunction_called_from_menu);
+            { 
+                // debug information
+                DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc - start"));
 
-                // Save last cursor position
-                actMenu_lastCursorPositionID = actMenu_cursorPositionID;
-                actMenu_cursorPositionID = curMenu->getChild(MENU_getCursorPosAbs())->getID();            
+                bitSet(REG_special, _LCDML_REG_special_OTHER_function_active);
+                bitClear(REG_special, _LCDML_REG_special_setCursorTo); 
+                
+                // Save last active Menu ID
+                actMenu_lastFuncID = actMenu_id;
+
+                if(actMenu_id != _LCDML_NO_FUNC)
+                {
+                    // handle parameters            
+                    jT_paramOld = jT_param;
+                    bitClear(REG_MenuFunction, _LCDML_REG_MenuFunction_called_from_menu);
+                }
+                else
+                {
+                    // handle parameters
+                    jT_paramOld = 0;
+                    bitSet(REG_MenuFunction, _LCDML_REG_MenuFunction_called_from_menu);
+
+                    // Save last cursor position
+                    actMenu_lastCursorPositionID = actMenu_cursorPositionID;
+                    actMenu_cursorPositionID = curMenu->getChild(MENU_getCursorPosAbs())->getID();            
+                }
+
+                // enable jump to Func
+                jT_id       = 0;        
+                jT_param    = p_para;
+                jT_function = p_search;
             }
-
-            // enable jump to Func
-            jT_id       = 0;        
-            jT_param    = p_para;
-            jT_function = p_search;
-        }
-    }    
+        }   
+    } 
 }
 
 /* ******************************************************************** */
@@ -2482,44 +2490,52 @@ void LCDMenuLib2::OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search)
     // debug information
     DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_setCursorToFunc"));
 
-    if(bitRead(REG_special, _LCDML_REG_special_OTHER_function_active) == true)
+    if(p_search == NULL)
     {
         // debug information
-        DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_setCursorToFunc - is still activ"));
-    } 
-    else 
+        DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_setCursorToFunc - no function selected"));
+    }
+    else
     {
-        // debug information
-        DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_setCursorToFunc - start"));
-
-        // enable jump to Func
-        bitSet(REG_special, _LCDML_REG_special_OTHER_function_active);
-        bitSet(REG_special, _LCDML_REG_special_setCursorTo);
-        jT_id       = 0;
-
-        // Save last active Menu ID           
-        actMenu_lastFuncID = actMenu_id;
-      
-        if(actMenu_id != _LCDML_NO_FUNC)
+        if(bitRead(REG_special, _LCDML_REG_special_OTHER_function_active) == true)
         {
-            // handle parameters            
-            jT_paramOld = jT_param; 
-            bitSet(REG_MenuFunction, _LCDML_REG_MenuFunction_called_from_menu);          
-        }
-        else
-        {
-            // handle parameters
-            jT_paramOld = 0;
-
-            bitSet(REG_MenuFunction, _LCDML_REG_MenuFunction_called_from_menu);
-
-            // Save last cursor position
-            actMenu_lastCursorPositionID = actMenu_cursorPositionID;
-            actMenu_cursorPositionID = curMenu->getChild(MENU_getCursorPosAbs())->getID();            
+            // debug information
+            DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_setCursorToFunc - is still activ"));
         } 
+        else 
+        {
+            // debug information
+            DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_setCursorToFunc - start"));
+
+            // enable jump to Func
+            bitSet(REG_special, _LCDML_REG_special_OTHER_function_active);
+            bitSet(REG_special, _LCDML_REG_special_setCursorTo);
+            jT_id       = 0;
+
+            // Save last active Menu ID           
+            actMenu_lastFuncID = actMenu_id;
         
-        jT_param    = 0;
-        jT_function = p_search;
+            if(actMenu_id != _LCDML_NO_FUNC)
+            {
+                // handle parameters            
+                jT_paramOld = jT_param; 
+                bitSet(REG_MenuFunction, _LCDML_REG_MenuFunction_called_from_menu);          
+            }
+            else
+            {
+                // handle parameters
+                jT_paramOld = 0;
+
+                bitSet(REG_MenuFunction, _LCDML_REG_MenuFunction_called_from_menu);
+
+                // Save last cursor position
+                actMenu_lastCursorPositionID = actMenu_cursorPositionID;
+                actMenu_cursorPositionID = curMenu->getChild(MENU_getCursorPosAbs())->getID();            
+            } 
+            
+            jT_param    = 0;
+            jT_function = p_search;
+        }
     }
 }
 
