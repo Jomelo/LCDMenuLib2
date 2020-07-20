@@ -52,6 +52,8 @@ LCDMenuLib2::LCDMenuLib2(LCDMenuLib2_menu &p_r, const uint8_t p_rows, const uint
     callback_contentUpdate  = contentUpdate;  // callback update content
     callback_contentClear   = contentClear;   // callback clear content
     callback_menuControl    = menuControl;    // callback buttons
+
+    cb_screensaver          = NULL;
 }
 
 /* ******************************************************************** */
@@ -825,13 +827,17 @@ void LCDMenuLib2::loop_menu(void)
             callback_contentUpdate();
             
             REG_button = 0;
-            
+
             // this update function is neccessary for dynamic contents when a low element in the menu update the content of 
             // a higher element
             if(bitRead(REG_update, _LCDML_REG_update_update_dyn_content) == true)
-            {   
+            {
+                // force a rebuild of the menu output content and cursor position                
+                MENU_display();
+                bitSet(REG_update, _LCDML_REG_update_cursor);
+
                 // update content without button handling
-                // callback_contentUpdate();  // remove this line because it works not correctly    
+                callback_contentUpdate();      
                 // clear this flag    
                 MENU_clearDynFunctionContentUpdate();
             }
