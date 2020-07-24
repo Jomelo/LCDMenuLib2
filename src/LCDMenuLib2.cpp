@@ -1742,6 +1742,119 @@ void LCDMenuLib2::MENU_clearDynFunctionContentUpdate(void)
 }
 
 /* ******************************************************************** */
+void LCDMenuLib2::MENU_allCondetionRefresh(void)
+/* ******************************************************************** */
+{
+    // debug information
+    DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.MENU_allCondetionRefresh"));
+    
+    // define local variables
+    LCDMenuLib2_menu *tmp;
+
+    // set object
+    tmp = MENU_getRootObj();     
+
+    // Check if this Menu have childs
+    if((tmp = tmp->getChild(0)) != NULL)
+    {  
+        // This loop runs through the menu structure and stops after checking the last element
+        while(true)
+        { 
+            // Debug information
+            DBG_print(LCDML_DBG_function_name_OTHER, F("ID: "));
+            DBG_println(LCDML_DBG_function_name_OTHER, tmp->getID());               
+
+            // ***
+            // check loop end condetions
+            // ***
+
+            // check if something is found:
+            
+            // Debug information
+            DBG_println(LCDML_DBG_function_name_OTHER, F("check function"));
+                    
+            tmp->updateCondetion();              
+
+            if(last_element_id == tmp->getID())
+            {
+                // Debug information                           
+                DBG_print(LCDML_DBG_function_name_OTHER, F("nothing found: endpoint (C) / ID: "));
+                DBG_println(LCDML_DBG_function_name_OTHER, tmp->getID()); 
+
+                break;
+            }
+
+            // ***
+            // set the next item
+            // ***
+
+            // check childs for childs
+            if(tmp->getChild(0) != NULL)
+            {
+                // Debug information 
+                DBG_println(LCDML_DBG_function_name_OTHER, F("gointo an element"));
+
+                // -- GO INTO --
+
+                // set next child for check
+                tmp = tmp->getChild(0);
+            }
+            else
+            {
+                if(tmp->getSibling(1) != NULL)
+                {
+                    // set next sibling for check
+                    tmp = tmp->getSibling(1); 
+                }
+                else
+                { 
+                    // check parent element
+                    if(tmp->getParent()->getID() == _LCDML_FIRST_ELEMENT_ID)
+                    { 
+                        // Debug information                           
+                        DBG_print(LCDML_DBG_function_name_OTHER, F("end point: (A) / ID: "));
+                        DBG_println(LCDML_DBG_function_name_OTHER, tmp->getID());                                                    
+                    }
+                    else
+                    {
+                        do
+                        {
+                            // set next parent for check
+                            tmp = tmp->getParent(); 
+
+                            // -- GO Back --                          
+
+                            // Debug information 
+                            DBG_println(LCDML_DBG_function_name_OTHER, F("goback to parent element"));                          
+                            
+                            // check if the parent element have siblings
+                            if(tmp->getSibling(1) != NULL)
+                            {
+                                // set next sibling
+                                tmp = tmp->getSibling(1);
+                                break;                                
+                            }
+                            else
+                            {                                    
+                                if(tmp->getParent()->getID() == _LCDML_FIRST_ELEMENT_ID)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    // continue
+                                }     
+                            }
+                        } while (true);                                                
+                    }
+                }
+            }
+        }        
+    }   
+}
+
+
+/* ******************************************************************** */
 /* ******************************************************************** */
 /* DISP methods                                                         */
 /* ******************************************************************** */
@@ -2177,7 +2290,7 @@ void LCDMenuLib2::REG_set(uint8_t p_reg, uint8_t p_val)
 {
     // debug information 
     DBG_print(LCDML_DBG_function_name_BT, F("LCDML.REG_set("));
-    DBG_print(LCDML_DBG_function_name_BT, p_button);
+    DBG_print(LCDML_DBG_function_name_BT, p_reg);
     DBG_println(LCDML_DBG_function_name_BT, F(")"));
 
     switch(p_reg)
@@ -2200,7 +2313,7 @@ void LCDMenuLib2::REG_reset(uint8_t p_reg, uint8_t p_val)
 {
     // debug information 
     DBG_print(LCDML_DBG_function_name_BT, F("LCDML.REG_reset("));
-    DBG_print(LCDML_DBG_function_name_BT, p_button);
+    DBG_print(LCDML_DBG_function_name_BT, p_reg);
     DBG_println(LCDML_DBG_function_name_BT, F(")"));
 
     switch(p_reg)
@@ -2244,7 +2357,7 @@ bool LCDMenuLib2::REG_check(uint8_t p_reg, uint8_t p_val)
 {
     // debug information 
     DBG_print(LCDML_DBG_function_name_BT, F("LCDML.REG_check("));
-    DBG_print(LCDML_DBG_function_name_BT, p_button);
+    DBG_print(LCDML_DBG_function_name_BT, p_reg);
     DBG_println(LCDML_DBG_function_name_BT, F(")"));
 
     switch(p_reg)
@@ -2634,11 +2747,11 @@ uint8_t LCDMenuLib2::OTHER_getIDFromFunction(LCDML_FuncPtr_pu8 p_function_name)
             }
                  
 
-            if(last_element_id == curMenu->getID())
+            if(last_element_id == tmp->getID())
             {
                 // Debug information                           
                 DBG_print(LCDML_DBG_function_name_OTHER, F("nothing found: endpoint (C) / ID: "));
-                DBG_println(LCDML_DBG_function_name_OTHER, curMenu->getID()); 
+                DBG_println(LCDML_DBG_function_name_OTHER, tmp->getID()); 
 
                 break;
             }
@@ -2714,7 +2827,6 @@ uint8_t LCDMenuLib2::OTHER_getIDFromFunction(LCDML_FuncPtr_pu8 p_function_name)
     // nothing found
     return _LCDML_NO_FUNC;
 }
-
 
 /* ******************************************************************** */
 void    LCDMenuLib2::OTHER_updateFunc(void)                               

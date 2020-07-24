@@ -232,7 +232,8 @@ MENU_getLastActivFunctionID	KEYWORD2
 MENU_getLastCursorPositionID	KEYWORD2
 MENU_getElementIDFromCursorPos	KEYWORD2
 MENU_setDynFunctionContentUpdate	KEYWORD2
-MENU_ClearDynFunctionContentUpdate	KEYWORD2
+MENU_clearDynFunctionContentUpdate	KEYWORD2
+MENU_allCondetionRefresh	KEYWORD2
 
 BT_setup	KEYWORD2
 BT_enter	KEYWORD2

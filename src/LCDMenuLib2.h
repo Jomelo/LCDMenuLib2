@@ -80,7 +80,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.2.6 beta"
+    #define _LCDML_VERSION                       "LCDML2 v2.2.6 beta 2"
 
     // this makro is for unused variables which exists for compatibility tings ...
     #define LCDML_UNUSED(expr) do { (void)(expr); } while (0)
@@ -290,7 +290,8 @@
             uint8_t             MENU_getElementIDFromCursorPos(void);   // returns the menu element id from current cursor position  
             void                MENU_updateAllCondetions(void);         // update all menu element condetions
             void                MENU_setDynFunctionContentUpdate(void);       // this is a special function for dynamic content to update the dynamic content again
-            void                MENU_clearDynFunctionContentUpdate(void);     // this is a special function to clear the dynamic content update. this function is called internally        
+            void                MENU_clearDynFunctionContentUpdate(void);     // this is a special function to clear the dynamic content update. this function is called internally 
+            void                MENU_allCondetionRefresh(void);         // update all condetions       
 
             LCDMenuLib2_menu *  MENU_getDisplayedObj(void);             // get the objection with the current content to display                    
             LCDMenuLib2_menu *  MENU_getCurrentObj(void);               // get the current menu child object
