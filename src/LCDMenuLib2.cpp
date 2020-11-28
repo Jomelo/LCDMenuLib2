@@ -578,6 +578,9 @@ void LCDMenuLib2::loop_menu(void)
             curMenu = curMenu->getParent();
         }
 
+        Serial.println("found:");
+        Serial.println(found);
+
         // check element handling
         if(found != _LCDML_FIRST_ELEMENT_ID)
         { 
@@ -1064,7 +1067,7 @@ void    LCDMenuLib2::MENU_goInto(void)
         }
         else
         {
-            if(curMenu->getChild(cursor_obj_pos)->checkType_dynParam() == true)
+            if(curMenu->getChild(cursor_obj_pos)->checkType_dynParam() == true && bitRead(REG_control, _LCDML_REG_control_en_use_dyn_elements_as_menu) == false)
             {               
                 DISP_update();
             }
@@ -1504,6 +1507,26 @@ void    LCDMenuLib2::MENU_disRollover(void)
     DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_disRollover"));
 
     bitClear(REG_control, _LCDML_REG_control_rollover);
+}
+
+/* ******************************************************************** */
+void    LCDMenuLib2::MENU_enUseDynElementsWithSubElements(void)
+/* ******************************************************************** */
+{
+    // debug information
+    DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_enUseDynElementsWithSubElements"));
+
+    bitSet(REG_control, _LCDML_REG_control_en_use_dyn_elements_as_menu);
+}
+
+/* ******************************************************************** */
+void    LCDMenuLib2::MENU_disUseDynElementsWithSubElements(void)
+/* ******************************************************************** */
+{
+    // debug information
+    DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_disUseDynElementsWithSubElements"));
+
+    bitClear(REG_control, _LCDML_REG_control_en_use_dyn_elements_as_menu);
 }
 
 /* ******************************************************************** */
@@ -2475,27 +2498,27 @@ void LCDMenuLib2::OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t p_para)
     DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc"));
 
     if(p_search == NULL)
-    {
+    {       
         // debug information
         DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc - no function selected"));
     }
     else
-    {
+    {        
         if(bitRead(REG_special, _LCDML_REG_special_OTHER_function_active) == true)
-        {
+        {           
             // debug information
             DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc - is still activ"));
         } 
         else 
-        {
+        {            
             // check if this menu function is active - do nothing   
             if(p_search == actMenu_cb_function)
-            {
+            {                
                 // debug information
                 DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc - function is still running")); 
             }   
             else
-            { 
+            {                 
                 // debug information
                 DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToFunc - start"));
 

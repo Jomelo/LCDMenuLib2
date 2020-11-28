@@ -80,7 +80,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.2.6"
+    #define _LCDML_VERSION                       "LCDML2 v2.2.7 beta"
 
     // this makro is for unused variables which exists for compatibility tings ...
     #define LCDML_UNUSED(expr) do { (void)(expr); } while (0)
@@ -117,12 +117,12 @@
     #define _LCDML_REG_control_update_direct                3
     #define _LCDML_REG_control_free_2                       2
     #define _LCDML_REG_control_rollover                     1
-    #define _LCDML_REG_control_free_0                       0
+    #define _LCDML_REG_control_en_use_dyn_elements_as_menu  0 
 
     // screensaver, jump to function, go Root, ...
     #define _LCDML_REG_special_setCursorTo                  7
     #define _LCDML_REG_special_OTHER_function_active        6 
-    #define _LCDML_REG_special_free_5                       5 
+    #define _LCDML_REG_special_free_5                       5  
     #define _LCDML_REG_special_free_4                       4 
     #define _LCDML_REG_special_free_3                       3 
     #define _LCDML_REG_special_goRoot                       2 
@@ -291,7 +291,9 @@
             void                MENU_updateAllCondetions(void);         // update all menu element condetions
             void                MENU_setDynFunctionContentUpdate(void);       // this is a special function for dynamic content to update the dynamic content again
             void                MENU_clearDynFunctionContentUpdate(void);     // this is a special function to clear the dynamic content update. this function is called internally 
-            void                MENU_allCondetionRefresh(void);         // update all condetions       
+            void                MENU_allCondetionRefresh(void);         // update all condetions
+            void                MENU_enUseDynElementsWithSubElements(void);   // enable subelements for dynamic menu elements
+            void                MENU_disUseDynElementsWithSubElements(void);  // disable subelements for dynamic menu elements  
 
             LCDMenuLib2_menu *  MENU_getDisplayedObj(void);             // get the objection with the current content to display                    
             LCDMenuLib2_menu *  MENU_getCurrentObj(void);               // get the current menu child object

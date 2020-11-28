@@ -224,6 +224,8 @@ MENU_getRootObj	KEYWORD2
 MENU_getScroll	KEYWORD2
 MENU_enScroll	KEYWORD2
 MENU_disScroll	KEYWORD2
+MENU_enUseDynElementsWithSubElements	KEYWORD2
+MENU_disUseDynElementsWithSubElements	KEYWORD2
 MENU_getScrollDisableStatus	KEYWORD2
 MENU_setDynContent	KEYWORD2
 MENU_checkDynContent	KEYWORD2
