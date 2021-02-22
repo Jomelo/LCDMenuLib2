@@ -1,4 +1,5 @@
-# **Arduino LCDMenuLib2 (LCDML) with layers for any LCD Type (row displays, graphic displays, console output)**
+Arduino LCDMenuLib2 (LCDML) with layers for any LCD Type (Row Displays, Graphic Displays, Console output)
+=================================================================
 
 https://github.com/Jomelo/LCDMenuLib2/wiki/Code-Reference
 

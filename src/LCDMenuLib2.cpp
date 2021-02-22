@@ -578,9 +578,6 @@ void LCDMenuLib2::loop_menu(void)
             curMenu = curMenu->getParent();
         }
 
-        Serial.println("found:");
-        Serial.println(found);
-
         // check element handling
         if(found != _LCDML_FIRST_ELEMENT_ID)
         { 
@@ -825,11 +822,10 @@ void LCDMenuLib2::loop_menu(void)
             {
                 // do nothing
             }
-
+                        
             // update content
-            callback_contentUpdate();
-            
-            REG_button = 0;
+            callback_contentUpdate();            
+            REG_button = 0;            
 
             // this update function is neccessary for dynamic contents when a low element in the menu update the content of 
             // a higher element
@@ -840,7 +836,8 @@ void LCDMenuLib2::loop_menu(void)
                 bitSet(REG_update, _LCDML_REG_update_cursor);
 
                 // update content without button handling
-                callback_contentUpdate();      
+                callback_contentUpdate();  
+ 
                 // clear this flag    
                 MENU_clearDynFunctionContentUpdate();
             }
@@ -1255,8 +1252,6 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
     // 0 = scroll up
     // 1 = scroll down
 
-    // 10 = update cursor postion 
-
     switch(state)
     {
         case 0: // up
@@ -1275,12 +1270,11 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
                             {
                                 cursor_pos_abs--;
                                 cursor_obj_pos = last_valid_obj_pos;
-                                //update = true;
                             }
                             else
                             {    
                                 // rollover is possible                            
-                                rollover = true;
+                                rollover = true;                                
                             }
                             break;
                         }
@@ -1289,8 +1283,7 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
                             if(tmp->checkCondition() == true)
                             {
                                 cnt_visible++; 
-                                last_valid_obj_pos = obj_pos; 
-                                //update = true;                         
+                                last_valid_obj_pos = obj_pos;                       
                             } 
                             else
                             {
@@ -1323,8 +1316,7 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
                         if(tmp->checkCondition() == true)
                         {
                             cnt_visible++; 
-                            last_valid_obj_pos = obj_pos; 
-                            //update = true;                         
+                            last_valid_obj_pos = obj_pos;                     
                         } 
                         else
                         {
@@ -1340,6 +1332,8 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
                     if(cursor_pos_abs - (window_rows-1) > 0)
                     {
                         window_start = cursor_pos_abs-(window_rows-1);
+                        // update menu content when window is moved
+                        bitSet(REG_update, _LCDML_REG_update_menu);
                     }
                     else
                     {
@@ -1356,14 +1350,8 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
                 // do nothing
             }
 
-            bitClear(REG_button, _LCDML_REG_button_up);
-
-            // reset the button state here or update the menu
-            bitSet(REG_update, _LCDML_REG_update_menu);
-
+            bitClear(REG_button, _LCDML_REG_button_up); 
         break;
-
-
 
         case 1: // down
 
@@ -1382,7 +1370,6 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
                         cnt_visible++;
                         cursor_pos_abs++;
                         cursor_obj_pos = obj_pos;
-                        //update = true;
                         break;
                     }
                     else
@@ -1407,6 +1394,8 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
                 cursor_pos_abs  = 0;
                 window_start    = 0;
                 MENU_initFirstElement();
+                // update menu content
+                bitSet(REG_update, _LCDML_REG_update_menu);                
             }
             else
             {
@@ -1414,8 +1403,7 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
             }            
 
             // reset the button state here and update the menu
-            bitClear(REG_button, _LCDML_REG_button_down);
-            bitSet(REG_update, _LCDML_REG_update_menu);
+            bitClear(REG_button, _LCDML_REG_button_down);            
 
         break;       
 
@@ -1425,7 +1413,7 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
     }   
 
     // update window possition
-    // only update the window position when no the menu is not rolled over
+    // only update the window position when the menu is not rolled over
     if(rollover == false)
     {
         if(cursor_pos_abs - (window_rows-1) > 0 || window_start > 0)
@@ -1438,6 +1426,8 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
                         if(window_start > 0)
                         {
                             window_start--;
+                            // update menu content when window is moved
+                            bitSet(REG_update, _LCDML_REG_update_menu);
                         }
                         else
                         {
@@ -1454,6 +1444,8 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
                     if(cursor_pos == (window_rows-1))
                     {
                         window_start = cursor_pos_abs - (window_rows-1);
+                        // update menu content when window is moved
+                        bitSet(REG_update, _LCDML_REG_update_menu);                        
                     }
                     else
                     {
@@ -1481,7 +1473,7 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
     // check if the cursor position is updated
     if(actMenu_id == _LCDML_NO_FUNC)
     {       
-        bitSet(REG_update, _LCDML_REG_update_cursor);     
+        bitSet(REG_update, _LCDML_REG_update_cursor);    
     }   
     else
     {
@@ -1950,7 +1942,7 @@ void LCDMenuLib2::DISP_update(void)
 
     MENU_doScroll(10);
     MENU_display();
-    
+
     bitSet(REG_update, _LCDML_REG_update_menu);        
 }
 
