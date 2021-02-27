@@ -69,7 +69,6 @@ void lcdml_menu_control(void)
 
   if(LCDML.CE_setup()) {
     // runs only once
-    Serial.println("CE_setup()");
   }
 
   // check if new serial input is available
