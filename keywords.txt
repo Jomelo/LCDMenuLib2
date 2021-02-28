@@ -178,8 +178,10 @@ _LCDML_DISP_cfg_cursor	LITERAL1
 
 _LCDML_DISP_cnt	LITERAL1
 
-_LCDML_TYPE_dynParam	LITERAL1
 _LCDML_TYPE_default	LITERAL1
+_LCDML_TYPE_dynParam	LITERAL1
+_LCDML_TYPE_dynParam_enableSubMenus	LITERAL1
+_LCDML_TYPE_dynParam_enableCustomRefresh	LITERAL1
 
 LCDML_UNUSED	LITERAL1
 
@@ -197,6 +199,8 @@ callback	KEYWORD2
 checkCondition	KEYWORD2
 checkType_menu	KEYWORD2
 checkType_dynParam	KEYWORD2
+checkType_dynParam_enabledSubMenu	KEYWORD2
+checkType_dynParam_enabledCustomRefresh	KEYWORD2
 
 
 #######################################
@@ -215,6 +219,7 @@ MENU_getLayer	KEYWORD2
 MENU_getCursorPos	KEYWORD2
 MENU_getChilds	KEYWORD2
 MENU_getCursorPosAbs	KEYWORD2
+MENU_getCursorObjPos	KEYWORD2
 MENU_getParentID	KEYWORD2
 MENU_enRollover	KEYWORD2
 MENU_disRollover	KEYWORD2
@@ -236,6 +241,8 @@ MENU_getElementIDFromCursorPos	KEYWORD2
 MENU_setDynFunctionContentUpdate	KEYWORD2
 MENU_clearDynFunctionContentUpdate	KEYWORD2
 MENU_allCondetionRefresh	KEYWORD2
+MENU_enRefreshAllOnButtonAction	KEYWORD2
+MENU_disRefreshAllOnButtonAction	KEYWORD2
 
 BT_setup	KEYWORD2
 BT_enter	KEYWORD2

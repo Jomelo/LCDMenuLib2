@@ -41,19 +41,21 @@
 #   include "Arduino.h"
 #   include "LCDMenuLib2_typedef.h"
 
-    // types for advanced menu function (this types are used by the menu element initialisation)
-    #define _LCDML_TYPE_dynParam                    1
-    #define _LCDML_TYPE_default                     0
-
     // REG_control
-    #define _LCDML_REG_MENU_CONTROL_condetion       7
-    #define _LCDML_REG_MENU_CONTROL_free6           6
-    #define _LCDML_REG_MENU_CONTROL_free5           5
-    #define _LCDML_REG_MENU_CONTROL_free4           4
-    #define _LCDML_REG_MENU_CONTROL_free3           3
-    #define _LCDML_REG_MENU_CONTROL_free2           2
-    #define _LCDML_REG_MENU_CONTROL_type_dynParam   1
-    #define _LCDML_REG_MENU_CONTROL_type_default    0
+    #define _LCDML_REG_MENU_CONTROL_condetion                               7
+    #define _LCDML_REG_MENU_CONTROL_free_6                                  6
+    #define _LCDML_REG_MENU_CONTROL_free_5                                  5
+    #define _LCDML_REG_MENU_CONTROL_free_4                                  4
+    #define _LCDML_REG_MENU_CONTROL_type_dynParam_enable_custom_refresh     3
+    #define _LCDML_REG_MENU_CONTROL_type_dynParam_enable_sub                2
+    #define _LCDML_REG_MENU_CONTROL_type_dynParam                           1
+    #define _LCDML_REG_MENU_CONTROL_type_default                            0
+
+    // types for advanced menu function (this types are used by the menu element initialisation)                       
+    #define _LCDML_TYPE_dynParam_enableCustomRefresh                       10   //0b1010// setBit 1 & setBit 3
+    #define _LCDML_TYPE_dynParam_enableSubMenus                             6   //0b0110// setBit 1 & setBit 2       
+    #define _LCDML_TYPE_dynParam                                            2   //0b0010// setBit 1
+    #define _LCDML_TYPE_default                                             1   //0b0000// setBit 0
 
     inline void LCDML_cb_default_function(uint8_t) { };
     inline bool LCDML_cb_default_condetion(void) { return true; };
@@ -87,15 +89,17 @@
             LCDMenuLib2_menu * getSibling(uint8_t howfar);          // Returns a pointer to the sibling how far siblings away from this menu
             LCDMenuLib2_menu * getParent();                         // Returns this menu's parent menu.  If no parent, returns itself
 
-            uint8_t getID();                                        // return the id of a menu element
+            uint8_t getID(void);                                    // return the id of a menu element
             
-            bool checkCondition();                                  // check menu display condition
-            void updateCondetion();                                 // refrech the condetion callback
+            bool checkCondition(void);                              // check menu display condition
+            void updateCondetion(void);                             // refrech the condetion callback
             
-            uint8_t getParam();                                     // return a parameter which is set on the initialization
+            uint8_t getParam(void);                                 // return a parameter which is set on the initialization
             
-            bool checkType_menu();                                  // check menu type - normal menu function
-            bool checkType_dynParam();                              // check menu type - dynamic menu function
+            bool checkType_menu(void);                              // check menu type - normal menu function
+            bool checkType_dynParam(void);                          // check menu type - dynamic menu function
+            bool checkType_dynParam_enabledSubMenu(void);           // check menu type - dynamic menu function with sub menus
+            bool checkType_dynParam_enabledCustomRefresh(void);     // check menu type - dynamic menu function with external custom refresh            
 
             void callback(uint8_t p);                               // call menu callback           
     };

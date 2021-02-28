@@ -99,7 +99,7 @@ void LCDMenuLib2::init(uint8_t p_last_element_id)
     // paramter 10 => do not scroll
     MENU_doScroll(10);
     // update the menu    
-    MENU_display();
+    bitSet(REG_update, _LCDML_REG_update_menu); 
     DISP_menuUpdate();
 }
 
@@ -397,8 +397,7 @@ void LCDMenuLib2::loop_menu(void)
 
         MENU_enScroll();
 
-        bitClear(REG_special, _LCDML_REG_special_OTHER_function_active); 
-        bitClear(REG_control, _LCDML_REG_control_dynMenuDisplayed);        
+        bitClear(REG_special, _LCDML_REG_special_OTHER_function_active);         
  
         // stop running function and go back to the menu
         if(actMenu_id != _LCDML_NO_FUNC)
@@ -832,7 +831,7 @@ void LCDMenuLib2::loop_menu(void)
             if(bitRead(REG_update, _LCDML_REG_update_update_dyn_content) == true)
             {
                 // force a rebuild of the menu output content and cursor position                
-                MENU_display();
+                bitSet(REG_update, _LCDML_REG_update_menu); 
                 bitSet(REG_update, _LCDML_REG_update_cursor);
 
                 // update content without button handling
@@ -926,7 +925,7 @@ void        LCDMenuLib2::MENU_goRoot(void)
         MENU_initFirstElement();
 
         MENU_doScroll(10);
-        MENU_display();        
+        bitSet(REG_update, _LCDML_REG_update_menu);         
     }
 }
 
@@ -1054,8 +1053,8 @@ void    LCDMenuLib2::MENU_goInto(void)
     if (actMenu_id == _LCDML_NO_FUNC)
     {
         // check if element is a menu function
-        if(curMenu->getChild(cursor_obj_pos)->getChild(0) == NULL && curMenu->getChild(cursor_obj_pos)->checkType_menu() == true)
-        //if(curMenu->getChild(cursor_obj_pos)->checkCallback() == true && curMenu->getChild(cursor_obj_pos)->checkType_menu() == true)
+        if(curMenu->getChild(cursor_obj_pos)->getChild(0) == NULL 
+            && curMenu->getChild(cursor_obj_pos)->checkType_menu() == true)
         {
             // Menu function found
             actMenu_cb_function     = curMenu->getChild(cursor_obj_pos)->getCbFunction(); 
@@ -1064,7 +1063,9 @@ void    LCDMenuLib2::MENU_goInto(void)
         }
         else
         {
-            if(curMenu->getChild(cursor_obj_pos)->checkType_dynParam() == true && bitRead(REG_control, _LCDML_REG_control_en_use_dyn_elements_as_menu) == false)
+            if(curMenu->getChild(cursor_obj_pos)->checkType_dynParam() == true 
+                && curMenu->getChild(cursor_obj_pos)->checkType_dynParam_enabledSubMenu() == false 
+                && bitRead(REG_control, _LCDML_REG_control_en_use_dyn_elements_as_menu) == false)
             {               
                 DISP_update();
             }
@@ -1212,16 +1213,11 @@ LCDMenuLib2_menu * LCDMenuLib2::MENU_getDisplayedObj(void)
 void    LCDMenuLib2::MENU_display(uint8_t update)
 /* ******************************************************************** */
 {
-    // update is unused because of compatibility it is not removed
     LCDML_UNUSED(update);
-
     // debug information
     DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_display"));
-
-    //check children
-         
-    bitSet(REG_update, _LCDML_REG_update_menu);    
-   
+    
+    bitSet(REG_update, _LCDML_REG_update_menu);      
 }
 
 /* ******************************************************************** */
@@ -1473,7 +1469,11 @@ void    LCDMenuLib2::MENU_doScroll(uint8_t state)
     // check if the cursor position is updated
     if(actMenu_id == _LCDML_NO_FUNC)
     {       
-        bitSet(REG_update, _LCDML_REG_update_cursor);    
+        bitSet(REG_update, _LCDML_REG_update_cursor);
+        if(bitRead(REG_update, _LCDML_REG_control_refresh_all_on_button_action) == true)
+        {
+            bitSet(REG_update, _LCDML_REG_update_menu);
+        }    
     }   
     else
     {
@@ -1549,6 +1549,16 @@ uint8_t    LCDMenuLib2::MENU_getCursorPosAbs(void)
     DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_getCursorPosAbs"));
 
     return cursor_pos_abs; //return the current cursor position
+}
+
+/* ******************************************************************** */
+uint8_t    LCDMenuLib2::MENU_getCursorObjPos(void)
+/* ******************************************************************** */
+{
+    // debug information
+    DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_getCursorObjPos"));
+
+    return cursor_obj_pos; //return the current cursor position
 }
 
 /* ******************************************************************** */
@@ -1633,33 +1643,6 @@ uint8_t LCDMenuLib2::MENU_getParentID(uint8_t p_layer)
     {
         return _LCDML_FIRST_ELEMENT_ID;
     }   
-}
-
-/* ******************************************************************** */
-void    LCDMenuLib2::MENU_setDynContent(void)
-/* ******************************************************************** */
-{
-    // debug information
-    DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_setDynContent"));
-
-    bitSet(REG_control, _LCDML_REG_control_dynMenuDisplayed);
-}
-
-/* ******************************************************************** */
-uint8_t LCDMenuLib2::MENU_checkDynContent(void)
-/* ******************************************************************** */
-{
-    // debug information
-    DBG_println(LCDML_DBG_function_name_MENU, F("LCDML.MENU_checkDynContent"));
-
-    if(bitRead(REG_control, _LCDML_REG_control_dynMenuDisplayed))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
 }
 
 /* ******************************************************************** */
@@ -1870,6 +1853,31 @@ void LCDMenuLib2::MENU_allCondetionRefresh(void)
 
 
 /* ******************************************************************** */
+void LCDMenuLib2::MENU_enRefreshAllOnButtonAction(void)
+/* ******************************************************************** */
+{
+    // debug information
+    DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.MENU_enRefreshAllOnButtonAction"));
+
+    bitSet(REG_control, _LCDML_REG_control_refresh_all_on_button_action);  
+
+}
+
+
+/* ******************************************************************** */
+void LCDMenuLib2::MENU_disRefreshAllOnButtonAction(void)
+/* ******************************************************************** */
+{
+    // debug information
+    DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.MENU_disRefreshAllOnButtonAction"));
+
+    bitClear(REG_control, _LCDML_REG_control_refresh_all_on_button_action); 
+}
+
+
+
+
+/* ******************************************************************** */
 /* ******************************************************************** */
 /* DISP methods                                                         */
 /* ******************************************************************** */
@@ -1906,7 +1914,6 @@ bool LCDMenuLib2::DISP_checkMenuUpdate(void)
     if (bitRead(REG_update, _LCDML_REG_update_menu)) 
     {
         bitClear(REG_update, _LCDML_REG_update_menu);       
-        bitClear(REG_control, _LCDML_REG_control_dynMenuDisplayed);
         return true;
     } 
     else 
@@ -1941,9 +1948,8 @@ void LCDMenuLib2::DISP_update(void)
     DBG_println(LCDML_DBG_function_name_DISP, F("LCDML.DISP_update"));
 
     MENU_doScroll(10);
-    MENU_display();
 
-    bitSet(REG_update, _LCDML_REG_update_menu);        
+    bitSet(REG_update, _LCDML_REG_update_menu);          
 }
 
 

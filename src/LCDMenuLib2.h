@@ -80,9 +80,9 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.2.7 beta-2"
+    #define _LCDML_VERSION                       "LCDML2 v2.2.7 beta-3"
 
-    // this makro is for unused variables which exists for compatibility tings ...
+    // this makro is for unused variables which exists for compatibility things ...
     #define LCDML_UNUSED(expr) do { (void)(expr); } while (0)
 
     // Include Arduino ios
@@ -90,7 +90,7 @@
 
     // Arduino specific settings
     #if ARDUINO >= 160
-        #define _LCDMenuLib2_arduino_version         1    // for new Arduino version like 1.6.0 or higher
+        #define _LCDMenuLib2_arduino_version         1    // for new Arduino version like 1.6.0 and higher
     #else
         #define _LCDMenuLib2_arduino_version         0    // for old Arduino version like 1.0.6 or 1.0.5
     #endif
@@ -110,12 +110,12 @@
     #define _LCDML_FIRST_ELEMENT_ID                         255
 
     // Bit pos control flags
-    #define _LCDML_REG_control_dynMenuDisplayed             7
+    #define _LCDML_REG_control_free_7                       7
     #define _LCDML_REG_control_ce_init_setup                6
     #define _LCDML_REG_control_free_5                       5
     #define _LCDML_REG_control_bt_init_setup                4
     #define _LCDML_REG_control_update_direct                3
-    #define _LCDML_REG_control_free_2                       2
+    #define _LCDML_REG_control_refresh_all_on_button_action 2
     #define _LCDML_REG_control_rollover                     1
     #define _LCDML_REG_control_en_use_dyn_elements_as_menu  0 
 
@@ -250,7 +250,7 @@
             void                MENU_goBack(void);                                              // move to the parent menu
             void                MENU_doScroll(uint8_t state);                                   // scroll the menu
             uint8_t             MENU_countChilds(LCDMenuLib2_menu *menu, uint8_t all=false);    // how many children exists on next layer
-            void                MENU_initFirstElement(void);                                    // set counter to the first object child
+            void                MENU_initFirstElement(void);                                    // set counter to the first object child (when first element is hidden, go to the first visible element)
             void                MENU_resetActiveMenu(void);                                     // clear all neccessary variables
                                  
             // callback function
@@ -276,12 +276,11 @@
             void                MENU_disRollover(void);                 // disable the menu rollover function
             void                MENU_enScroll(void);                    // enable the scroll function (this function can be disabled on dyn content elements and when a encoder is used)
             void                MENU_disScroll(void);                   // disable the scroll function to catch the cursor to an dyn content element when a encoder is used
-            void                MENU_setDynContent(void);               // set this value when dyn content is shown on the current windows of the display                          
-            uint8_t             MENU_checkDynContent(void);             // check if dyn content is displayed 
             bool                MENU_getScrollDisableStatus(void);      // check if the scroll function is disabled
             uint8_t             MENU_getLayer(void);                    // get the current layer of the menu
             uint8_t             MENU_getCursorPos(void);                // get the current cursor position (row 0, row 1, row 2, ...)
             uint8_t             MENU_getCursorPosAbs(void);             // get the current cursor postion absolute (..., row 10, row 11, ..) based on the menu structure
+            uint8_t             MENU_getCursorObjPos(void);             // returns the cursor object position
             uint8_t             MENU_getChilds(void);                   // get the current number of childs on this layer
             uint8_t             MENU_getParentID(uint8_t p_layer=0);    // get the parent id of a selected higher layer
             uint8_t             MENU_getScroll(void);                   // get the current scroll value
@@ -293,7 +292,9 @@
             void                MENU_clearDynFunctionContentUpdate(void);     // this is a special function to clear the dynamic content update. this function is called internally 
             void                MENU_allCondetionRefresh(void);         // update all condetions
             void                MENU_enUseDynElementsWithSubElements(void);   // enable subelements for dynamic menu elements
-            void                MENU_disUseDynElementsWithSubElements(void);  // disable subelements for dynamic menu elements  
+            void                MENU_disUseDynElementsWithSubElements(void);  // disable subelements for dynamic menu elements 
+            void                MENU_enRefreshAllOnButtonAction(void);  // enable update on every button action the complete menu
+            void                MENU_disRefreshAllOnButtonAction(void); // disable update on every button action the complete menu
 
             LCDMenuLib2_menu *  MENU_getDisplayedObj(void);             // get the objection with the current content to display                    
             LCDMenuLib2_menu *  MENU_getCurrentObj(void);               // get the current menu child object

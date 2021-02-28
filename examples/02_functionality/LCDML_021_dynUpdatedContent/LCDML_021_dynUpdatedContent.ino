@@ -27,7 +27,7 @@
 
   // LCD object
   // liquid crystal needs (rs, e, dat4, dat5, dat6, dat7)
-  LiquidCrystal lcd(2, 3, 8, 9, 10, 11);
+  LiquidCrystal lcd(22, 24, 9, 10, 11, 12);
 
   const uint8_t scroll_bar[5][8] = {
     {B10001, B10001, B10001, B10001, B10001, B10001, B10001, B10001}, // scrollbar top
@@ -107,7 +107,7 @@
   // add a function which have a upwards timer with seconds / minutes / hours
   // the timer value is continuously updated
   // the initscreentimer is disabled for this function 
-  LCDML_addAdvanced (22 , LCDML_0         , 7  , NULL,          ""                  , mDyn_time,                0,   _LCDML_TYPE_dynParam);                     // NULL = no menu function
+  LCDML_addAdvanced (22 , LCDML_0         , 7  , NULL,          ""                  , mDyn_time,                0,   _LCDML_TYPE_dynParam_enableCustomRefresh);                     // NULL = no menu function
 
 
   // Example for conditions (for example for a screensaver)
@@ -163,28 +163,28 @@
 
 
 // special gobal variables for this example
+boolean g_status_if_dyn_content_external_refresh_is_displayed = false;
 unsigned long g_timer_1000ms = 0;
 uint8_t dyn_hour = 0;
 uint8_t dyn_min  = 0;
 uint8_t dyn_sec  = 0;
-boolean dyn_menu_is_displayed = false;
 
 // *********************************************************************
 // LOOP
 // *********************************************************************
   void loop()
-  {
+  {    
     // split loop() into loop_control() and loop_menu()
-    LCDML.loop_control();
+    LCDML.loop_control();  
 
     // add a counter (1000ms) 
     if(LCDML.TIMER_ms(g_timer_1000ms, 1000))
     {
       // only update the menu when a dynamic content function is called
       // This variable is set in the LCDML_display_menu Tab on line 59/60
-      if(LCDML.MENU_checkDynContent() == true)
+      if(g_status_if_dyn_content_external_refresh_is_displayed == true)
       {
-        LCDML.DISP_update();
+        LCDML.MENU_display();
       }    
 
       // callculate a new value for the next update
