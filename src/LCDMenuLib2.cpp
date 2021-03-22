@@ -1053,24 +1053,25 @@ void    LCDMenuLib2::MENU_goInto(void)
     if (actMenu_id == _LCDML_NO_FUNC)
     {
         // check if element is a menu function
-        if(curMenu->getChild(cursor_obj_pos)->getChild(0) == NULL 
-            && curMenu->getChild(cursor_obj_pos)->checkType_menu() == true)
+        if(curMenu->getChild(cursor_obj_pos)->getChild(0) == NULL               // no children
+            && curMenu->getChild(cursor_obj_pos)->checkType_menu() == true      // menu element
+            && curMenu->getChild(cursor_obj_pos)->getCbFunction() != LCDML_cb_default_function) // default call back function
         {
             // Menu function found
             actMenu_cb_function     = curMenu->getChild(cursor_obj_pos)->getCbFunction(); 
             actMenu_id              = curMenu->getChild(cursor_obj_pos)->getID();                             
-            actMenu_param           = curMenu->getChild(cursor_obj_pos)->getParam();            
+            actMenu_param           = curMenu->getChild(cursor_obj_pos)->getParam();                   
         }
         else
         {
-            if(curMenu->getChild(cursor_obj_pos)->checkType_dynParam() == true 
-                && curMenu->getChild(cursor_obj_pos)->checkType_dynParam_enabledSubMenu() == false 
-                && bitRead(REG_control, _LCDML_REG_control_en_use_dyn_elements_as_menu) == false)
+            if(curMenu->getChild(cursor_obj_pos)->checkType_dynParam() == true                          // dynamic menu element
+                && curMenu->getChild(cursor_obj_pos)->checkType_dynParam_enabledSubMenu() == false      // submenus disabled
+                && bitRead(REG_control, _LCDML_REG_control_en_use_dyn_elements_as_menu) == false)       // dyn sub menus general disabled
             {               
                 DISP_update();
             }
             else
-            {               
+            { 
                 if(curMenu->getChild(cursor_obj_pos)->getChild(0) != NULL)
                 {
                     //check if element has visible children 
@@ -1099,7 +1100,10 @@ void    LCDMenuLib2::MENU_goInto(void)
                 }
                 else
                 {
-                    // do nothing
+                    if(curMenu->getChild(cursor_obj_pos)->checkType_dynParam() == true)
+                    {
+                        DISP_update();
+                    }
                 }
             }
         }
