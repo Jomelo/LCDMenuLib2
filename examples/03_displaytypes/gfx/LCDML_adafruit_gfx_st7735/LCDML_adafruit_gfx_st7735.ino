@@ -1,7 +1,7 @@
 // ============================================================
 // Example:     LCDML: use ADAFRUIT i2c display ssd1306 
 // ============================================================
-// Author:      Nils Feldkämper, Markus Rudel
+// Author:      Jomelo, Markus Rudel
 // Last update: 12.11.2018
 // License:     MIT
 // ============================================================
