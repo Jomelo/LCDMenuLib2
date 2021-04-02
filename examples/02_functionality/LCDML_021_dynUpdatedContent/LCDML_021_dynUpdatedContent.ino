@@ -182,7 +182,7 @@ uint8_t dyn_sec  = 0;
     {
       // only update the menu when a dynamic content function is called
       // This variable is set in the LCDML_display_menu Tab on line 59/60
-      if(g_status_if_dyn_content_external_refresh_is_displayed == true)
+      if(LCDML.MENU_checkDynRContent() == true)
       {
         LCDML.MENU_display();
       }    

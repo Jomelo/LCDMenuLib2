@@ -243,6 +243,9 @@ MENU_clearDynFunctionContentUpdate	KEYWORD2
 MENU_allCondetionRefresh	KEYWORD2
 MENU_enRefreshAllOnButtonAction	KEYWORD2
 MENU_disRefreshAllOnButtonAction	KEYWORD2
+MENU_setDynRContent	KEYWORD2
+MENU_clearDynRContent	KEYWORD2
+MENU_checkDynRContent	KEYWORD2
 
 BT_setup	KEYWORD2
 BT_enter	KEYWORD2

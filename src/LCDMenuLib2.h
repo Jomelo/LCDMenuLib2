@@ -80,7 +80,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.2.7 beta-4"
+    #define _LCDML_VERSION                       "LCDML2 v2.2.7 beta-5"
 
     // this makro is for unused variables which exists for compatibility things ...
     #define LCDML_UNUSED(expr) do { (void)(expr); } while (0)
@@ -112,7 +112,7 @@
     // Bit pos control flags
     #define _LCDML_REG_control_free_7                       7
     #define _LCDML_REG_control_ce_init_setup                6
-    #define _LCDML_REG_control_free_5                       5
+    #define _LCDML_REG_control_content_ref_is_displayed     5
     #define _LCDML_REG_control_bt_init_setup                4
     #define _LCDML_REG_control_update_direct                3
     #define _LCDML_REG_control_refresh_all_on_button_action 2
@@ -295,6 +295,9 @@
             void                MENU_disUseDynElementsWithSubElements(void);  // disable subelements for dynamic menu elements 
             void                MENU_enRefreshAllOnButtonAction(void);  // enable update on every button action the complete menu
             void                MENU_disRefreshAllOnButtonAction(void); // disable update on every button action the complete menu
+            void                MENU_setDynRContent(void);              // enable dynamic refreshed content is shown
+            void                MENU_clearDynRContent(void);            // disable dynamic refreshed content is shown 
+            bool                MENU_checkDynRContent(void);              // get dynamic refreshed content is shown            
 
             LCDMenuLib2_menu *  MENU_getDisplayedObj(void);             // get the objection with the current content to display                    
             LCDMenuLib2_menu *  MENU_getCurrentObj(void);               // get the current menu child object

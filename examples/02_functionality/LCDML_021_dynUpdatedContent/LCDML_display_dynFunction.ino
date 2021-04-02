@@ -101,14 +101,14 @@ void mDyn_time(uint8_t line)
   
   char buf[20];
   // http://www.c-howto.de/tutorial/benutzerinteraktion/bildschirmausgaben/
-  sprintf (buf, "%02d:%02d:%02d", dyn_hour, dyn_min, dyn_sec);
+  sprintf (buf, "Time %02d:%02d:%02d", dyn_hour, dyn_min, dyn_sec);
 
   // use the line from function parameters
   lcd.setCursor(1, line);
   lcd.print(buf);
 
   // reset initscreen timer when this function is displayed
-  LCDML.SCREEN_resetTimer();
+  //LCDML.SCREEN_resetTimer();
   
   // check if this function is active (cursor stands on this line)
   if (line == LCDML.MENU_getCursorPos())

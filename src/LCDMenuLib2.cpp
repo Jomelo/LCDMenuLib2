@@ -821,6 +821,37 @@ void LCDMenuLib2::loop_menu(void)
             {
                 // do nothing
             }
+
+            //
+            // detect if dynamic refreshed content is currently displayed 
+            // some limit values
+            cnt = MENU_getScroll();
+            uint8_t maxi = window_rows + cnt;           
+
+            MENU_clearDynRContent();
+            
+            if ((tmp = MENU_getDisplayedObj()) != NULL)
+            {
+                // loop to display lines
+                do
+                {
+                    // check if a menu element has a condition and if the condition be true
+                    if (tmp->checkCondition())
+                    {
+                        // call a dyn content element
+                        if(tmp->checkType_dynParam_enabledCustomRefresh() == true)
+                        {
+                            // new function in version 2.2.7 to set a flag that dynamic enabled content is displayed
+                            MENU_setDynRContent();
+                            break;          
+                        }
+                        // increment some values
+                        cnt++;                      
+                    }
+                // try to go to the next sibling and check the number of displayed rows
+                } while (((tmp = tmp->getSibling(1)) != NULL) && (cnt < maxi));
+            }
+            // end of detection of dynamic refreshed content
                         
             // update content
             callback_contentUpdate();            
@@ -1879,6 +1910,36 @@ void LCDMenuLib2::MENU_disRefreshAllOnButtonAction(void)
 }
 
 
+/* ******************************************************************** */
+void LCDMenuLib2::MENU_setDynRContent(void)
+/* ******************************************************************** */
+{
+    // debug information
+    DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.MENU_setDynRContent"));
+
+    bitSet(REG_control, _LCDML_REG_control_content_ref_is_displayed); 
+}
+
+
+/* ******************************************************************** */
+void LCDMenuLib2::MENU_clearDynRContent(void)
+/* ******************************************************************** */
+{
+    // debug information
+    DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.MENU_clearDynRContent"));
+
+    bitClear(REG_control, _LCDML_REG_control_content_ref_is_displayed); 
+}
+
+/* ******************************************************************** */
+bool LCDMenuLib2::MENU_checkDynRContent(void)
+/* ******************************************************************** */
+{
+    // debug information
+    DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.MENU_checkDynRContent"));
+
+    return bitRead(REG_control, _LCDML_REG_control_content_ref_is_displayed); 
+}
 
 
 /* ******************************************************************** */
@@ -2526,6 +2587,7 @@ void LCDMenuLib2::OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t p_para)
 
                 bitSet(REG_special, _LCDML_REG_special_OTHER_function_active);
                 bitClear(REG_special, _LCDML_REG_special_setCursorTo); 
+                MENU_clearDynRContent(); 
                 
                 // Save last active Menu ID
                 actMenu_lastFuncID = actMenu_id;
@@ -2584,7 +2646,8 @@ void LCDMenuLib2::OTHER_jumpToID(uint8_t p_id, uint8_t p_para)
                 DBG_println(LCDML_DBG_function_name_OTHER, F("LCDML.OTHER_jumpToID - start"));
 
                 bitSet(REG_special, _LCDML_REG_special_OTHER_function_active);                
-                bitClear(REG_special, _LCDML_REG_special_setCursorTo);               
+                bitClear(REG_special, _LCDML_REG_special_setCursorTo);
+                MENU_clearDynRContent();               
 
                 // Save last active Menu ID           
                 actMenu_lastFuncID = actMenu_id;
@@ -2648,6 +2711,7 @@ void LCDMenuLib2::OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search)
             // enable jump to Func
             bitSet(REG_special, _LCDML_REG_special_OTHER_function_active);
             bitSet(REG_special, _LCDML_REG_special_setCursorTo);
+            MENU_clearDynRContent();
             jT_id       = 0;
 
             // Save last active Menu ID           
@@ -2699,6 +2763,7 @@ void LCDMenuLib2::OTHER_setCursorToID(uint8_t p_id)
             // enable jump to Func
             bitSet(REG_special, _LCDML_REG_special_OTHER_function_active);
             bitSet(REG_special, _LCDML_REG_special_setCursorTo);
+            MENU_clearDynRContent();
             jT_id       = p_id;
 
             // Save last active Menu ID           

@@ -8,9 +8,9 @@
 void lcdml_menu_clear()
 /* ******************************************************************** */
 {
-  if (g_status_if_dyn_content_external_refresh_is_displayed == false)
+  if (LCDML.MENU_checkDynRContent() == false)
   {
-    // clear only the display when the external refreshed content is not shown
+    // clear only the display when the external content refresh is not displayed
     lcd.clear();
   } 
 }
@@ -31,40 +31,11 @@ void lcdml_menu_display()
     // some limit values
     uint8_t i = LCDML.MENU_getScroll();
     uint8_t maxi = _LCDML_DISP_rows + i;
-    uint8_t n = 0;
-    
-    // reset a state 
-    g_status_if_dyn_content_external_refresh_is_displayed = false;
-
-    if ((tmp = LCDML.MENU_getDisplayedObj()) != NULL)
-    {
-      // loop to display lines
-      do
-      {
-        // check if a menu element has a condition and if the condition be true
-        if (tmp->checkCondition())
-        {
-          // call a dyn content element
-          if(tmp->checkType_dynParam_enabledCustomRefresh() == true)
-          {
-            g_status_if_dyn_content_external_refresh_is_displayed = true;          
-          }
-          // increment some values
-          i++;
-          n++;
-        }
-      // try to go to the next sibling and check the number of displayed rows
-      } while (((tmp = tmp->getSibling(1)) != NULL) && (i < maxi));
-    }
+    uint8_t n = 0;   
 
     // clear menu
     // ***************
     LCDML.DISP_clear();
-
-    // reset variables
-    i = LCDML.MENU_getScroll();
-    maxi = _LCDML_DISP_rows + i;
-    n = 0;    
 
     // check if this element has children
     if ((tmp = LCDML.MENU_getDisplayedObj()) != NULL)
@@ -120,7 +91,7 @@ void lcdml_menu_display()
       //set cursor char
       if (n == LCDML.MENU_getCursorPos()) {
         lcd.write(_LCDML_DISP_cfg_cursor);
-        if(g_status_if_dyn_content_external_refresh_is_displayed == true)
+        if(LCDML.MENU_checkDynRContent() == true)
         {
           LCDML.MENU_getDisplayedObj()->callback(n); 
         }
