@@ -55,9 +55,6 @@
   // LCDML_0_X_X_X  => layer 3
   // LCDML_0_...      => layer ...
 
-
-
-
   // For beginners
   // LCDML_add(id, prev_layer, new_num, lang_char_array, callback_function)
   LCDML_add         (0  , LCDML_0         , 1  , "Information"      , mFunc_information);       // this menu function can be found on "LCDML_display_menuFunction" tab
@@ -73,13 +70,13 @@
   // 1. set the string to ""
   // 2. use type  _LCDML_TYPE_dynParam   instead of    _LCDML_TYPE_default
   // this function type can not be used in combination with different parameters
-  // LCDMenuLib_add(id, prev_layer,     new_num, condition,   lang_char_array, callback_function, parameter (0-255), menu function type  )
+  // LCDMenuLib_addAdvanced(id, prev_layer,     new_num, condition,   lang_char_array, callback_function, parameter (0-255), menu function type  )
   LCDML_addAdvanced (8 , LCDML_0         , 5  , NULL,          ""                  , mDyn_change_condetion,                0,   _LCDML_TYPE_dynParam);                     // NULL = no menu function
 
   // Example for conditions (for example for a screensaver)
   // 1. define a condition as a function of a boolean type -> return false = not displayed, return true = displayed
   // 2. set the function name as callback (remove the braces '()' it gives bad errors)
-  // LCDMenuLib_add(id, prev_layer,     new_num, condition,   lang_char_array, callback_function, parameter (0-255), menu function type  )
+  // LCDMenuLib_addAdvanced(id, prev_layer,     new_num, condition,   lang_char_array, callback_function, parameter (0-255), menu function type  )
   LCDML_addAdvanced (9 , LCDML_0         , 6  , COND_hide,  "screensaver"        , mFunc_screensaver,        0,   _LCDML_TYPE_default);       // this menu function can be found on "LCDML_display_menuFunction" tab
 
  

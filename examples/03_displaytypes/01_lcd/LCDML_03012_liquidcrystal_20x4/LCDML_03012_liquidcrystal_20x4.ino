@@ -1,75 +1,47 @@
 // ============================================================
-// Example:     LCDML: graphic display with u8g
-// ============================================================
-// Author:      Jomelo
-// Last update: 21.01.2018
-// License:     MIT
+// Example:     LCDML DisplayType - LiquidCrystal 
 // ============================================================
 // Description:
-// This example shows how to use the u8glib with the LCDMenuLib
-// The menu can placed in a box that can be placed anywhere on
-// the screen.
+// This example includes the complete functionality over some
+// tabs. All Tabs which are started with "LCDML_display_.."
+// generates an output on the display / console / ....
+// This example is for the author to test the complete functionality
 // ============================================================
 // *********************************************************************
 // special settings
 // *********************************************************************
 // enable this line when you are not usigng a standard arduino
 // for example when your chip is an ESP or a STM or SAM or something else
+
 //#define _LCDML_cfg_use_ram 
 
-  // include libs
+// *********************************************************************
+// includes
+// *********************************************************************
+  #include <LiquidCrystal.h>
   #include <LCDMenuLib2.h>
 
-  // U8g2lib
-  #include <Arduino.h>
-  #include <U8g2lib.h>
-
-  #ifdef U8X8_HAVE_HW_SPI
-  #include <SPI.h>
-  #endif
-  #ifdef U8X8_HAVE_HW_I2C
-  #include <Wire.h>
-  #endif
-
 // *********************************************************************
-// U8GLIB
+// LCDML display settings
 // *********************************************************************
-  // U8g2 Constructor List (Frame Buffer)
-  // The complete list is available here: https://github.com/olikraus/u8g2/wiki/u8g2setupcpp
-  // Please update the pin numbers according to your setup. Use U8X8_PIN_NONE if the reset pin is not connected
-  U8G2_ST7920_128X64_F_HW_SPI u8g2(U8G2_R0, /* CS=*/ 53, /* reset=*/ U8X8_PIN_NONE);     // (MEGA, ...
-  //U8G2_ST7920_128X64_F_HW_SPI u8g2(U8G2_R0, /* CS=*/ 12, /* reset=*/ U8X8_PIN_NONE);   // (Uno and co
+  // settings for LCD
+  #define _LCDML_DISP_cols  20
+  #define _LCDML_DISP_rows  4
 
-  // settings for u8g lib and LCD
-  #define _LCDML_DISP_w                 128            // LCD width
-  #define _LCDML_DISP_h                 64             // LCD height
-  // font settings
-  #define _LCDML_DISP_font              u8g_font_6x13  // u8glib font (more fonts under u8g.h line 1520 ...)
-  #define _LCDML_DISP_font_w            6              // font width
-  #define _LCDML_DISP_font_h            13             // font height
-  // cursor settings
-  #define _LCDML_DISP_cursor_char       "X"            // cursor char
-  #define _LCDML_DISP_cur_space_before  2              // cursor space between
-  #define _LCDML_DISP_cur_space_behind  4              // cursor space between
-  // menu position and size
-  #define _LCDML_DISP_box_x0            0              // start point (x0, y0)
-  #define _LCDML_DISP_box_y0            0              // start point (x0, y0)
-  #define _LCDML_DISP_box_x1            128            // width x  (x0 + width)
-  #define _LCDML_DISP_box_y1            64             // hight y  (y0 + height)
-  #define _LCDML_DISP_draw_frame        1              // draw a box around the menu
-   // scrollbar width
-  #define _LCDML_DISP_scrollbar_w       6  // scrollbar width (if this value is < 3, the scrollbar is disabled)
+  #define _LCDML_DISP_cfg_cursor                     0x7E   // cursor Symbol
+  #define _LCDML_DISP_cfg_scrollbar                  1      // enable a scrollbar
 
-  // nothing change here
-  #define _LCDML_DISP_cols_max          ((_LCDML_DISP_box_x1-_LCDML_DISP_box_x0)/_LCDML_DISP_font_w)
-  #define _LCDML_DISP_rows_max          ((_LCDML_DISP_box_y1-_LCDML_DISP_box_y0-((_LCDML_DISP_box_y1-_LCDML_DISP_box_y0)/_LCDML_DISP_font_h))/_LCDML_DISP_font_h)
+  // LCD object
+  // liquid crystal needs (rs, e, dat4, dat5, dat6, dat7)
+  LiquidCrystal lcd(22, 24, 9, 10, 11, 12);
 
-  // rows and cols
-  // when you use more rows or cols as allowed change in LCDMenuLib.h the define "_LCDML_DISP_cfg_max_rows" and "_LCDML_DISP_cfg_max_string_length"
-  // the program needs more ram with this changes
-  #define _LCDML_DISP_rows              _LCDML_DISP_rows_max  // max rows
-  #define _LCDML_DISP_cols              20                   // max cols
-
+  const uint8_t scroll_bar[5][8] = {
+    {B10001, B10001, B10001, B10001, B10001, B10001, B10001, B10001}, // scrollbar top
+    {B11111, B11111, B10001, B10001, B10001, B10001, B10001, B10001}, // scroll state 1
+    {B10001, B10001, B11111, B11111, B10001, B10001, B10001, B10001}, // scroll state 2
+    {B10001, B10001, B10001, B10001, B11111, B11111, B10001, B10001}, // scroll state 3
+    {B10001, B10001, B10001, B10001, B10001, B10001, B11111, B11111}  // scrollbar bottom
+  };
 
 // *********************************************************************
 // Prototypes
@@ -78,13 +50,16 @@
   void lcdml_menu_clear();
   void lcdml_menu_control();
 
+// *********************************************************************
+// Global variables
+// *********************************************************************
+
 
 // *********************************************************************
 // Objects
 // *********************************************************************
   LCDMenuLib2_menu LCDML_0 (255, 0, 0, NULL, NULL); // root menu element (do not change)
   LCDMenuLib2 LCDML(LCDML_0, _LCDML_DISP_rows, _LCDML_DISP_cols, lcdml_menu_display, lcdml_menu_clear, lcdml_menu_control);
-
 
 // *********************************************************************
 // LCDML MENU/DISP
@@ -119,7 +94,7 @@
   // Example for one function and different parameters
   // It is recommend to use parameters for switching settings like, (small drink, medium drink, big drink) or (200ml, 400ml, 600ml, 800ml) ...
   // the parameter change can also be released with dynParams on the next example
-  // LCDMenuLib_add(id, prev_layer,     new_num, condition,   lang_char_array, callback_function, parameter (0-255), menu function type  )
+  // LCDMenuLib_addAdvanced(id, prev_layer,     new_num, condition,   lang_char_array, callback_function, parameter (0-255), menu function type  )
   LCDML_addAdvanced (16 , LCDML_0         , 5  , NULL,          "Parameter"      , NULL,                0,            _LCDML_TYPE_default);                    // NULL = no menu function
   LCDML_addAdvanced (17 , LCDML_0_5       , 1  , NULL,          "Parameter 1"      , mFunc_para,       10,            _LCDML_TYPE_default);                    // NULL = no menu function
   LCDML_addAdvanced (18 , LCDML_0_5       , 2  , NULL,          "Parameter 2"      , mFunc_para,       20,            _LCDML_TYPE_default);                    // NULL = no menu function
@@ -131,13 +106,13 @@
   // 1. set the string to ""
   // 2. use type  _LCDML_TYPE_dynParam   instead of    _LCDML_TYPE_default
   // this function type can not be used in combination with different parameters
-  // LCDMenuLib_add(id, prev_layer,     new_num, condition,   lang_char_array, callback_function, parameter (0-255), menu function type  )
+  // LCDMenuLib_addAdvanced(id, prev_layer,     new_num, condition,   lang_char_array, callback_function, parameter (0-255), menu function type  )
   LCDML_addAdvanced (21 , LCDML_0         , 6  , NULL,          ""                  , mDyn_para,                0,   _LCDML_TYPE_dynParam);                     // NULL = no menu function
 
   // Example for conditions (for example for a screensaver)
   // 1. define a condition as a function of a boolean type -> return false = not displayed, return true = displayed
   // 2. set the function name as callback (remove the braces '()' it gives bad errors)
-  // LCDMenuLib_add(id, prev_layer,     new_num, condition,   lang_char_array, callback_function, parameter (0-255), menu function type  )
+  // LCDMenuLib_addAdvanced(id, prev_layer,     new_num, condition,   lang_char_array, callback_function, parameter (0-255), menu function type  )
   LCDML_addAdvanced (22 , LCDML_0         , 7  , COND_hide,  "screensaver"        , mFunc_screensaver,        0,   _LCDML_TYPE_default);       // this menu function can be found on "LCDML_display_menuFunction" tab
 
   // ***TIP*** Try to update _LCDML_DISP_cnt when you add a menu element.
@@ -149,22 +124,28 @@
   // create menu
   LCDML_createMenu(_LCDML_DISP_cnt);
 
-
-
-
 // *********************************************************************
 // SETUP
 // *********************************************************************
   void setup()
   {
-    u8g2.begin();
-
     // serial init; only be needed if serial control is used
     Serial.begin(9600);                // start serial
     Serial.println(F(_LCDML_VERSION)); // only for examples
 
+    // LCD Begin
+    lcd.begin(_LCDML_DISP_cols,_LCDML_DISP_rows);
+    // set special chars for scrollbar
+    lcd.createChar(0, (uint8_t*)scroll_bar[0]);
+    lcd.createChar(1, (uint8_t*)scroll_bar[1]);
+    lcd.createChar(2, (uint8_t*)scroll_bar[2]);
+    lcd.createChar(3, (uint8_t*)scroll_bar[3]);
+    lcd.createChar(4, (uint8_t*)scroll_bar[4]);
+
     // LCDMenuLib Setup
     LCDML_setup(_LCDML_DISP_cnt);
+
+    // Some settings which can be used
 
     // Enable Menu Rollover
     LCDML.MENU_enRollover();
@@ -184,18 +165,5 @@
 // *********************************************************************
   void loop()
   {
-    // this function must called here, do not delete it
     LCDML.loop();
   }
-
-
-// *********************************************************************
-// check some errors - do not change here anything
-// *********************************************************************
-# if(_LCDML_glcd_tft_box_x1 > _LCDML_glcd_tft_w)
-# error _LCDML_glcd_tft_box_x1 is to big
-# endif
-
-# if(_LCDML_glcd_tft_box_y1 > _LCDML_glcd_tft_h)
-# error _LCDML_glcd_tft_box_y1 is to big
-# endif

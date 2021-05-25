@@ -1,12 +1,13 @@
 // ============================================================
-// Example:     LCDML: graphic display with u8g
+// Example:     LCDML: use ADAFRUIT i2c display ssd1306 
 // ============================================================
-// Author:      Jomelo
-// Last update: 21.01.2018
+// Author:      Jomelo, Markus Rudel
+// Last update: 12.11.2018
 // License:     MIT
 // ============================================================
 // Description:
-// This example shows how to use the u8glib with the LCDMenuLib
+// This example shows how to use the adafruit gfx library
+// with the LCDMenuLib.
 // The menu can placed in a box that can be placed anywhere on
 // the screen.
 // ============================================================
@@ -15,49 +16,66 @@
 // *********************************************************************
 // enable this line when you are not usigng a standard arduino
 // for example when your chip is an ESP or a STM or SAM or something else
+
 //#define _LCDML_cfg_use_ram 
 
   // include libs
-  #include <LCDMenuLib2.h>
-  #include <U8glib.h>
+  #include <LCDMenuLib2.h>  
+
+  #include <SPI.h>
+  #include <Wire.h>
+  #include <Adafruit_GFX.h>
+  #include <Adafruit_ST7735.h> // Hardware-specific library
 
 // *********************************************************************
-// U8GLIB
+// Adafruit TFT_ST7735
 // *********************************************************************
-  // setup u8g object, please remove comment from one of the following constructor calls
-  // IMPORTANT NOTE: The following list is incomplete. The complete list of supported
-  // devices with all constructor calls is here: https://github.com/olikraus/u8glib/wiki/device
-  U8GLIB_ST7920_128X64 u8g(52, 51, 53, U8G_PIN_NONE);
+// https://learn.adafruit.com/1-8-tft-display/graphics-library
 
-  // settings for u8g lib and LCD
-  #define _LCDML_DISP_w                 128            // LCD width
-  #define _LCDML_DISP_h                 64             // LCD height
-  // font settings
-  #define _LCDML_DISP_font              u8g_font_6x13  // u8glib font (more fonts under u8g.h line 1520 ...)
-  #define _LCDML_DISP_font_w            6              // font width
-  #define _LCDML_DISP_font_h            13             // font height
-  // cursor settings
-  #define _LCDML_DISP_cursor_char       "X"            // cursor char
-  #define _LCDML_DISP_cur_space_before  2              // cursor space between
-  #define _LCDML_DISP_cur_space_behind  4              // cursor space between
-  // menu position and size
-  #define _LCDML_DISP_box_x0            0              // start point (x0, y0)
-  #define _LCDML_DISP_box_y0            0              // start point (x0, y0)
-  #define _LCDML_DISP_box_x1            128            // width x  (x0 + width)
-  #define _LCDML_DISP_box_y1            64             // hight y  (y0 + height)
-  #define _LCDML_DISP_draw_frame        1              // draw a box around the menu
-   // scrollbar width
-  #define _LCDML_DISP_scrollbar_w       6  // scrollbar width (if this value is < 3, the scrollbar is disabled)
+ #define _LCDML_ADAFRUIT_TEXT_COLOR       ST7735_WHITE
+  #define _LCDML_ADAFRUIT_BACKGROUND_COLOR ST7735_BLACK 
+  
+  #define _LCDML_ADAFRUIT_FONT_SIZE   3   
+  #define _LCDML_ADAFRUIT_FONT_W      (6*_LCDML_ADAFRUIT_FONT_SIZE)             // font width 
+  #define _LCDML_ADAFRUIT_FONT_H      (8*_LCDML_ADAFRUIT_FONT_SIZE)             // font heigt 
+  
+  // settings for u8g lib and lcd
+  #define _LCDML_ADAFRUIT_lcd_w       128            // lcd width
+  #define _LCDML_ADAFRUIT_lcd_h       160             // lcd height
+ 
+  
+  
+  // TFT display and SD card will share the hardware SPI interface.
+  // Hardware SPI pins are specific to the Arduino board type and
+  // cannot be remapped to alternate pins.  For Arduino Uno,
+  // Duemilanove, etc., pin 11 = MOSI, pin 12 = MISO, pin 13 = SCK.
+  #define TFT_CS  10  // Chip select line for TFT display
+  #define TFT_RST  9  // Reset line for TFT (or see below...)
+  #define TFT_DC   8  // Data/command line for TFT
+
+  #define SD_CS    4  // Chip select line for SD card
+  Adafruit_ST7735 display = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
+  
+
 
   // nothing change here
-  #define _LCDML_DISP_cols_max          ((_LCDML_DISP_box_x1-_LCDML_DISP_box_x0)/_LCDML_DISP_font_w)
-  #define _LCDML_DISP_rows_max          ((_LCDML_DISP_box_y1-_LCDML_DISP_box_y0-((_LCDML_DISP_box_y1-_LCDML_DISP_box_y0)/_LCDML_DISP_font_h))/_LCDML_DISP_font_h)
+  #define _LCDML_ADAFRUIT_cols_max    (_LCDML_ADAFRUIT_lcd_w/_LCDML_ADAFRUIT_FONT_W)  
+  #define _LCDML_ADAFRUIT_rows_max    (_LCDML_ADAFRUIT_lcd_h/_LCDML_ADAFRUIT_FONT_H) 
 
-  // rows and cols
+  // rows and cols 
   // when you use more rows or cols as allowed change in LCDMenuLib.h the define "_LCDML_DISP_cfg_max_rows" and "_LCDML_DISP_cfg_max_string_length"
   // the program needs more ram with this changes
-  #define _LCDML_DISP_rows              _LCDML_DISP_rows_max  // max rows
-  #define _LCDML_DISP_cols              20                   // max cols
+  #define _LCDML_ADAFRUIT_cols        20                   // max cols
+  #define _LCDML_ADAFRUIT_rows        _LCDML_ADAFRUIT_rows_max  // max rows 
+
+
+  // scrollbar width
+  #define _LCDML_ADAFRUIT_scrollbar_w 6  // scrollbar width  
+
+
+  // old defines with new content
+  #define _LCDML_DISP_cols      _LCDML_ADAFRUIT_cols
+  #define _LCDML_DISP_rows      _LCDML_ADAFRUIT_rows 
 
 
 // *********************************************************************
@@ -108,7 +126,7 @@
   // Example for one function and different parameters
   // It is recommend to use parameters for switching settings like, (small drink, medium drink, big drink) or (200ml, 400ml, 600ml, 800ml) ...
   // the parameter change can also be released with dynParams on the next example
-  // LCDMenuLib_add(id, prev_layer,     new_num, condition,   lang_char_array, callback_function, parameter (0-255), menu function type  )
+  // LCDMenuLib_addAdvanced(id, prev_layer,     new_num, condition,   lang_char_array, callback_function, parameter (0-255), menu function type  )
   LCDML_addAdvanced (16 , LCDML_0         , 5  , NULL,          "Parameter"      , NULL,                0,            _LCDML_TYPE_default);                    // NULL = no menu function
   LCDML_addAdvanced (17 , LCDML_0_5       , 1  , NULL,          "Parameter 1"      , mFunc_para,       10,            _LCDML_TYPE_default);                    // NULL = no menu function
   LCDML_addAdvanced (18 , LCDML_0_5       , 2  , NULL,          "Parameter 2"      , mFunc_para,       20,            _LCDML_TYPE_default);                    // NULL = no menu function
@@ -120,7 +138,7 @@
   // 1. set the string to ""
   // 2. use type  _LCDML_TYPE_dynParam   instead of    _LCDML_TYPE_default
   // this function type can not be used in combination with different parameters
-  // LCDMenuLib_add(id, prev_layer,     new_num, condition,   lang_char_array, callback_function, parameter (0-255), menu function type  )
+  // LCDMenuLib_addAdvanced(id, prev_layer,     new_num, condition,   lang_char_array, callback_function, parameter (0-255), menu function type  )
   LCDML_addAdvanced (21 , LCDML_0         , 6  , NULL,          ""                  , mDyn_para,                0,   _LCDML_TYPE_dynParam);                     // NULL = no menu function
 
   // Example for conditions (for example for a screensaver)
@@ -150,6 +168,35 @@
     Serial.begin(9600);                // start serial
     Serial.println(F(_LCDML_VERSION)); // only for examples
 
+    /* INIT DISPLAY */
+    SPI.begin();
+
+    // Our supplier changed the 1.8" display slightly after Jan 10, 2012
+    // so that the alignment of the TFT had to be shifted by a few pixels
+    // this just means the init code is slightly different. Check the
+    // color of the tab to see which init code to try. If the display is
+    // cut off or has extra 'random' pixels on the top & left, try the
+    // other option!
+    // If you are seeing red and green color inversion, use Black Tab
+  
+    // If your TFT's plastic wrap has a Black Tab, use the following:
+    display.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
+    // If your TFT's plastic wrap has a Red Tab, use the following:
+    //tft.initR(INITR_REDTAB);   // initialize a ST7735R chip, red tab
+    // If your TFT's plastic wrap has a Green Tab, use the following:
+    //tft.initR(INITR_GREENTAB); // initialize a ST7735R chip, green tab
+
+    // clear lcd
+    display.fillScreen(_LCDML_ADAFRUIT_BACKGROUND_COLOR);
+    
+    // set text color / Textfarbe setzen
+    display.setTextColor(_LCDML_ADAFRUIT_TEXT_COLOR);  
+    // set text size / Textgroesse setzen
+    display.setTextSize(_LCDML_ADAFRUIT_FONT_SIZE);
+    display.setCursor(0, _LCDML_ADAFRUIT_FONT_H * (3));
+    display.println(_LCDML_VERSION);
+
+    /* INIT LCDML */
     // LCDMenuLib Setup
     LCDML_setup(_LCDML_DISP_cnt);
 

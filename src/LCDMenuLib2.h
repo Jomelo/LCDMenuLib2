@@ -4,7 +4,7 @@
  *
  * MIT License
  *
- * Copyright (c) [2021] [Jomelo]
+ * Copyright (c) [2021] [Nils Feldkämper]
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -80,7 +80,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.2.7 beta-5"
+    #define _LCDML_VERSION                       "LCDML2 v2.2.7"
 
     // this makro is for unused variables which exists for compatibility things ...
     #define LCDML_UNUSED(expr) do { (void)(expr); } while (0)
