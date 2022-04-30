@@ -39,6 +39,9 @@
 #ifndef LCDMenuLib2_h
     #define LCDMenuLib2_h
 
+    // this line need for resolve vsCode & platformio lib compile error may resolves another platforms too
+    extern char* g_LCDML_DISP_lang_lcdml_table[254];
+
     // ####################### //
     // This following defines can be changed
     // ####################### //
