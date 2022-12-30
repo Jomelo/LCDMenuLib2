@@ -172,11 +172,11 @@ void lcdml_menu_control(void)
 
   #define _LCDML_CONTROL_digital_low_active      0    // 0 = high active (pulldown) button, 1 = low active (pullup)
                                                       // http://playground.arduino.cc/CommonTopics/PullUpDownResistor
-  #define _LCDML_CONTROL_digital_enable_quit     0
-  #define _LCDML_CONTROL_digital_enable_lr       0
-  #define _LCDML_CONTROL_digital_enter           35
-  #define _LCDML_CONTROL_digital_up              5
-  #define _LCDML_CONTROL_digital_down            18
+  #define _LCDML_CONTROL_digital_enable_quit     1
+  #define _LCDML_CONTROL_digital_enable_lr       1
+  #define _LCDML_CONTROL_digital_enter           8
+  #define _LCDML_CONTROL_digital_up              9
+  #define _LCDML_CONTROL_digital_down            10
   #define _LCDML_CONTROL_digital_quit            11
   #define _LCDML_CONTROL_digital_left            12
   #define _LCDML_CONTROL_digital_right           13
@@ -281,15 +281,14 @@ void lcdml_menu_control(void)
    */
 
   // global defines
-  #define encoder_A_pin       4    // physical pin has to be 2 or 3 to use interrupts (on mega e.g. 20 or 21), use internal pullups
-  #define encoder_B_pin       15    // physical pin has to be 2 or 3 to use interrupts (on mega e.g. 20 or 21), use internal pullups
-  #define encoder_button_pin  27    // physical pin , use internal pullup
+  #define encoder_A_pin       20    // physical pin has to be 2 or 3 to use interrupts (on mega e.g. 20 or 21), use internal pullups
+  #define encoder_B_pin       21    // physical pin has to be 2 or 3 to use interrupts (on mega e.g. 20 or 21), use internal pullups
+  #define encoder_button_pin  49    // physical pin , use internal pullup
 
   #define g_LCDML_CONTROL_button_long_press    800   // ms
   #define g_LCDML_CONTROL_button_short_press   120   // ms
 
-  //#define ENCODER_OPTIMIZE_INTERRUPTS //Only when using pin2/3 (or 20/21 on mega)
-  #define ENCODER_DO_NOT_USE_INTERRUPTS
+  #define ENCODER_OPTIMIZE_INTERRUPTS //Only when using pin2/3 (or 20/21 on mega)
   #include <Encoder.h> //for Encoder    Download:  https://github.com/PaulStoffregen/Encoder
 
   Encoder ENCODER(encoder_A_pin, encoder_B_pin);

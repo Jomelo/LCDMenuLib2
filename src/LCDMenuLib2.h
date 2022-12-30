@@ -38,16 +38,13 @@
 // File header
 #ifndef LCDMenuLib2_h
     #define LCDMenuLib2_h
-
-    // this line need for resolve vsCode & platformio lib compile error may resolves another platforms too
-    extern char* g_LCDML_DISP_lang_lcdml_table[254];
-
     // ####################### //
     // This following defines can be changed
     // ####################### //
 
     // you can change this parameters
-    //#define _LCDML_cfg_use_ram                   // enable this line when you want to use the ram mode 
+    //#define _LCDML_cfg_use_ram                    // enable this line when you want to use the ram mode  
+    //#define _LCDML_plattform_io_support           // enable this line when you want to use plattform io
 
     // set the number of custom events (this could be a button ore something else)    
     #define _LCDML_CE_cb_function_cnt           4   // this is the number of custom event callback functions which are supported
@@ -70,6 +67,10 @@
     // ####################### //
     // Do nothing change here
     // ####################### //
+    #ifdef _LCDML_plattform_io_support
+        // this line need for resolve vsCode & platformio lib compile error may resolves another platforms too
+        extern char* g_LCDML_DISP_lang_lcdml_table[254];
+    #endif
 
     // create DBG_print makro when debugging is enabled
     #ifdef LCDML_DBG
@@ -83,7 +84,7 @@
     #endif
 
     // Version
-    #define _LCDML_VERSION                       "LCDML2 v2.2.7"
+    #define _LCDML_VERSION                       "LCDML2 v2.2.8"
 
     // this makro is for unused variables which exists for compatibility things ...
     #define LCDML_UNUSED(expr) do { (void)(expr); } while (0)
@@ -92,11 +93,11 @@
     #include "Arduino.h"
 
     // Arduino specific settings
-    #if ARDUINO >= 160
-        #define _LCDMenuLib2_arduino_version         1    // for new Arduino version like 1.6.0 and higher
-    #else
-        #define _LCDMenuLib2_arduino_version         0    // for old Arduino version like 1.0.6 or 1.0.5
-    #endif
+    //#if ARDUINO >= 160
+    //    #define _LCDMenuLib2_arduino_version         1    // for new Arduino version like 1.6.0 and higher
+    //#else
+    //    #define _LCDMenuLib2_arduino_version         0    // for old Arduino version like 1.0.6 or 1.0.5
+    //#endif
 
     // ESP specific settings
     #if defined( ESP8266 ) || defined( ESP32 )
