@@ -1,6 +1,6 @@
 // =====================================================================
 //
-// CONTROL v2.2.0
+// CONTROL v2.2.8
 //
 // =====================================================================
 // *********************************************************************
@@ -24,6 +24,7 @@
 // (5) Control with an IRMP remote [third party lib] (Download: https://github.com/ukw100/IRMP )
 // (6) Control with a joystick
 // (7) Control over I2C PCF8574
+// (8) Control over ESP32Encoder
 // *********************************************************************
 
 #define _LCDML_CONTROL_cfg      0
@@ -636,6 +637,109 @@ void lcdml_menu_control(void)
   }
  }
 }
+// *********************************************************************
+// ******************************* END *********************************
+// *********************************************************************
+
+
+// *********************************************************************
+// *************** (8) CONTROL WITH ENCODER32 **************************
+// *********************************************************************
+#elif(_LCDML_CONTROL_cfg == 8)
+
+  // global defines
+  #define encoder_A_pin       13
+  #define encoder_B_pin       15
+  #define encoder_button_pin  5    // physical pin , use internal pullup
+
+  #define g_LCDML_CONTROL_button_long_press    800   // ms
+  #define g_LCDML_CONTROL_button_short_press   120   // ms
+
+  #include <ESP32Encoder.h> // https://github.com/madhephaestus/ESP32Encoder.git 
+  ESP32Encoder encoder;
+
+  unsigned long  g_LCDML_CONTROL_button_press_time = millis();
+  bool  g_LCDML_CONTROL_button_prev                = HIGH;
+
+// *********************************************************************
+void lcdml_menu_control(void) {
+  // If something must init, put in in the setup condition
+  if(LCDML.BT_setup()) {
+    // runs only once
+    encoder.attachHalfQuad ( encoder_A_pin, encoder_B_pin );
+    // init pins, enable pullups
+    pinMode(encoder_button_pin  , INPUT_PULLUP);
+  }
+
+  // declare variable for this function
+  int32_t g_LCDML_CONTROL_Encoder_position = encoder.getCount() / 2;
+  bool g_LCDML_button                      = digitalRead(encoder_button_pin);
+  
+  // check if encoder is rotated on direction A
+  if (g_LCDML_CONTROL_Encoder_position <= -1) {
+    // check if the button is pressed and the encoder is rotated
+    // the button is low active
+    if(g_LCDML_button == LOW) {
+      // button is pressed
+      LCDML.BT_left();  
+
+      // reset button press time for next detection
+      g_LCDML_CONTROL_button_prev = HIGH;
+    } else {
+      LCDML.BT_down();
+    }    
+
+    // init encoder for the next step
+    encoder.setCount ( 0 );
+  }
+  
+  // check if encoder is rotated on direction B
+  else if(g_LCDML_CONTROL_Encoder_position >= 1) {    
+    // check if the button is pressed and the encoder is rotated
+    // the button is low active
+    if(g_LCDML_button == LOW) {
+      // button is pressed
+      LCDML.BT_right(); 
+
+      // reset button press time for next detection
+      g_LCDML_CONTROL_button_prev = HIGH;
+    } else {
+      LCDML.BT_up();
+    }   
+
+    // init encoder for the next step
+    encoder.setCount ( 0 );
+    } else {
+    // check if the button was pressed for a shortly time or a long time
+    
+    //falling edge, button pressed, no action
+    if(g_LCDML_button == LOW && g_LCDML_CONTROL_button_prev == HIGH) {
+      g_LCDML_CONTROL_button_prev = LOW;
+      g_LCDML_CONTROL_button_press_time = millis();
+    }
+
+    // rising edge, button not pressed, check how long was it pressed    
+    else if(g_LCDML_button == HIGH && g_LCDML_CONTROL_button_prev == LOW) {
+      g_LCDML_CONTROL_button_prev = HIGH;
+      
+      // check how long was the button pressed and detect a long press or a short press
+
+      // check long press situation
+      if((millis() - g_LCDML_CONTROL_button_press_time) >= g_LCDML_CONTROL_button_long_press) {
+        // long press detected
+        LCDML.BT_quit();
+      }
+      // check short press situation
+      else if((millis() - g_LCDML_CONTROL_button_press_time) >= g_LCDML_CONTROL_button_short_press) {
+        // short press detected
+        LCDML.BT_enter();
+      }
+    } else {
+      // do nothing
+    }
+  }
+}
+
 // *********************************************************************
 // ******************************* END *********************************
 // *********************************************************************
