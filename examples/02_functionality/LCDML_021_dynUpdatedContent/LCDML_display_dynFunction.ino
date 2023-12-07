@@ -63,7 +63,7 @@ void mDyn_para(uint8_t line)
   }
 
 
-  // clear the line manuel because clear the complete content is disabled when a external refreshed function is active
+  // clear the line manual because clear the complete content is disabled when a external refreshed function is active
   lcd.setCursor(1, line);
   for(uint8_t i=0;i<_LCDML_DISP_cols-3;i++) // -3 because: 
                                             // -1 for counter from 0 to x 
@@ -88,7 +88,7 @@ void mDyn_para(uint8_t line)
 void mDyn_time(uint8_t line)
 // *********************************************************************
 {
-  // clear the line manuel because clear the complete content is disabled when a external refreshed function is active
+  // clear the line manual because clear the complete content is disabled when a external refreshed function is active
   lcd.setCursor(1, line);
   for(uint8_t i=0;i<_LCDML_DISP_cols-3;i++) // -3 because: 
                                             // -1 for counter from 0 to x 

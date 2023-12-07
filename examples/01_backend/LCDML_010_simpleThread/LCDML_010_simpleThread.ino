@@ -142,7 +142,7 @@
   simpleThread_new_timebased_static   (_sT_P2  , _sT_millis, 1000UL  , _sT_stop  , Thread_Serial_Blink_Example);
   simpleThread_new_timebased_static   (_sT_P3  , _sT_millis, 100UL   , _sT_start , Thread_LCDMenuLib);
 
-  /* simple thread control makros reference
+  /* simple thread control macros reference
    *  initialisation:
    *  ===============
    *  void      simpleThread_init( number of threads )

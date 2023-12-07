@@ -7,13 +7,13 @@
 // Features 
 // - max 6 Buttons with special names (enter, quit, up, down, left, right)
 // new Features on v2.2.0
-// - max 64 Events, this could be a button ore something (Counter 0 - 63) 
+// - max 64 Events, this could be a button or something (Counter 0 - 63) 
 // - standard buttons and events can be used at the same time
 // - Event 0 - 3 can be used with a menu callback function (when set this event, the function is called)
 // - The range from 0 - 3 can be changed in LCDMenuLib2.h
 // Attention!!
-// - events have to be reset manual over LCDML.CE_reset(number) ore LCDML.CE_resetAll();
-// - they will not be reseted from the menu library
+// - events have to be reset manual over LCDML.CE_reset(number) or LCDML.CE_resetAll();
+// - they will not be reset from the menu library
 // *********************************************************************
 // content:
 // (0) Control over serial interface  with asdw_e_q
@@ -46,7 +46,7 @@
   # define _LCDML_CONTROL_serial_right           'd'
   # define _LCDML_CONTROL_serial_quit            'q'
 
-  // example for the useage of events (not needed everywhere)
+  // example for the usage of events (not needed everywhere)
   // this defines are only for examples and can be renamed
   # define _LCDML_EVENT_command                'c'
   # define _LCDML_EVENT_char_0                 '0'
