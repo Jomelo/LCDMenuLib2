@@ -37,7 +37,7 @@
   
   #define _LCDML_ADAFRUIT_FONT_SIZE   3   
   #define _LCDML_ADAFRUIT_FONT_W      (6*_LCDML_ADAFRUIT_FONT_SIZE)             // font width 
-  #define _LCDML_ADAFRUIT_FONT_H      (8*_LCDML_ADAFRUIT_FONT_SIZE)             // font heigt 
+  #define _LCDML_ADAFRUIT_FONT_H      (8*_LCDML_ADAFRUIT_FONT_SIZE)             // font height 
   
   // settings for u8g lib and lcd
   #define _LCDML_ADAFRUIT_lcd_w       128            // lcd width

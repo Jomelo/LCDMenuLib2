@@ -44,9 +44,9 @@
 
     // you can change this parameters
     //#define _LCDML_cfg_use_ram                    // enable this line when you want to use the ram mode  
-    //#define _LCDML_plattform_io_support           // enable this line when you want to use plattform io
+    //#define _LCDML_plattform_io_support           // enable this line when you want to use platform io
 
-    // set the number of custom events (this could be a button ore something else)    
+    // set the number of custom events (this could be a button or something else)    
     #define _LCDML_CE_cb_function_cnt           4   // this is the number of custom event callback functions which are supported
                                                     // 4 = default 
 
@@ -72,7 +72,7 @@
         extern char* g_LCDML_DISP_lang_lcdml_table[254];
     #endif
 
-    // create DBG_print makro when debugging is enabled
+    // create DBG_print macro when debugging is enabled
     #ifdef LCDML_DBG
         #define DBG_print(enable, str)                  if(enable == 1) { Serial.print(str); }
         #define DBG_println(enable, str)                if(enable == 1) { Serial.println(str); }
@@ -86,7 +86,7 @@
     // Version
     #define _LCDML_VERSION                       "LCDML2 v2.2.8 beta"
 
-    // this makro is for unused variables which exists for compatibility things ...
+    // this macro is for unused variables which exists for compatibility things ...
     #define LCDML_UNUSED(expr) do { (void)(expr); } while (0)
 
     // Include Arduino ios
@@ -194,7 +194,7 @@
     {
         private:
             // object pointer            
-            LCDMenuLib2_menu *curMenu;                                  // currrent menu structure
+            LCDMenuLib2_menu *curMenu;                                  // current menu structure
 
             // callback functions
             LCDML_FuncPtr       callback_menuControl;                   // a callback function which checks the input buttons
@@ -204,7 +204,7 @@
 
             LCDML_FuncPtr_pu8   ce_cb[_LCDML_CE_cb_function_cnt];       // callback functions for custom events
 
-            // activ menu values
+            // active menu values
             LCDML_FuncPtr_pu8   actMenu_cb_function;                    // Menu Function callback            
             uint8_t             actMenu_id;                             // Name of this menu
             uint8_t             actMenu_param;                          // Parameter this menu
@@ -222,7 +222,7 @@
 
             // menu intern values
             uint8_t             last_element_id;                        // the id of the last element
-            uint8_t             window_rows;                            // the maximum rows of the current windows  (1 is the minium)
+            uint8_t             window_rows;                            // the maximum rows of the current windows  (1 is the minimum)
             uint8_t             window_start;                           // the window start
             
             uint8_t             cursor_obj_pos;
@@ -255,7 +255,7 @@
             void                MENU_doScroll(uint8_t state);                                   // scroll the menu
             uint8_t             MENU_countChilds(LCDMenuLib2_menu *menu, uint8_t all=false);    // how many children exists on next layer
             void                MENU_initFirstElement(void);                                    // set counter to the first object child (when first element is hidden, go to the first visible element)
-            void                MENU_resetActiveMenu(void);                                     // clear all neccessary variables
+            void                MENU_resetActiveMenu(void);                                     // clear all necessary variables
                                  
             // callback function
             void                FUNC_call(void);            
@@ -283,9 +283,9 @@
             bool                MENU_getScrollDisableStatus(void);      // check if the scroll function is disabled
             uint8_t             MENU_getLayer(void);                    // get the current layer of the menu
             uint8_t             MENU_getCursorPos(void);                // get the current cursor position (row 0, row 1, row 2, ...)
-            uint8_t             MENU_getCursorPosAbs(void);             // get the current cursor postion absolute (..., row 10, row 11, ..) based on the menu structure
+            uint8_t             MENU_getCursorPosAbs(void);             // get the current cursor position absolute (..., row 10, row 11, ..) based on the menu structure
             uint8_t             MENU_getCursorObjPos(void);             // returns the cursor object position
-            uint8_t             MENU_getChilds(void);                   // get the current number of childs on this layer
+            uint8_t             MENU_getChilds(void);                   // get the current number of children on this layer
             uint8_t             MENU_getParentID(uint8_t p_layer=0);    // get the parent id of a selected higher layer
             uint8_t             MENU_getScroll(void);                   // get the current scroll value
             uint8_t             MENU_getLastActiveFunctionID(void);     // returns the id of the last active function
@@ -334,7 +334,7 @@
             bool                FUNC_close(void);                                   // check if a menu function is closed to reach a stable state                     
             void                FUNC_goBackToMenu(uint8_t p_goBackCnt=0);           // close the current menu function (the FUNC_close check is true when this is set)
             uint8_t             FUNC_getID(void);                                   // get the ID of the current menu function
-            void                FUNC_setLoopInterval(unsigned long p_t);            // set a loop intervall for the current menu function the default loop intervall is 100000000 ms
+            void                FUNC_setLoopInterval(unsigned long p_t);            // set a loop interval for the current menu function the default loop interval is 100000000 ms
             void                FUNC_disableScreensaver(void);                      // disable the screensaver for the current menu function 
             void                FUNC_setGBAToLastCursorPos(void);                   // set a special "go back handling" - only to last cursor position
             void                FUNC_setGBAToLastFunc(void);                        // set a special "go back handling" - only to last function

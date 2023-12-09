@@ -162,7 +162,7 @@
   }
 
 
-// special gobal variables for this example
+// special global variables for this example
 boolean g_status_if_dyn_content_external_refresh_is_displayed = false;
 unsigned long g_timer_1000ms = 0;
 uint8_t dyn_hour = 0;
@@ -199,6 +199,6 @@ uint8_t dyn_sec  = 0;
       }     
     }
 
-    // call the "normaly" menu content
+    // call the "normally" menu content
     LCDML.loop_menu();
   }

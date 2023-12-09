@@ -7,7 +7,7 @@
 // generates an output on the display / console / ....
 // This example is for the author to test the complete functionality
 //
-// Add the TaskScheduler Libarary
+// Add the TaskScheduler Library
 //
 // Download simple thread:
 // https://github.com/arkhipenko/TaskScheduler

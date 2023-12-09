@@ -8,7 +8,7 @@
 // This example is for the author to test the complete functionality
 //
 // !!!!
-// Here are some diffcult parts, when something is not working in your code 
+// Here are some difficult parts, when something is not working in your code 
 // look in this example and please read the comments
 // !!!!
 // ============================================================
