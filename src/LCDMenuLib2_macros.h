@@ -91,38 +91,22 @@
     #define LCDML_DISP_initFunction(N)      LCDML_DISP_func_repeat(N);
 
     #ifndef _LCDML_cfg_use_ram
-        #if defined(__IMXRT1062__) || defined (ARDUINO_TEENSY40) || defined (ARDUINO_TEENSY41) || defined(__MK66FX1M0__) || defined (__MK64FX512__)
-            // stored in flash (Teensy-3.5/Teensy-3.6/Teensy-4.x)
-            #define LCDML_langDef(name, lang, content) \
-                const char g_LCDML_DISP_lang_ ## lang ## _ ## name ##_var[] = {content}
-            #define LCDML_getCustomContent(lang, var, id) \
-                if(id < _LCDML_NO_FUNC) {\
-                    strcpy(var, g_LCDML_DISP_lang_ ## lang ## _table[id]); \
-                }
-            #define LCDML_createCustomLang(N, lang) \
-                const char * g_LCDML_DISP_lang_ ## lang ## _table[] = { LCDML_DISP_lang_repeat(N, lang) }
-            #define LCDML_getCustomElementName(lang, var, element_id) \
-                if(element_id < _LCDML_NO_FUNC && (sizeof(g_LCDML_DISP_lang_ ## lang ## _table)-1) >= element_id) {\
-                    strcpy(var, g_LCDML_DISP_lang_ ## lang ## _table[element_id]);\
-                }
-        #else
-            // stored in flash (Arduino)
-            #define LCDML_langDef(name, lang, content) \
-                const char g_LCDML_DISP_lang_ ## lang ## _ ## name ##_var[] PROGMEM = {content}
+        // stored in flash (Arduino)
+        #define LCDML_langDef(name, lang, content) \
+            const char g_LCDML_DISP_lang_ ## lang ## _ ## name ##_var[] PROGMEM = {content}
 
-             #define LCDML_getCustomContent(lang, var, id) \
-                if(id < _LCDML_NO_FUNC) {\
-                    strcpy_P(var, (char*)pgm_read_word(&(g_LCDML_DISP_lang_ ## lang ## _table[id]))); \
-                }     
+         #define LCDML_getCustomContent(lang, var, id) \
+            if(id < _LCDML_NO_FUNC) {\
+                strcpy_P(var, (char*)pgm_read_word(&(g_LCDML_DISP_lang_ ## lang ## _table[id]))); \
+            }     
 
-            #define LCDML_createCustomLang(N, lang) \
-                const char * const g_LCDML_DISP_lang_ ## lang ## _table[] PROGMEM = { LCDML_DISP_lang_repeat(N, lang) }
+        #define LCDML_createCustomLang(N, lang) \
+            const char * const g_LCDML_DISP_lang_ ## lang ## _table[] PROGMEM = { LCDML_DISP_lang_repeat(N, lang) }
 
-            #define LCDML_getCustomElementName(lang, var, element_id) \
-                if(element_id < _LCDML_NO_FUNC && (sizeof(g_LCDML_DISP_lang_ ## lang ## _table)-1) >= element_id) {\
-                    strcpy_P(var, (char*)pgm_read_word(&(g_LCDML_DISP_lang_ ## lang ## _table[element_id])));\
+        #define LCDML_getCustomElementName(lang, var, element_id) \
+            if(element_id < _LCDML_NO_FUNC && (sizeof(g_LCDML_DISP_lang_ ## lang ## _table)-1) >= element_id) {\
+                strcpy_P(var, (char*)pgm_read_word(&(g_LCDML_DISP_lang_ ## lang ## _table[element_id])));\
             }
-        #endif
 
     #else
         // stored in ram (esp, stm, other controllers)
