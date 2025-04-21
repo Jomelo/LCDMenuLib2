@@ -14,10 +14,11 @@
 // *********************************************************************
 // special settings
 // *********************************************************************
-// enable this line when you are not usigng a standard arduino
-// for example when your chip is an ESP or a STM or SAM or something else
-
+// enable this line when you want to work only with ram 
 //#define _LCDML_cfg_use_ram 
+
+// enable this line when you are using an 32 bit processor
+//#define _LCDML_cfg_use_32bit_cpu
 
   // include libs
   #include <LCDMenuLib2.h>  
@@ -37,7 +38,7 @@
   
   #define _LCDML_ADAFRUIT_FONT_SIZE   3   
   #define _LCDML_ADAFRUIT_FONT_W      (6*_LCDML_ADAFRUIT_FONT_SIZE)             // font width 
-  #define _LCDML_ADAFRUIT_FONT_H      (8*_LCDML_ADAFRUIT_FONT_SIZE)             // font height 
+  #define _LCDML_ADAFRUIT_FONT_H      (8*_LCDML_ADAFRUIT_FONT_SIZE)             // font heigt 
   
   // settings for u8g lib and lcd
   #define _LCDML_ADAFRUIT_lcd_w       128            // lcd width

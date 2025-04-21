@@ -22,10 +22,11 @@
 // *********************************************************************
 // special settings
 // *********************************************************************
-// enable this line when you are not usigng a standard arduino
-// for example when your chip is an ESP or a STM or SAM or something else
-
+// enable this line when you want to work only with ram 
 //#define _LCDML_cfg_use_ram 
+
+// enable this line when you are using an 32 bit processor
+//#define _LCDML_cfg_use_32bit_cpu
 
 // *********************************************************************
 // includes
@@ -142,7 +143,7 @@
   simpleThread_new_timebased_static   (_sT_P2  , _sT_millis, 1000UL  , _sT_stop  , Thread_Serial_Blink_Example);
   simpleThread_new_timebased_static   (_sT_P3  , _sT_millis, 100UL   , _sT_start , Thread_LCDMenuLib);
 
-  /* simple thread control macros reference
+  /* simple thread control makros reference
    *  initialisation:
    *  ===============
    *  void      simpleThread_init( number of threads )

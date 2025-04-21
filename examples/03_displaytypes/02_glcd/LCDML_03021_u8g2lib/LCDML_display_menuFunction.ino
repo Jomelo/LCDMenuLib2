@@ -12,7 +12,7 @@ void your_function_name(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
-    // remove compiler warnings when the param variable is not used:
+    // remmove compiler warnings when the param variable is not used:
     //LCDML_UNUSED(param);
     // setup
     // is called only if it is started
@@ -50,7 +50,7 @@ void your_function_name(uint8_t param)
     // loop end
     // you can here reset some global vars or delete it
     // this function is always called when the functions ends.
-    // this means when you are calling a jumpTo or a goRoot function
+    // this means when you are calling a jumpTo ore a goRoot function
     // that this part is called before a function is closed
   }
 }
@@ -65,7 +65,7 @@ void mFunc_information(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
-    // remove compiler warnings when the param variable is not used:
+    // remmove compiler warnings when the param variable is not used:
     LCDML_UNUSED(param);
 
     // setup function
@@ -105,7 +105,7 @@ void mFunc_timer_info(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
-    // remove compiler warnings when the param variable is not used:
+    // remmove compiler warnings when the param variable is not used:
     LCDML_UNUSED(param);
 
     g_func_timer_info = 20;       // reset and set timer
@@ -176,7 +176,7 @@ void mFunc_p2(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
-    // remove compiler warnings when the param variable is not used:
+    // remmove compiler warnings when the param variable is not used:
     LCDML_UNUSED(param);
 
     // setup function
@@ -244,7 +244,7 @@ void mFunc_screensaver(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
-    // remove compiler warnings when the param variable is not used:
+    // remmove compiler warnings when the param variable is not used:
     LCDML_UNUSED(param);
 
     // setup function
@@ -282,7 +282,7 @@ void mFunc_back(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
-    // remove compiler warnings when the param variable is not used:
+    // remmove compiler warnings when the param variable is not used:
     LCDML_UNUSED(param);
 
     // end function and go an layer back
@@ -297,7 +297,7 @@ void mFunc_goToRootMenu(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
-    // remove compiler warnings when the param variable is not used:
+    // remmove compiler warnings when the param variable is not used:
     LCDML_UNUSED(param);
 
     // go to root and display menu
@@ -312,7 +312,7 @@ void mFunc_jumpTo_timer_info(uint8_t param)
 {
   if(LCDML.FUNC_setup())          // ****** SETUP *********
   {
-    // remove compiler warnings when the param variable is not used:
+    // remmove compiler warnings when the param variable is not used:
     LCDML_UNUSED(param);
     
     // Jump to main screen

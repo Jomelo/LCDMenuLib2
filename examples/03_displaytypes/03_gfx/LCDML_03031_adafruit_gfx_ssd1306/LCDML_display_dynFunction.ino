@@ -70,8 +70,8 @@ void mDyn_para(uint8_t line)
   }
 
   char buf[20];
-  sprintf (buf, "dynValue: %d", g_dynParam);
+  sprintf (buf, "  dynValue: %d", g_dynParam);
 
-  display.setCursor(1, _LCDML_ADAFRUIT_FONT_H * (line));
+  display.setCursor(0, _LCDML_ADAFRUIT_FONT_H * (line));
   display.println(buf);
 }

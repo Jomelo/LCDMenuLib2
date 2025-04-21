@@ -65,7 +65,8 @@ void lcdml_menu_display()
         {
           // display normal content
           LCDML_getContent(content_text, tmp->getID());
-          display.setCursor(1, _LCDML_ADAFRUIT_FONT_H * (n));
+          display.setCursor(0, _LCDML_ADAFRUIT_FONT_H * (n));
+          display.print("  ");
           display.println(content_text);
         }
         else
@@ -84,7 +85,7 @@ void lcdml_menu_display()
 
   // set cursor
   display.setCursor(0, _LCDML_ADAFRUIT_FONT_H * (LCDML.MENU_getCursorPos()));
-  display.println("X");
+  display.println(" >");
 
   // ***** todo *****
   #ifdef _SCROLLBAR_TODO_

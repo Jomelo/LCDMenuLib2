@@ -10,7 +10,7 @@ void simpleThread_setup(Thread_Serial_Blink_Example)
 
 boolean simpleThread_loop(Thread_Serial_Blink_Example)
 {
-  // generate a serial-output in the console every second
+  // generate a serial-output in the console every secound
   Serial.print(".");
 
 

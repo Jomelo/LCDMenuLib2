@@ -1,60 +1,79 @@
-Arduino LCDMenuLib2 (LCDML) with layers for any LCD Type (Row Displays, Graphic Displays, Console output)
-=================================================================
+# Arduino LCDMenuLib2 (LCDML)
+A versatile menu library for Arduino, supporting various LCD types (row displays, graphic displays, console output).
 
-https://github.com/Jomelo/LCDMenuLib2/wiki/Code-Reference
+[![GitHub Issues](https://img.shields.io/github/issues/Jomelo/LCDMenuLib2)](https://github.com/Jomelo/LCDMenuLib2/issues)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Features:
-*  max 254 menu elements
-*  max 254 menu elements per layer
-*  based on a tree model (parent, child, sibling)
-*  min 3 buttons needed up, down, enter
-*  support for 6 defined buttons up, down, left, right, back/quit, enter
-*  support for 64 custom events it could be a button click or something else. This events could be combined with a special handling to open a defined menu function when the status is changed. 
-*  separation of structural and functional level
-*  support for screensaver which is shown after x seconds
-*  display a scrollbar when more menu elements in a layer then display rows
-*  the menu function are only updated when a button is hit / a custom event is called  or a trigger is set
-*  it is possible to set special conditions to display an element
-*  it is possible to change parameter direct from the menu
-*  possibility to jump from one menu element directly to another
-*  examples for many different LCD libraries
-*  examples for different functionality (change param, set params, ...)
+## Table of Contents
+1. [Features](#features)
+2. [Installation](#installation)
+3. [Code reference](#lcdml-code-reference)
+4. [Forum Link](#forum-link)
+3. [Images](#images)
+4. [License](#license)
 
+## Features
+- **Supports up to 254 menu elements** per layer.
+- **Tree-based structure** (parent, child, sibling).
+- Requires a minimum of **3 buttons** (up, down, enter).
+- Supports **6 predefined buttons** (up, down, left, right, back/quit, enter).
+- Handles **64 custom events**, such as button clicks or other triggers. This events could be combined with a special handling to open a defined menu function when the status is changed.
+- **Screensaver support** after a configurable timeout.
+- Displays a **scrollbar** when menu elements exceed display rows.
+- Allows **dynamic parameter changes** directly from the menu.
+- Separation of structural and functional level
+- Setting of **special conditions** to diplay elements
+- Can be used for **statemashines** with jumping function between menu elements
+- Provides **examples** for various LCD libraries and functionalities.
 
-Attention:
-*  when you change from LCDMenuLib v2.3.4 to LCDMenuLib2 v1.0.0 or higher
-** the backend system is removed from this lib use this when you need a task system: https://github.com/arkhipenko/TaskScheduler
+## Installation
+### Arduino IDE -> Library Installation
+1. Search into the Arduino Library for "LCDMenuLib2".
+2. Follow the installation instruction.
+### Arduino IDE -> Installation by ZIP file
+1. Download the library from the [GitHub repository](https://github.com/Jomelo/LCDMenuLib2).
+2. Open the Arduino IDE.
+3. Go to `Sketch > Include Library > Add .ZIP Library`.
+4. Select the downloaded `.zip` file and click `Open`.
 
+### PlatformIO
+1. Add the following to your `platformio.ini` file:
+   ```ini
+   lib_deps =
+       Jomelo/LCDMenuLib2
 
+## LCDML Code Reference
+- https://github.com/Jomelo/LCDMenuLib2/wiki/Code-Reference
+
+## Forum-Link
 Description (German):
 http://forum.arduino.cc/index.php?topic=73816.0
 
-Images:
-
-* 20x4
+## Images
+### 20x4 LCD
 
 ![20x4 display](extras/img/20x4_1.jpg?raw=true "20x4 display")
 ![20x4 display](extras/img/20x4_2.jpg?raw=true "20x4 display")
 ![20x4 display](extras/img/20x4_3.jpg?raw=true "20x4 display")
 ![20x4 display](extras/img/20x4_4.jpg?raw=true "20x4 display")
 
-* glcd with u8glib
+### glcd with u8glib
 
 ![Graphic display](extras/img/glcd_1.jpg?raw=true "Graphic display")
 ![Graphic display](extras/img/glcd_2.jpg?raw=true "Graphic display")
 ![Graphic display](extras/img/glcd_3.jpg?raw=true "Graphic display")
 ![Graphic display](extras/img/glcd_4.jpg?raw=true "Graphic display")
 
-* serial monitor for testing or programming without a connected display
+### serial monitor for testing or programming without a connected display
 
 ![Serial Monitor](extras/img/console_1.png?raw=true "Serial Monitor")
 ![Serial Monitor](extras/img/console_2.png?raw=true "Serial Monitor")
 ![Serial Monitor](extras/img/console_3.png?raw=true "Serial Monitor")
 
-
+## License
 MIT License
 
-Copyright (c) [2021] [Nils Feldkämper]
+Copyright (c) [2025] [Nils Feldkämper]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -73,4 +92,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-

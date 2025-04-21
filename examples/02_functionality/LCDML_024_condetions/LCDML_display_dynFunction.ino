@@ -49,11 +49,11 @@ void mDyn_change_condetion(uint8_t line)
         // The condetions would only be update when this function is called.         
         LCDML.MENU_allCondetionRefresh();
 
-        // this function is useful when content above this menu element needs an update. 
+        // this function is usefull when content above this menu element needs an update. 
         // for example one dyn function change the content of another dyn function above this line.        
         LCDML.MENU_setDynFunctionContentUpdate();  
         
-        // after the condetion changes it is useful to go back to the root menu 
+        // after the condetion changes it is usefull to go back to the root menu 
         //LCDML.MENU_goRoot();
         // or set the cursor to the right defined position
         LCDML.OTHER_setCursorToID(8); // to this function              

@@ -4,10 +4,11 @@
 // *********************************************************************
 // special settings
 // *********************************************************************
-// enable this line when you are not usigng a standard arduino
-// for example when your chip is an ESP or a STM or SAM or something else
-
+// enable this line when you want to work only with ram 
 //#define _LCDML_cfg_use_ram 
+
+// enable this line when you are using an 32 bit processor
+//#define _LCDML_cfg_use_32bit_cpu
 
 // *********************************************************************
 // includes
@@ -162,7 +163,7 @@
   }
 
 
-// special global variables for this example
+// special gobal variables for this example
 boolean g_status_if_dyn_content_external_refresh_is_displayed = false;
 unsigned long g_timer_1000ms = 0;
 uint8_t dyn_hour = 0;
@@ -199,6 +200,6 @@ uint8_t dyn_sec  = 0;
       }     
     }
 
-    // call the "normally" menu content
+    // call the "normaly" menu content
     LCDML.loop_menu();
   }

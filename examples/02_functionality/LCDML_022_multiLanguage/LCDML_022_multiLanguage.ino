@@ -8,17 +8,18 @@
 // This example is for the author to test the complete functionality
 //
 // !!!!
-// Here are some difficult parts, when something is not working in your code 
+// Here are some diffcult parts, when something is not working in your code 
 // look in this example and please read the comments
 // !!!!
 // ============================================================
 // *********************************************************************
 // special settings
 // *********************************************************************
-// enable this line when you are not usigng a standard arduino
-// for example when your chip is an ESP or a STM or SAM or something else
-
+// enable this line when you want to work only with ram 
 //#define _LCDML_cfg_use_ram 
+
+// enable this line when you are using an 32 bit processor
+//#define _LCDML_cfg_use_32bit_cpu
 
 // *********************************************************************
 // includes

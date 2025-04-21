@@ -13,9 +13,11 @@
 // *********************************************************************
 // special settings
 // *********************************************************************
-// enable this line when you are not usigng a standard arduino
-// for example when your chip is an ESP or a STM or SAM or something else
+// enable this line when you want to work only with ram 
 //#define _LCDML_cfg_use_ram 
+
+// enable this line when you are using an 32 bit processor
+//#define _LCDML_cfg_use_32bit_cpu
 
   // include libs
   #include <LCDMenuLib2.h>
@@ -55,7 +57,7 @@
   #define _LCDML_DISP_box_x0            0              // start point (x0, y0)
   #define _LCDML_DISP_box_y0            0              // start point (x0, y0)
   #define _LCDML_DISP_box_x1            128            // width x  (x0 + width)
-  #define _LCDML_DISP_box_y1            64             // height y  (y0 + height)
+  #define _LCDML_DISP_box_y1            64             // hight y  (y0 + height)
   #define _LCDML_DISP_draw_frame        1              // draw a box around the menu
    // scrollbar width
   #define _LCDML_DISP_scrollbar_w       6  // scrollbar width (if this value is < 3, the scrollbar is disabled)

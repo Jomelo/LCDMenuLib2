@@ -4,7 +4,7 @@
 #
 # MIT License
 #
-# Copyright (c) [2021] [Nils Feldkämper]
+# Copyright (c) [2025] [Nils Feldkämper]
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -332,3 +332,5 @@ LCDML_createCustomLang	KEYWORD2
 LCDML_getCustomContent	KEYWORD2
 LCDML_langDef	KEYWORD2
 
+_LCDML_cfg_use_32bit_cpu	KEYWORD2
+_LCDML_cfg_use_ram	KEYWORD2

@@ -4,7 +4,7 @@
  *
  * MIT License
  *
- * Copyright (c) [2021] [Nils Feldkämper]
+ * Copyright (c) [2025] [Nils Feldkämper]
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -95,18 +95,33 @@
         #define LCDML_langDef(name, lang, content) \
             const char g_LCDML_DISP_lang_ ## lang ## _ ## name ##_var[] PROGMEM = {content}
 
-         #define LCDML_getCustomContent(lang, var, id) \
-            if(id < _LCDML_NO_FUNC) {\
-                strcpy_P(var, (char*)pgm_read_word(&(g_LCDML_DISP_lang_ ## lang ## _table[id]))); \
-            }     
+        #ifdef ARDUINO_UNOR4_WIFI || ARDUINO_MINIMA || _LCDML_cfg_use_32bit_cpu
+            #define LCDML_getCustomContent(lang, var, id) \
+                if(id < _LCDML_NO_FUNC) {\
+                    strcpy_P(var, (char*)pgm_read_dword(&(g_LCDML_DISP_lang_ ## lang ## _table[id]))); \
+                }  
+        #else
+            #define LCDML_getCustomContent(lang, var, id) \
+                if(id < _LCDML_NO_FUNC) {\
+                    strcpy_P(var, (char*)pgm_read_word(&(g_LCDML_DISP_lang_ ## lang ## _table[id]))); \
+                } 
+        #endif
 
         #define LCDML_createCustomLang(N, lang) \
             const char * const g_LCDML_DISP_lang_ ## lang ## _table[] PROGMEM = { LCDML_DISP_lang_repeat(N, lang) }
+        
+        #ifdef ARDUINO_UNOR4_WIFI || ARDUINO_MINIMA || _LCDML_cfg_use_32bit_cpu
+            #define LCDML_getCustomElementName(lang, var, element_id) \
+                if(element_id < _LCDML_NO_FUNC && (sizeof(g_LCDML_DISP_lang_ ## lang ## _table)-1) >= element_id) {\
+                    strcpy_P(var, (char*)pgm_read_dword(&(g_LCDML_DISP_lang_ ## lang ## _table[element_id])));\
+                }
+        #else
+            #define LCDML_getCustomElementName(lang, var, element_id) \
+                if(element_id < _LCDML_NO_FUNC && (sizeof(g_LCDML_DISP_lang_ ## lang ## _table)-1) >= element_id) {\
+                    strcpy_P(var, (char*)pgm_read_word(&(g_LCDML_DISP_lang_ ## lang ## _table[element_id])));\
+                }
+        #endif
 
-        #define LCDML_getCustomElementName(lang, var, element_id) \
-            if(element_id < _LCDML_NO_FUNC && (sizeof(g_LCDML_DISP_lang_ ## lang ## _table)-1) >= element_id) {\
-                strcpy_P(var, (char*)pgm_read_word(&(g_LCDML_DISP_lang_ ## lang ## _table[element_id])));\
-            }
 
     #else
         // stored in ram (esp, stm, other controllers)
